@@ -1,6 +1,6 @@
 {
   "name": "jdwx/param",
-  "description": "A simple PHP library for parsing values from strings with type safety.",
+  "description": "A simple PHP module for parsing values from strings with type safety.",
   "license": "MIT",
   "autoload": {
     "psr-4": {
