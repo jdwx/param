@@ -20,7 +20,9 @@ class StringParameter extends Parameter {
     }
 
 
+    /** @param mixed[]|string|null $xValue */
     public function new( array|string|null $xValue ) : static {
+        /** @phpstan-ignore new.static */
         return new static( $xValue );
     }
 

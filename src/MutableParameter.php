@@ -22,6 +22,7 @@ class MutableParameter extends StringParameter {
 
 
     public function new( array|string|null $xValue ) : static {
+        /** @phpstan-ignore new.static */
         return new static( $xValue );
     }
 

@@ -11,29 +11,29 @@ use PHPUnit\Framework\TestCase;
 class MutableParameterTest extends TestCase {
 
 
-    public function testSet() : void {
-        $x = new MutableParameter();
-        $x->set( "foo" );
-        static::assertSame( "foo", $x->asString() );
-        $x->set( "bar" );
-        static::assertSame( "bar", $x->asString() );
-    }
-
-
     public function testFreeze() : void {
         $x = new MutableParameter();
-        $x->set( "foo" );
+        $x->set( 'foo' );
         $x->freeze();
         $this->expectException( LogicException::class );
-        $x->set( "bar" );
+        $x->set( 'bar' );
     }
 
 
     public function testNew() : void {
-        $x = new MutableParameter( "foo" );
-        $y = $x->new( "bar" );
-        static::assertSame( "bar", $y->asString() );
+        $x = new MutableParameter( 'foo' );
+        $y = $x->new( 'bar' );
+        static::assertSame( 'bar', $y->asString() );
         static::assertSame( $x::class, $y::class );
+    }
+
+
+    public function testSet() : void {
+        $x = new MutableParameter();
+        $x->set( 'foo' );
+        static::assertSame( 'foo', $x->asString() );
+        $x->set( 'bar' );
+        static::assertSame( 'bar', $x->asString() );
     }
 
 

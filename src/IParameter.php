@@ -13,12 +13,15 @@ interface IParameter {
     public function __toString() : string;
 
 
+    /** @return mixed[] */
     public function asArray() : array;
 
 
+    /** @return mixed[]|null */
     public function asArrayOrNull() : ?array;
 
 
+    /** @return mixed[]|string */
     public function asArrayOrString() : array|string;
 
 
@@ -51,6 +54,7 @@ interface IParameter {
 
     /** Returns the integer value or null for the empty string. */
     public function asIntOrEmpty() : ?int;
+
 
     public function asIntOrNull() : ?int;
 
@@ -93,7 +97,7 @@ interface IParameter {
 
     /**
      * @param int|string $key
-     * @param array|string|null $default
+     * @param mixed[]|string|null $default
      * @return IParameter Returns a parameter containing the value for a given key,
      *                    or the specified default value if the key is not set.
      *
@@ -123,7 +127,7 @@ interface IParameter {
     public function isEmpty() : bool;
 
 
-    public function isNull(): bool;
+    public function isNull() : bool;
 
 
     public function isSet() : bool;
@@ -132,6 +136,7 @@ interface IParameter {
     public function isString() : bool;
 
 
+    /** @param mixed[]|string|null $xValue */
     public function new( array|string|null $xValue ) : static;
 
 

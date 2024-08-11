@@ -12,23 +12,23 @@ class StringParameterTest extends TestCase {
 
 
     public function testConstructWithString() : void {
-        $x = new StringParameter( "foo" );
-        static::assertEquals( "foo", $x->asString() );
+        $x = new StringParameter( 'foo' );
+        static::assertEquals( 'foo', $x->asString() );
     }
 
 
     public function testIsSet() : void {
         $x = new StringParameter();
         static::assertFalse( $x->isSet() );
-        $x = new StringParameter( "foo" );
+        $x = new StringParameter( 'foo' );
         static::assertTrue( $x->isSet() );
     }
 
 
     public function testNew() : void {
-        $x = new StringParameter( "foo" );
-        $y = $x->new( "bar" );
-        static::assertSame( "bar", $y->asString() );
+        $x = new StringParameter( 'foo' );
+        $y = $x->new( 'bar' );
+        static::assertSame( 'bar', $y->asString() );
         static::assertSame( $x::class, $y::class );
     }
 
