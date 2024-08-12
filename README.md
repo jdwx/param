@@ -3,6 +3,7 @@
 A simple PHP module for parsing values from strings with type safety.
 
 This is useful in a number of contexts:
+
 * Parsing HTTP request arguments.
 * Parsing database values returned as string-or-NULL.
 * Parsing values from configuration files.
@@ -22,7 +23,8 @@ Or download the source from GitHub: https://github.com/jdwx/param.git
 
 This library requires PHP 8.1 or later. It does not work with earlier
 versions. (Uses readonly properties.)  It requires the mbstring extension
-but has no other external dependencies.
+and uses the Ds data structure extension or polyfill but has no other
+external dependencies.
 
 ## Usage
 
@@ -52,7 +54,7 @@ try {
 
 ## Stability
 
-This library is stable and has been used in production code. It is not 
+This library is stable and has been used in production code. It is not
 expected to change in ways that break existing code. Additional parsing
 methods may be added in the future, but existing methods should not
 be changed in a way that breaks existing code without at least a minor
