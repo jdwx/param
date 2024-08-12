@@ -78,6 +78,13 @@ final class ParameterSetTest extends TestCase {
     public function testListKeys() : void {
         $set = new ParameterSet( [ 'foo' => 'bar', 'quux' => 'corge' ], [ 'baz' => 'qux' ], [ 'foo', 'baz' ] );
         self::assertSame( [ 'foo', 'baz' ], $set->listKeys() );
+
+        $set = new ParameterSet();
+        self::assertSame( [], $set->listKeys() );
+
+        $set = new ParameterSet( [ 'foo' => 'bar' ], [ 'baz' => 'qux' ], [ 'quux' ] );
+        self::assertSame( [], $set->listKeys() );
+        
     }
 
 

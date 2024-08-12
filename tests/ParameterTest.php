@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 
 
 use JDWX\Param\Parameter;
+use JDWX\Param\ParseException;
 use PHPUnit\Framework\TestCase;
 
 
@@ -92,7 +93,7 @@ class ParameterTest extends TestCase {
         static::assertFalse( $x->asBool() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asBool();
 
     }
@@ -122,14 +123,14 @@ class ParameterTest extends TestCase {
         static::assertSame( 500, $x->asCurrency() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asCurrency();
     }
 
 
     public function testAsCurrencyForEmpty() : void {
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asCurrency();
     }
 
@@ -142,7 +143,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asCurrencyOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asCurrencyOrEmpty();
     }
 
@@ -161,7 +162,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 'test@example.tst', $x->asEmailAddress() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asEmailAddress();
     }
 
@@ -174,7 +175,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asEmailAddressOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asEmailAddressOrEmpty();
     }
 
@@ -187,7 +188,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asEmailAddressOrNull() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asEmailAddressOrNull();
     }
 
@@ -197,7 +198,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 'test', $x->asEmailUsername() );
 
         $x = new Parameter( 'fo@o' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asEmailUsername();
     }
 
@@ -210,7 +211,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asEmailUsernameOrEmpty() );
 
         $x = new Parameter( 'fo o' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asEmailUsernameOrEmpty();
     }
 
@@ -223,7 +224,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asEmailUsernameOrNull() );
 
         $x = new Parameter( '<foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asEmailUsernameOrNull();
     }
 
@@ -233,7 +234,7 @@ class ParameterTest extends TestCase {
         static::assertSame( sys_get_temp_dir(), $x->asExistingDirectory() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asExistingDirectory();
     }
 
@@ -246,7 +247,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asExistingDirectoryOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asExistingDirectoryOrEmpty();
     }
 
@@ -259,7 +260,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asExistingDirectoryOrNull() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asExistingDirectoryOrNull();
     }
 
@@ -269,7 +270,7 @@ class ParameterTest extends TestCase {
         static::assertSame( __FILE__, $x->asExistingFilename() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asExistingFilename();
     }
 
@@ -282,7 +283,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asExistingFilenameOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asExistingFilenameOrEmpty();
     }
 
@@ -295,7 +296,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asExistingFilenameOrNull() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asExistingFilenameOrNull();
     }
 
@@ -335,7 +336,7 @@ class ParameterTest extends TestCase {
     public function testAsFloatForStringText() : void {
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloat();
 
     }
@@ -349,7 +350,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asFloatOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatOrEmpty();
     }
 
@@ -382,7 +383,7 @@ class ParameterTest extends TestCase {
     public function testAsFloatRangeClosed() : void {
         $x = new Parameter( '5.5' );
         static::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosed( 5.4, 5.6 ), 0.0001 );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeClosed( 5.5, 5.7 );
     }
 
@@ -395,7 +396,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 ) );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 );
 
     }
@@ -409,7 +410,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asFloatRangeClosedOrNull( 5.4, 5.6 ) );
 
         $x = new Parameter( '5.5.4' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeClosedOrNull( 5.4, 5.6 );
     }
 
@@ -418,7 +419,7 @@ class ParameterTest extends TestCase {
         $x = new Parameter( '5.5' );
         static::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.5, 5.6 ), 0.0001 );
 
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         static::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.4, 5.5 ), 0.0001 );
     }
 
@@ -431,7 +432,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 ) );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 );
     }
 
@@ -444,7 +445,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 ) );
 
         $x = new Parameter( '5.5.4' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 );
     }
 
@@ -454,7 +455,7 @@ class ParameterTest extends TestCase {
         static::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.4, 5.5 ), 0.0001 );
         static::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.5, 5.6 ), 0.0001 );
 
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeOpen( 5.6, 5.7 );
     }
 
@@ -467,7 +468,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 ) );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 );
     }
 
@@ -480,7 +481,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asFloatRangeOpenOrNull( 5.4, 5.5 ) );
 
         $x = new Parameter( '5.5.4' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asFloatRangeOpenOrNull( 5.4, 5.5 );
     }
 
@@ -490,14 +491,14 @@ class ParameterTest extends TestCase {
         static::assertSame( 'www.example.com', $x->asHostname() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asHostname();
     }
 
 
     public function testAsHostnameForTrailingDot() : void {
         $x = new Parameter( 'www.example.com.' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asHostname();
     }
 
@@ -510,7 +511,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asHostnameOrEmpty() );
 
         $x = new Parameter( 'www|example.com' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asHostnameOrEmpty();
     }
 
@@ -523,7 +524,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asHostnameOrNull() );
 
         $x = new Parameter( 'www example.com' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asHostnameOrNull();
     }
 
@@ -536,7 +537,7 @@ class ParameterTest extends TestCase {
         static::assertSame( '2001:db8::1', $x->asIP() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIP();
     }
 
@@ -549,7 +550,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIPOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPOrEmpty();
     }
 
@@ -562,7 +563,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIPOrNull() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPOrNull();
     }
 
@@ -572,7 +573,7 @@ class ParameterTest extends TestCase {
         static::assertSame( '192.0.2.1', $x->asIPv4() );
 
         $x = new Parameter( '2001:db8::1' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPv4();
     }
 
@@ -585,7 +586,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIPv4OrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPv4OrEmpty();
     }
 
@@ -598,7 +599,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIPv4OrNull() );
 
         $x = new Parameter( '192.0.2.3.4' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPv4OrNull();
     }
 
@@ -608,7 +609,7 @@ class ParameterTest extends TestCase {
         static::assertSame( '2001:db8::1', $x->asIPv6() );
 
         $x = new Parameter( '192.0.2.1' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPv6();
     }
 
@@ -621,7 +622,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIPv6OrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPv6OrEmpty();
     }
 
@@ -634,7 +635,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIPv6OrNull() );
 
         $x = new Parameter( '2001:db8::3.4' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIPv6OrNull();
     }
 
@@ -647,7 +648,7 @@ class ParameterTest extends TestCase {
         $x = new Parameter( '5.9' );
         static::assertSame( 5, $x->asInt() );
 
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x = new Parameter( 'foo' );
         $x->asInt();
 
@@ -656,7 +657,7 @@ class ParameterTest extends TestCase {
 
     public function testAsIntForEmpty() : void {
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asInt();
     }
 
@@ -672,7 +673,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 5, $x->asIntOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntOrEmpty();
     }
 
@@ -691,7 +692,7 @@ class ParameterTest extends TestCase {
     public function testAsIntRangeClosed() : void {
         $x = new Parameter( '5' );
         static::assertSame( 5, $x->asIntRangeClosed( 4, 6 ) );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeClosed( 5, 7 );
     }
 
@@ -704,7 +705,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIntRangeClosedOrEmpty( 4, 6 ) );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeClosedOrEmpty( 4, 6 );
     }
 
@@ -717,7 +718,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIntRangeClosedOrNull( 4, 6 ) );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeClosedOrNull( 4, 6 );
     }
 
@@ -725,7 +726,7 @@ class ParameterTest extends TestCase {
     public function testAsIntRangeHalfClosed() : void {
         $x = new Parameter( '5' );
         static::assertSame( 5, $x->asIntRangeHalfClosed( 5, 6 ) );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeHalfClosed( 4, 5 );
     }
 
@@ -738,7 +739,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIntRangeHalfClosedOrEmpty( 5, 6 ) );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeHalfClosedOrEmpty( 5, 6 );
     }
 
@@ -751,7 +752,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIntRangeHalfClosedOrNull( 5, 6 ) );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeHalfClosedOrNull( 5, 6 );
     }
 
@@ -761,7 +762,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 5, $x->asIntRangeOpen( 4, 6 ) );
         static::assertSame( 5, $x->asIntRangeOpen( 4, 5 ) );
         static::assertSame( 5, $x->asIntRangeOpen( 5, 6 ) );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeOpen( 6, 7 );
     }
 
@@ -774,7 +775,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIntRangeOpenOrEmpty( 4, 6 ) );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeOpenOrEmpty( 4, 6 );
     }
 
@@ -787,7 +788,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asIntRangeOpenOrNull( 4, 6 ) );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asIntRangeOpenOrNull( 4, 6 );
     }
 
@@ -803,7 +804,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 'foo', $x->asKeyword( [ 'foo', 'bar' ] ) );
 
         $x = new Parameter( 'baz' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asKeyword( [ 'foo', 'bar' ] );
     }
 
@@ -816,7 +817,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asKeywordOrEmpty( [ 'foo', 'bar' ] ) );
 
         $x = new Parameter( 'baz' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asKeywordOrEmpty( [ 'foo', 'bar' ] );
     }
 
@@ -829,7 +830,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asKeywordOrNull( [ 'foo', 'bar' ] ) );
 
         $x = new Parameter( 'baz' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asKeywordOrNull( [ 'foo', 'bar' ] );
     }
 
@@ -840,7 +841,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 'bar', $x->asMap( $rMap ) );
 
         $x = new Parameter( 'quux' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asMap( $rMap );
     }
 
@@ -854,7 +855,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asMapOrEmpty( $rMap ) );
 
         $x = new Parameter( '5' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asMapOrEmpty( $rMap );
     }
 
@@ -868,7 +869,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asMapOrNull( $rMap ) );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asMapOrNull( $rMap );
     }
 
@@ -878,7 +879,7 @@ class ParameterTest extends TestCase {
         static::assertSame( __DIR__ . '/foo', $x->asNonexistentFilename() );
 
         $x = new Parameter( __FILE__ );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asNonexistentFilename();
     }
 
@@ -891,7 +892,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asNonexistentFilenameOrEmpty() );
 
         $x = new Parameter( '/no/such/dir/file.txt' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asNonexistentFilenameOrEmpty();
     }
 
@@ -904,7 +905,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asNonexistentFilenameOrNull() );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asNonexistentFilenameOrNull();
     }
 
@@ -914,7 +915,7 @@ class ParameterTest extends TestCase {
         static::assertEqualsWithDelta( 3.14, $x->asPositiveFloat(), 0.0001 );
 
         $x = new Parameter( '-1.23' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asPositiveFloat();
     }
 
@@ -927,7 +928,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asPositiveFloatOrEmpty() );
 
         $x = new Parameter( '0' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asPositiveFloatOrEmpty();
     }
 
@@ -940,7 +941,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asPositiveFloatOrNull() );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asPositiveFloatOrNull();
     }
 
@@ -950,7 +951,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 3, $x->asPositiveInt() );
 
         $x = new Parameter( '-1' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asPositiveInt();
     }
 
@@ -963,7 +964,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asPositiveIntOrEmpty() );
 
         $x = new Parameter( '0' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asPositiveIntOrEmpty();
     }
 
@@ -976,7 +977,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asPositiveIntOrNull() );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asPositiveIntOrNull();
     }
 
@@ -1019,7 +1020,7 @@ class ParameterTest extends TestCase {
         static::assertEqualsWithDelta( 1.23, $x->asUnsignedFloat(), 0.0001 );
 
         $x = new Parameter( '-1.23' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asUnsignedFloat();
     }
 
@@ -1032,7 +1033,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asUnsignedFloatOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asUnsignedFloatOrEmpty();
     }
 
@@ -1045,7 +1046,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asUnsignedFloatOrNull() );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asUnsignedFloatOrNull();
     }
 
@@ -1055,7 +1056,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 5, $x->asUnsignedInt() );
 
         $x = new Parameter( '-5' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asUnsignedInt();
     }
 
@@ -1068,7 +1069,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asUnsignedIntOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asUnsignedIntOrEmpty();
     }
 
@@ -1081,7 +1082,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asUnsignedIntOrNull() );
 
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asUnsignedIntOrNull();
     }
 
@@ -1388,14 +1389,14 @@ class ParameterTest extends TestCase {
         static::assertEqualsWithDelta( 1.2345, $x->asRoundedFloat( 5 ), 0.0001 );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asRoundedFloat();
     }
 
 
     public function testRoundedFloatForEmpty() : void {
         $x = new Parameter( '' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asRoundedFloat();
     }
 
@@ -1408,7 +1409,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asRoundedFloatOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asRoundedFloatOrEmpty();
     }
 
@@ -1447,7 +1448,7 @@ class ParameterTest extends TestCase {
         static::assertSame( 200, $x->asRoundedInt( -2 ) );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asRoundedInt();
     }
 
@@ -1460,7 +1461,7 @@ class ParameterTest extends TestCase {
         static::assertNull( $x->asRoundedIntOrEmpty() );
 
         $x = new Parameter( 'foo' );
-        static::expectException( TypeError::class );
+        static::expectException( ParseException::class );
         $x->asRoundedIntOrEmpty();
     }
 

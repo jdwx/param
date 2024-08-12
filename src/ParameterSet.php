@@ -9,6 +9,7 @@ namespace JDWX\Param;
 
 use ArrayAccess;
 use Ds\Map;
+use Ds\Set;
 use InvalidArgumentException;
 use LogicException;
 
@@ -23,11 +24,11 @@ class ParameterSet implements ArrayAccess {
     /** @var Map<string, Parameter> */
     private Map $mapDefaults;
 
-    /** @var list<string>|null */
-    private ?array $nrAllowedKeys = null;
+    /** @var Set<string> */
+    private Set $setAllowedKeys;
 
-    /** @var list<string> */
-    private array $rIgnoredKeys = [];
+    /** @var Set<string> */
+    private Set $setIgnoredKeys;
 
     private bool $bMutable = false;
 
@@ -35,11 +36,13 @@ class ParameterSet implements ArrayAccess {
     /**
      * @param iterable<string, string>|null $i_itParameters
      * @param iterable<string, string>|null $i_itDefaults
-     * @param iterable<string>|null         $i_itAllowedKeys
+     * @param iterable<string>|null $i_itAllowedKeys
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function __construct( ?iterable $i_itParameters = null, ?iterable $i_itDefaults = null,
                                  ?iterable $i_itAllowedKeys = null ) {
+        $this->setIgnoredKeys = new Set();
+        $this->setAllowedKeys = new Set();
         $this->addAllowedKeys( $i_itAllowedKeys );
         $this->mapParameters = new Map();
         $this->addParameters( $i_itParameters );
@@ -49,12 +52,7 @@ class ParameterSet implements ArrayAccess {
 
 
     public function addAllowedKey( string $i_stKey ) : void {
-        if ( ! $this->nrAllowedKeys ) {
-            $this->nrAllowedKeys = [];
-        }
-        if ( ! in_array( $i_stKey, $this->nrAllowedKeys ) ) {
-            $this->nrAllowedKeys[] = $i_stKey;
-        }
+        $this->setAllowedKeys->add( $i_stKey );
     }
 
 
@@ -131,7 +129,7 @@ class ParameterSet implements ArrayAccess {
 
     /** @return list<string>|null */
     public function getAllowedKeys() : ?array {
-        return $this->nrAllowedKeys;
+        return $this->setAllowedKeys->toArray();
     }
 
 
@@ -146,14 +144,14 @@ class ParameterSet implements ArrayAccess {
 
     /** @return list<string> */
     public function getIgnoredKeys() : array {
-        return $this->rIgnoredKeys;
+        return $this->setIgnoredKeys->toArray();
     }
 
 
     /** @param string ...$i_rstKeys */
     public function has( string ...$i_rstKeys ) : bool {
         foreach ( $i_rstKeys as $stKey ) {
-            if ( is_array( $this->nrAllowedKeys ) && ! in_array( $stKey, $this->nrAllowedKeys ) ) {
+            if ( ! $this->isKeyAllowed( $stKey ) ) {
                 return false;
             }
             if ( $this->mapParameters->hasKey( $stKey ) ) {
@@ -171,11 +169,14 @@ class ParameterSet implements ArrayAccess {
     /** @return list<string> */
     public function listKeys() : array {
         $keys = $this->mapParameters->keys();
-        $keys = $keys->merge( $this->mapDefaults->keys() )->toArray();
-        $keys = array_values( array_diff( $keys, $this->rIgnoredKeys ) );
-        if ( empty( $keys ) ) {
+        $keys = $keys->merge( $this->mapDefaults->keys() );
+        if ( ! $this->setAllowedKeys->isEmpty() ) {
+            $keys = $keys->intersect( $this->setAllowedKeys );
+        }
+        if ( $keys->isEmpty() ) {
             return [];
         }
+        $keys = $keys->toArray();
         /** @phpstan-ignore booleanAnd.alwaysTrue */
         assert( is_array( $keys ) && is_string( $keys[ array_key_first( $keys ) ] ) );
         return $keys;
@@ -204,7 +205,7 @@ class ParameterSet implements ArrayAccess {
 
 
     /**
-     * @param string|null                   $offset
+     * @param string|null $offset
      * @param mixed[]|string|Parameter|null $value
      * @return void
      */
@@ -238,7 +239,7 @@ class ParameterSet implements ArrayAccess {
     /** @param mixed[]|string|Parameter|null $i_xValue */
     public function setDefault( string $i_stKey, array|string|Parameter|null $i_xValue ) : void {
         if ( ! $this->isKeyAllowed( $i_stKey ) ) {
-            $this->rIgnoredKeys[] = $i_stKey;
+            $this->setIgnoredKeys->add( $i_stKey );
             return;
         }
         if ( $this->mapDefaults->hasKey( $i_stKey ) && ! $this->bMutable ) {
@@ -259,7 +260,7 @@ class ParameterSet implements ArrayAccess {
     /** @param mixed[]|string|Parameter|null $i_xValue */
     public function setParameter( string $i_stKey, array|string|Parameter|null $i_xValue ) : void {
         if ( ! $this->isKeyAllowed( $i_stKey ) ) {
-            $this->rIgnoredKeys[] = $i_stKey;
+            $this->setIgnoredKeys->add( $i_stKey );
             return;
         }
         if ( $this->mapParameters->hasKey( $i_stKey ) && ! $this->bMutable ) {
@@ -272,13 +273,10 @@ class ParameterSet implements ArrayAccess {
     }
 
 
+    /** @param callable(string) : bool $i_fnFilter */
     public function subsetByKeys( callable $i_fnFilter ) : static {
         /** @phpstan-ignore new.static */
-        $set = new static();
-        if ( $this->nrAllowedKeys ) {
-            $rAllowedKeys = array_values( array_filter( $this->nrAllowedKeys, $i_fnFilter ) );
-            $set->nrAllowedKeys = $rAllowedKeys;
-        }
+        $set = new static( i_itAllowedKeys: $this->setAllowedKeys->filter( $i_fnFilter ) );
         foreach ( $this->mapParameters as $stKey => $rParameter ) {
             if ( $i_fnFilter( $stKey ) ) {
                 $set->setParameter( $stKey, $rParameter );
@@ -304,10 +302,7 @@ class ParameterSet implements ArrayAccess {
 
 
     private function isKeyAllowed( string $i_stKey ) : bool {
-        if ( ! $this->nrAllowedKeys ) {
-            return true;
-        }
-        return in_array( $i_stKey, $this->nrAllowedKeys );
+        return $this->setAllowedKeys->isEmpty() || $this->setAllowedKeys->contains( $i_stKey );
     }
 
 

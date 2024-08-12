@@ -7,9 +7,6 @@ declare( strict_types = 1 );
 namespace JDWX\Param;
 
 
-use TypeError;
-
-
 class Parse {
 
 
@@ -22,7 +19,7 @@ class Parse {
             return $i_r[ $i_stKey ];
         }
         $stOptions = self::summarizeOptions( array_keys( $i_r ) );
-        throw new TypeError( $i_nstError ?? "Expected one of {$stOptions}. Got: {$i_stKey}" );
+        throw new ParseException( $i_nstError ?? "Expected one of {$stOptions}. Got: {$i_stKey}" );
     }
 
 
@@ -32,7 +29,7 @@ class Parse {
             return $i_stValue;
         }
         $stOptions = self::summarizeOptions( array_values( $i_r ) );
-        throw new TypeError( $i_nstError ?? "Expected one of {$stOptions}. Got: {$i_stValue}" );
+        throw new ParseException( $i_nstError ?? "Expected one of {$stOptions}. Got: {$i_stValue}" );
     }
 
 
@@ -43,7 +40,7 @@ class Parse {
         return match ( strtolower( $i_stBool ) ) {
             'true', 'yes', 'yeah', 'y', 'on' => true,
             'false', 'no', 'nope', 'n', 'off' => false,
-            default => throw new TypeError( $i_nstError ?? "Invalid boolean value: {$i_stBool}" ),
+            default => throw new ParseException( $i_nstError ?? "Invalid boolean value: {$i_stBool}" ),
         };
     }
 
@@ -53,7 +50,7 @@ class Parse {
             $f = self::roundedFloat( $i_stCurrency, 2 );
             return (int) round( $f * 100 );
         }
-        throw new TypeError( $i_nstError ?? "Invalid currency: {$i_stCurrency}" );
+        throw new ParseException( $i_nstError ?? "Invalid currency: {$i_stCurrency}" );
     }
 
 
@@ -61,7 +58,7 @@ class Parse {
         if ( Validate::emailAddress( $i_stEmail ) ) {
             return $i_stEmail;
         }
-        throw new TypeError( $i_nstError ?? "Invalid email address: {$i_stEmail}" );
+        throw new ParseException( $i_nstError ?? "Invalid email address: {$i_stEmail}" );
     }
 
 
@@ -69,7 +66,7 @@ class Parse {
         if ( Validate::emailUsername( $i_stUsername ) ) {
             return $i_stUsername;
         }
-        throw new TypeError( $i_nstError ?? "Invalid email username: {$i_stUsername}" );
+        throw new ParseException( $i_nstError ?? "Invalid email username: {$i_stUsername}" );
     }
 
 
@@ -77,7 +74,7 @@ class Parse {
         if ( Validate::existingDirectory( $i_stDir ) ) {
             return $i_stDir;
         }
-        throw new TypeError( $i_nstError ?? "Not a directory: {$i_stDir}" );
+        throw new ParseException( $i_nstError ?? "Not a directory: {$i_stDir}" );
     }
 
 
@@ -85,7 +82,7 @@ class Parse {
         if ( Validate::existingFilename( $i_stFile ) ) {
             return $i_stFile;
         }
-        throw new TypeError( $i_nstError ?? "Filename does not exist: {$i_stFile}" );
+        throw new ParseException( $i_nstError ?? "Filename does not exist: {$i_stFile}" );
     }
 
 
@@ -93,7 +90,7 @@ class Parse {
         if ( Validate::float( $i_stFloat ) ) {
             return floatval( $i_stFloat );
         }
-        throw new TypeError( $i_nstError ?? "Invalid float: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Invalid float: {$i_stFloat}" );
     }
 
 
@@ -102,7 +99,7 @@ class Parse {
         if ( Validate::floatRangeClosed( $i_stFloat, $i_fMin, $i_fMax ) ) {
             return floatval( $i_stFloat );
         }
-        throw new TypeError( $i_nstError ?? "Float out of range: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Float out of range: {$i_stFloat}" );
     }
 
 
@@ -111,7 +108,7 @@ class Parse {
         if ( Validate::floatRangeHalfClosed( $i_stFloat, $i_fMin, $i_fMax ) ) {
             return floatval( $i_stFloat );
         }
-        throw new TypeError( $i_nstError ?? "Float out of range: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Float out of range: {$i_stFloat}" );
     }
 
 
@@ -120,7 +117,7 @@ class Parse {
         if ( Validate::floatRangeOpen( $i_stFloat, $i_fMin, $i_fMax ) ) {
             return floatval( $i_stFloat );
         }
-        throw new TypeError( $i_nstError ?? "Float out of range: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Float out of range: {$i_stFloat}" );
     }
 
 
@@ -128,7 +125,7 @@ class Parse {
         if ( Validate::hostname( $i_stHost ) ) {
             return $i_stHost;
         }
-        throw new TypeError( $i_nstError ?? "Invalid hostname: {$i_stHost}" );
+        throw new ParseException( $i_nstError ?? "Invalid hostname: {$i_stHost}" );
     }
 
 
@@ -136,7 +133,7 @@ class Parse {
         if ( Validate::int( $i_stInt ) ) {
             return intval( $i_stInt );
         }
-        throw new TypeError( $i_nstError ?? "Invalid integer: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Invalid integer: {$i_stInt}" );
     }
 
 
@@ -145,7 +142,7 @@ class Parse {
         if ( Validate::intRangeClosed( $i_stInt, $i_uMin, $i_uMax ) ) {
             return intval( $i_stInt );
         }
-        throw new TypeError( $i_nstError ?? "Integer out of range: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Integer out of range: {$i_stInt}" );
     }
 
 
@@ -154,7 +151,7 @@ class Parse {
         if ( Validate::intRangeHalfClosed( $i_stInt, $i_uMin, $i_uMax ) ) {
             return intval( $i_stInt );
         }
-        throw new TypeError( $i_nstError ?? "Integer out of range: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Integer out of range: {$i_stInt}" );
     }
 
 
@@ -163,7 +160,7 @@ class Parse {
         if ( Validate::intRangeOpen( $i_stInt, $i_uMin, $i_uMax ) ) {
             return intval( $i_stInt );
         }
-        throw new TypeError( $i_nstError ?? "Integer out of range: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Integer out of range: {$i_stInt}" );
     }
 
 
@@ -171,7 +168,7 @@ class Parse {
         if ( Validate::ip( $i_stIP ) ) {
             return $i_stIP;
         }
-        throw new TypeError( $i_nstError ?? "Invalid IP address: {$i_stIP}" );
+        throw new ParseException( $i_nstError ?? "Invalid IP address: {$i_stIP}" );
     }
 
 
@@ -179,7 +176,7 @@ class Parse {
         if ( Validate::ipv4( $i_stIP ) ) {
             return $i_stIP;
         }
-        throw new TypeError( $i_nstError ?? "Invalid IPv4 address: {$i_stIP}" );
+        throw new ParseException( $i_nstError ?? "Invalid IPv4 address: {$i_stIP}" );
     }
 
 
@@ -187,7 +184,7 @@ class Parse {
         if ( Validate::ipv6( $i_stIP ) ) {
             return $i_stIP;
         }
-        throw new TypeError( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
+        throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
     }
 
 
@@ -195,7 +192,7 @@ class Parse {
         if ( Validate::nonexistentFilename( $i_stFile ) ) {
             return $i_stFile;
         }
-        throw new TypeError( $i_nstError ?? "Invalid filename: {$i_stFile}" );
+        throw new ParseException( $i_nstError ?? "Invalid filename: {$i_stFile}" );
     }
 
 
@@ -203,7 +200,7 @@ class Parse {
         if ( Validate::positiveFloat( $i_stFloat ) ) {
             return floatval( $i_stFloat );
         }
-        throw new TypeError( $i_nstError ?? "Invalid positive float: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Invalid positive float: {$i_stFloat}" );
     }
 
 
@@ -211,7 +208,7 @@ class Parse {
         if ( Validate::positiveInt( $i_stInt ) ) {
             return intval( $i_stInt );
         }
-        throw new TypeError( $i_nstError ?? "Invalid positive integer: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Invalid positive integer: {$i_stInt}" );
     }
 
 
@@ -220,7 +217,7 @@ class Parse {
         if ( Validate::float( $i_stFloat ) ) {
             return round( floatval( $i_stFloat ), $i_iPrecision );
         }
-        throw new TypeError( $i_nstError ?? "Invalid rounded float: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Invalid rounded float: {$i_stFloat}" );
     }
 
 
@@ -228,7 +225,7 @@ class Parse {
         if ( Validate::float( $i_stInt ) ) {
             return intval( round( floatval( $i_stInt ), $i_iPrecision ) );
         }
-        throw new TypeError( $i_nstError ?? "Invalid rounded integer: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Invalid rounded integer: {$i_stInt}" );
     }
 
 
@@ -248,7 +245,7 @@ class Parse {
         if ( Validate::unsignedFloat( $i_stFloat ) ) {
             return floatval( $i_stFloat );
         }
-        throw new TypeError( $i_nstError ?? "Invalid unsigned float: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Invalid unsigned float: {$i_stFloat}" );
     }
 
 
@@ -256,7 +253,7 @@ class Parse {
         if ( Validate::unsignedInt( $i_stInt ) ) {
             return intval( $i_stInt );
         }
-        throw new TypeError( $i_nstError ?? "Invalid unsigned integer: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Invalid unsigned integer: {$i_stInt}" );
     }
 
 
