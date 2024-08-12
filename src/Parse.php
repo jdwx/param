@@ -192,6 +192,10 @@ class Parse {
         if ( Validate::nonexistentFilename( $i_stFile ) ) {
             return $i_stFile;
         }
+        $stDir = dirname( $i_stFile );
+        if ( $stDir && ! is_dir( $stDir ) ) {
+            throw new ParseException( $i_nstError ?? "Directory does not exist for filename: {$i_stFile}" );
+        }
         throw new ParseException( $i_nstError ?? "Invalid filename: {$i_stFile}" );
     }
 
