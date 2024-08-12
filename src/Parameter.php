@@ -254,7 +254,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
 
     public function asFloatRangeClosed( float $i_fMin, float $i_fMax ) : float {
         $st = $this->asString();
-        return Parse::floatRangeClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range: {$st}" );
+        return Parse::floatRangeClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range ({$i_fMin}, {$i_fMax}): {$st}" );
     }
 
 
@@ -263,7 +263,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::floatRangeClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range or empty: {$st}" );
+        return Parse::floatRangeClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range ({$i_fMin}, {$i_fMax}) or empty: {$st}" );
     }
 
 
@@ -272,13 +272,13 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::floatRangeClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range or null: {$st}" );
+        return Parse::floatRangeClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range ({$i_fMin}, {$i_fMax}) or null: {$st}" );
     }
 
 
     public function asFloatRangeHalfClosed( float $i_fMin, float $i_fMax ) : float {
         $st = $this->asString();
-        return Parse::floatRangeHalfClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range: {$st}" );
+        return Parse::floatRangeHalfClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range [{$i_fMin}, {$i_fMax}): {$st}" );
     }
 
 
@@ -287,7 +287,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::floatRangeHalfClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range or empty: {$st}" );
+        return Parse::floatRangeHalfClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range [{$i_fMin}, {$i_fMax}) or empty: {$st}" );
     }
 
 
@@ -296,13 +296,13 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::floatRangeHalfClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range or null: {$st}" );
+        return Parse::floatRangeHalfClosed( $st, $i_fMin, $i_fMax, "Parameter is not in range [{$i_fMin}, {$i_fMax}) or null: {$st}" );
     }
 
 
     public function asFloatRangeOpen( float $i_fMin, float $i_fMax ) : float {
         $st = $this->asString();
-        return Parse::floatRangeOpen( $st, $i_fMin, $i_fMax, "Parameter is not in range: {$st}" );
+        return Parse::floatRangeOpen( $st, $i_fMin, $i_fMax, "Parameter is not in range [{$i_fMin}, {$i_fMax}]: {$st}" );
     }
 
 
@@ -311,7 +311,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::floatRangeOpen( $st, $i_fMin, $i_fMax, "Parameter is not in range or empty: {$st}" );
+        return Parse::floatRangeOpen( $st, $i_fMin, $i_fMax, "Parameter is not in range [{$i_fMin}, {$i_fMax}] or empty: {$st}" );
     }
 
 
@@ -320,7 +320,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::floatRangeOpen( $st, $i_fMin, $i_fMax, "Parameter is not in range or null: {$st}" );
+        return Parse::floatRangeOpen( $st, $i_fMin, $i_fMax, "Parameter is not in range [{$i_fMin}, {$i_fMax}] or null: {$st}" );
     }
 
 
@@ -445,7 +445,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
 
     public function asIntRangeClosed( int $i_iMin, int $i_iMax ) : int {
         $st = $this->asString();
-        return Parse::intRangeClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range: {$st}" );
+        return Parse::intRangeClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range ({$i_iMin}, {$i_iMax}): {$st}" );
     }
 
 
@@ -454,7 +454,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::intRangeClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range or empty: {$st}" );
+        return Parse::intRangeClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range ({$i_iMin}, {$i_iMax}) or empty: {$st}" );
     }
 
 
@@ -463,13 +463,13 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::intRangeClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range or null: {$st}" );
+        return Parse::intRangeClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range ({$i_iMin}, {$i_iMax}) or null: {$st}" );
     }
 
 
     public function asIntRangeHalfClosed( int $i_iMin, int $i_iMax ) : int {
         $st = $this->asString();
-        return Parse::intRangeHalfClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range: {$st}" );
+        return Parse::intRangeHalfClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range [{$i_iMin}, {$i_iMax}): {$st}" );
     }
 
 
@@ -478,7 +478,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::intRangeHalfClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range or empty: {$st}" );
+        return Parse::intRangeHalfClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range [{$i_iMin}, {$i_iMax}) or empty: {$st}" );
     }
 
 
@@ -487,13 +487,13 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::intRangeHalfClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range or null: {$st}" );
+        return Parse::intRangeHalfClosed( $st, $i_iMin, $i_iMax, "Parameter is not in range [{$i_iMin}, {$i_iMax}) or null: {$st}" );
     }
 
 
     public function asIntRangeOpen( int $i_iMin, int $i_iMax ) : int {
         $st = $this->asString();
-        return Parse::intRangeOpen( $st, $i_iMin, $i_iMax, "Parameter is not in range: {$st}" );
+        return Parse::intRangeOpen( $st, $i_iMin, $i_iMax, "Parameter is not in range [{$i_iMin}, {$i_iMax}]: {$st}" );
     }
 
 
@@ -502,7 +502,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::intRangeOpen( $st, $i_iMin, $i_iMax, "Parameter is not in range or empty: {$st}" );
+        return Parse::intRangeOpen( $st, $i_iMin, $i_iMax, "Parameter is not in range [{$i_iMin}, {$i_iMax}] or empty: {$st}" );
     }
 
 
@@ -511,7 +511,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
             return null;
         }
         $st = $this->asString();
-        return Parse::intRangeOpen( $st, $i_iMin, $i_iMax, "Parameter is not in range or null: {$st}" );
+        return Parse::intRangeOpen( $st, $i_iMin, $i_iMax, "Parameter is not in range [{$i_iMin}, {$i_iMax}] or null: {$st}" );
     }
 
 
