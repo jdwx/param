@@ -99,7 +99,7 @@ class Parse {
         if ( Validate::floatRangeClosed( $i_stFloat, $i_fMin, $i_fMax ) ) {
             return floatval( $i_stFloat );
         }
-        throw new ParseException( $i_nstError ?? "Float out of range: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Float out of range ({$i_fMin}, {$i_fMax}): {$i_stFloat}" );
     }
 
 
@@ -108,7 +108,7 @@ class Parse {
         if ( Validate::floatRangeHalfClosed( $i_stFloat, $i_fMin, $i_fMax ) ) {
             return floatval( $i_stFloat );
         }
-        throw new ParseException( $i_nstError ?? "Float out of range: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Float out of range [{$i_fMin}, {$i_fMax}): {$i_stFloat}" );
     }
 
 
@@ -117,7 +117,7 @@ class Parse {
         if ( Validate::floatRangeOpen( $i_stFloat, $i_fMin, $i_fMax ) ) {
             return floatval( $i_stFloat );
         }
-        throw new ParseException( $i_nstError ?? "Float out of range: {$i_stFloat}" );
+        throw new ParseException( $i_nstError ?? "Float out of range [{$i_fMin}, {$i_fMax}]: {$i_stFloat}" );
     }
 
 
@@ -137,30 +137,30 @@ class Parse {
     }
 
 
-    public static function intRangeClosed( string  $i_stInt, int $i_uMin, int $i_uMax,
+    public static function intRangeClosed( string  $i_stInt, int $i_iMin, int $i_iMax,
                                            ?string $i_nstError = null ) : int {
-        if ( Validate::intRangeClosed( $i_stInt, $i_uMin, $i_uMax ) ) {
+        if ( Validate::intRangeClosed( $i_stInt, $i_iMin, $i_iMax ) ) {
             return intval( $i_stInt );
         }
-        throw new ParseException( $i_nstError ?? "Integer out of range: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Integer out of range ({$i_iMin}, {$i_iMax}): {$i_stInt}" );
     }
 
 
-    public static function intRangeHalfClosed( string  $i_stInt, int $i_uMin, int $i_uMax,
+    public static function intRangeHalfClosed( string  $i_stInt, int $i_iMin, int $i_iMax,
                                                ?string $i_nstError = null ) : int {
-        if ( Validate::intRangeHalfClosed( $i_stInt, $i_uMin, $i_uMax ) ) {
+        if ( Validate::intRangeHalfClosed( $i_stInt, $i_iMin, $i_iMax ) ) {
             return intval( $i_stInt );
         }
-        throw new ParseException( $i_nstError ?? "Integer out of range: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Integer out of range [{$i_iMin}, {$i_iMax}): {$i_stInt}" );
     }
 
 
-    public static function intRangeOpen( string  $i_stInt, int $i_uMin, int $i_uMax,
+    public static function intRangeOpen( string  $i_stInt, int $i_iMin, int $i_iMax,
                                          ?string $i_nstError = null ) : int {
-        if ( Validate::intRangeOpen( $i_stInt, $i_uMin, $i_uMax ) ) {
+        if ( Validate::intRangeOpen( $i_stInt, $i_iMin, $i_iMax ) ) {
             return intval( $i_stInt );
         }
-        throw new ParseException( $i_nstError ?? "Integer out of range: {$i_stInt}" );
+        throw new ParseException( $i_nstError ?? "Integer out of range [{$i_iMin}, {$i_iMax}]: {$i_stInt}" );
     }
 
 
