@@ -12,6 +12,14 @@ use PHPUnit\Framework\TestCase;
 final class ParameterSetTest extends TestCase {
 
 
+    public function testAddDefaultForDuplicate() : void {
+        $set = new ParameterSet();
+        $set->setDefault( 'foo', 'bar' );
+        self::expectException( InvalidArgumentException::class );
+        $set->addDefault( 'foo', 'baz' );
+    }
+
+
     public function testAddParameterForDuplicate() : void {
         $set = new ParameterSet();
         $set->setParameter( 'foo', 'bar' );
@@ -55,6 +63,15 @@ final class ParameterSetTest extends TestCase {
         self::assertTrue( $set->has( 'foo', 'baz', 'quux' ) );
         self::assertFalse( $set->has( 'grault' ) );
         self::assertFalse( $set->has( 'foo', 'baz', 'quux', 'grault' ) );
+    }
+
+
+    public function testKeys() : void {
+        $set = new ParameterSet(
+            [ 'foo' => 'bar', 'quux' => 'corge', 'grault' => 'garply' ],
+            [ 'foo' => 'xyz', 'baz' => 'qux' ],
+            [ 'foo', 'baz', 'quux' ] );
+        self::assertSame( [ 'foo', 'baz' ], $set->testKeys( 'foo', 'baz', 'xyz', 'grault' ) );
     }
 
 
@@ -115,6 +132,55 @@ final class ParameterSetTest extends TestCase {
         $set[ 'foo' ] = 'bar';
         self::expectException( LogicException::class );
         $set[] = 'baz';
+    }
+
+
+    public function testOffsetUnset() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar' ], [ 'baz' => 'qux' ] );
+        $set->setMutable( true );
+        unset( $set[ 'foo' ] );
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
+        self::assertFalse( isset( $set[ 'foo' ] ) );
+        self::expectException( InvalidArgumentException::class );
+        unset( $set[ null ] );
+    }
+
+
+    public function testOffsetUnsetForImmutable() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar' ], [ 'baz' => 'qux' ] );
+        self::expectException( LogicException::class );
+        unset( $set[ 'foo' ] );
+    }
+
+
+    public function testSetDefault() : void {
+        $set = new ParameterSet( i_itAllowedKeys: [ 'foo' ] );
+        $set->setDefault( 'foo', 'bar' );
+        self::assertSame( 'bar', $set->get( 'foo' )->asString() );
+
+        $set->setDefault( 'baz', 'qux' );
+        self::assertNull( $set->get( 'baz' ) );
+
+        $set->setMutable( true );
+        $set->setDefault( 'foo', 'quux' );
+        self::assertSame( 'quux', $set->get( 'foo' )->asString() );
+
+        $set->setMutable( false );
+        self::expectException( LogicException::class );
+        $set->setDefault( 'foo', 'corge' );
+
+    }
+
+
+    public function testSubsetByKeys() : void {
+        $set = new ParameterSet(
+            [ 'a:1' => 'foo', 'a:2' => 'bar', 'a:3' => 'baz', 'b:1' => 'qux' ],
+            [ 'a:2' => 'quux', 'a:3' => 'corge', 'b:2' => 'grault' ],
+            [ 'a:1', 'a:2', 'b:1', 'b:2' ]
+        );
+        $subset = $set->subsetByKeys( fn( string $stKey ) => str_starts_with( $stKey, 'a:' ) );
+        self::assertSame( [ 'a:1', 'a:2' ], $subset->getAllowedKeys() );
+        self::assertSame( [ 'a:1', 'a:2' ], $subset->listKeys() );
     }
 
 

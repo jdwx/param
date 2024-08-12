@@ -35,7 +35,7 @@ class ParameterSet implements ArrayAccess {
     /**
      * @param iterable<string, string>|null $i_itParameters
      * @param iterable<string, string>|null $i_itDefaults
-     * @param iterable<string>|null $i_itAllowedKeys
+     * @param iterable<string>|null         $i_itAllowedKeys
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function __construct( ?iterable $i_itParameters = null, ?iterable $i_itDefaults = null,
@@ -74,10 +74,10 @@ class ParameterSet implements ArrayAccess {
 
     /** @param mixed[]|string|Parameter|null $i_xValue */
     public function addDefault( string $i_stKey, array|string|Parameter|null $i_xValue = null ) : void {
-        if ( ! $i_xValue instanceof Parameter ) {
-            $i_xValue = new Parameter( $i_xValue );
+        if ( $this->mapDefaults->hasKey( $i_stKey ) ) {
+            throw new InvalidArgumentException( "Adding key default already present in set: {$i_stKey}" );
         }
-        $this->mapDefaults->put( $i_stKey, $i_xValue );
+        $this->setDefault( $i_stKey, $i_xValue );
     }
 
 
@@ -129,6 +129,12 @@ class ParameterSet implements ArrayAccess {
     }
 
 
+    /** @return list<string>|null */
+    public function getAllowedKeys() : ?array {
+        return $this->nrAllowedKeys;
+    }
+
+
     public function getEx( string $i_stKey ) : Parameter {
         $np = $this->get( $i_stKey );
         if ( $np instanceof Parameter ) {
@@ -165,7 +171,8 @@ class ParameterSet implements ArrayAccess {
     /** @return list<string> */
     public function listKeys() : array {
         $keys = $this->mapParameters->keys();
-        return $keys->merge( $this->mapDefaults->keys() )->toArray();
+        $keys = $keys->merge( $this->mapDefaults->keys() )->toArray();
+        return array_diff( $keys, $this->rIgnoredKeys );
     }
 
 
@@ -191,7 +198,7 @@ class ParameterSet implements ArrayAccess {
 
 
     /**
-     * @param string|null $offset
+     * @param string|null                   $offset
      * @param mixed[]|string|Parameter|null $value
      * @return void
      */
@@ -210,12 +217,31 @@ class ParameterSet implements ArrayAccess {
         if ( is_null( $offset ) ) {
             throw new InvalidArgumentException( 'Cannot unset ParameterSet without key.' );
         }
+        if ( ! $this->bMutable ) {
+            throw new LogicException( "Cannot unset key in immutable set: {$offset}" );
+        }
         if ( ! is_array( $offset ) ) {
             $offset = [ $offset ];
         }
         foreach ( $offset as $stKey ) {
             $this->mapParameters->remove( $stKey );
         }
+    }
+
+
+    /** @param mixed[]|string|Parameter|null $i_xValue */
+    public function setDefault( string $i_stKey, array|string|Parameter|null $i_xValue ) : void {
+        if ( ! $this->isKeyAllowed( $i_stKey ) ) {
+            $this->rIgnoredKeys[] = $i_stKey;
+            return;
+        }
+        if ( $this->mapDefaults->hasKey( $i_stKey ) && ! $this->bMutable ) {
+            throw new LogicException( "Cannot reset default in immutable set: {$i_stKey}" );
+        }
+        if ( ! $i_xValue instanceof Parameter ) {
+            $i_xValue = new Parameter( $i_xValue );
+        }
+        $this->mapDefaults->put( $i_stKey, $i_xValue );
     }
 
 
@@ -243,6 +269,10 @@ class ParameterSet implements ArrayAccess {
     public function subsetByKeys( callable $i_fnFilter ) : static {
         /** @phpstan-ignore new.static */
         $set = new static();
+        if ( $this->nrAllowedKeys ) {
+            $rAllowedKeys = array_filter( $this->nrAllowedKeys, $i_fnFilter );
+            $set->nrAllowedKeys = $rAllowedKeys;
+        }
         foreach ( $this->mapParameters as $stKey => $rParameter ) {
             if ( $i_fnFilter( $stKey ) ) {
                 $set->setParameter( $stKey, $rParameter );
@@ -250,12 +280,8 @@ class ParameterSet implements ArrayAccess {
         }
         foreach ( $this->mapDefaults as $stKey => $rParameter ) {
             if ( $i_fnFilter( $stKey ) ) {
-                $set->addDefault( $stKey, $rParameter );
+                $set->setDefault( $stKey, $rParameter );
             }
-        }
-        if ( $this->nrAllowedKeys ) {
-            $rAllowedKeys = array_filter( $this->nrAllowedKeys, $i_fnFilter );
-            $set->addAllowedKeys( $rAllowedKeys );
         }
         $set->setMutable( $this->bMutable );
         return $set;
