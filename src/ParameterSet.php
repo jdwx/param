@@ -172,7 +172,13 @@ class ParameterSet implements ArrayAccess {
     public function listKeys() : array {
         $keys = $this->mapParameters->keys();
         $keys = $keys->merge( $this->mapDefaults->keys() )->toArray();
-        return array_diff( $keys, $this->rIgnoredKeys );
+        $keys = array_values( array_diff( $keys, $this->rIgnoredKeys ) );
+        if ( empty( $keys ) ) {
+            return [];
+        }
+        /** @phpstan-ignore booleanAnd.alwaysTrue */
+        assert( is_array( $keys ) && is_string( $keys[ array_key_first( $keys ) ] ) );
+        return $keys;
     }
 
 
@@ -270,7 +276,7 @@ class ParameterSet implements ArrayAccess {
         /** @phpstan-ignore new.static */
         $set = new static();
         if ( $this->nrAllowedKeys ) {
-            $rAllowedKeys = array_filter( $this->nrAllowedKeys, $i_fnFilter );
+            $rAllowedKeys = array_values( array_filter( $this->nrAllowedKeys, $i_fnFilter ) );
             $set->nrAllowedKeys = $rAllowedKeys;
         }
         foreach ( $this->mapParameters as $stKey => $rParameter ) {
