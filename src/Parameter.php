@@ -853,6 +853,11 @@ class Parameter implements IParameter, Stringable {
     }
 
 
+    public function jsonSerialize() : mixed {
+        return $this->xValue;
+    }
+
+
     public function key() : int|string {
         $this->checkArray();
         return current( $this->rKeys );

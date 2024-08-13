@@ -9,6 +9,7 @@ namespace JDWX\Param;
 
 use ArrayAccess;
 use Iterator;
+use JsonSerializable;
 
 
 /**
@@ -20,7 +21,7 @@ use Iterator;
  * @extends ArrayAccess<int|string, IParameter|string|array|null>
  * @extends Iterator<int|string, IParameter>
  */
-interface IParameter extends ArrayAccess, Iterator {
+interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
 
 
     public function __toString() : string;

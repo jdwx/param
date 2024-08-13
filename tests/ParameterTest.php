@@ -1287,6 +1287,18 @@ class ParameterTest extends TestCase {
     }
 
 
+    public function testJsonSerialize() : void {
+        $x = self::p( 'foo' );
+        self::assertSame( '"foo"', json_encode( $x ) );
+
+        $x = self::p( [ 'foo', 'bar' ] );
+        self::assertSame( '["foo","bar"]', json_encode( $x ) );
+
+        $x = self::p( null );
+        self::assertSame( 'null', json_encode( $x ) );
+    }
+
+
     public function testMutable() : void {
         $x = new MyTestParameter( 'foo' );
         static::assertFalse( $x->isMutable() );
