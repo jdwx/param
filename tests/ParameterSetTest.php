@@ -66,6 +66,16 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testIter() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'quux' => 'corge' ], [ 'baz' => 'qux' ], [ 'foo', 'baz', 'grault' ] );
+        $a = [];
+        foreach ( $set->iter() as $stKey => $oParam ) {
+            $a[ $stKey ] = $oParam->asString();
+        }
+        self::assertSame( [ 'foo' => 'bar', 'baz' => 'qux' ], $a );
+    }
+
+
     public function testKeys() : void {
         $set = new ParameterSet(
             [ 'foo' => 'bar', 'quux' => 'corge', 'grault' => 'garply' ],

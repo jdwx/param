@@ -8,6 +8,7 @@ namespace JDWX\Param;
 
 
 use ArrayAccess;
+use Generator;
 
 
 /**
@@ -67,6 +68,9 @@ interface IParameterSet extends ArrayAccess {
     public function has( string ...$i_rstKeys ) : bool;
 
 
+    public function iter() : Generator;
+
+
     /** @return list<string> */
     public function listKeys() : array;
 
@@ -106,7 +110,7 @@ interface IParameterSet extends ArrayAccess {
 
     public function subsetByKeyPrefix( string $i_stPrefix ) : static;
 
-    
+
     /** @param callable(string) : bool $i_fnFilter */
     public function subsetByKeys( callable $i_fnFilter ) : static;
 

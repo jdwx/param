@@ -9,6 +9,7 @@ namespace JDWX\Param;
 
 use Ds\Map;
 use Ds\Set;
+use Generator;
 use InvalidArgumentException;
 use LogicException;
 
@@ -161,6 +162,14 @@ class ParameterSet implements IParameterSet {
             return false;
         }
         return true;
+    }
+
+
+    /** @return Generator<string, IParameter> */
+    public function iter() : Generator {
+        foreach ( $this->listKeys() as $stKey ) {
+            yield $stKey => $this->getEx( $stKey );
+        }
     }
 
 
