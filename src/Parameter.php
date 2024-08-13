@@ -7,9 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Param;
 
 
-use ArrayAccess;
 use InvalidArgumentException;
-use Iterator;
 use LogicException;
 use OutOfBoundsException;
 use Stringable;
@@ -20,11 +18,8 @@ use TypeError;
  * Parameter is suitable to encapsulate a value that is received as a string or array (or NULL)
  * from a web request or database query.  It is used to validate and safely convert inputs to a more
  * useful type.
- *
- * @implements ArrayAccess<int|string, Parameter>
- * @implements Iterator<int|string, Parameter>
  */
-class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
+class Parameter implements IParameter, Stringable {
 
 
     /** @var list<int|string> */
@@ -521,7 +516,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
     }
 
 
-    /** @param list<string> $i_rKeywords */
+    /** @param list<string> $i_rKeywords List of allowable keywords. */
     public function asKeyword( array $i_rKeywords ) : string {
         $st = $this->asString();
         $stKeywords = Parse::summarizeOptions( $i_rKeywords );
@@ -529,7 +524,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
     }
 
 
-    /** @param list<string> $i_rKeywords */
+    /** @param list<string> $i_rKeywords List of allowable keywords. */
     public function asKeywordOrEmpty( array $i_rKeywords ) : ?string {
         if ( $this->isEmptyString() ) {
             return null;
@@ -540,7 +535,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
     }
 
 
-    /** @param list<string> $i_rKeywords */
+    /** @param list<string> $i_rKeywords List of allowable keywords. */
     public function asKeywordOrNull( array $i_rKeywords ) : ?string {
         if ( $this->isNull() ) {
             return null;
@@ -552,7 +547,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
 
 
     /**
-     * @param array<string, string> $i_rMap
+     * @param array<string, mixed> $i_rMap
      * @return string The mapped value for the key specified by this parameter.
      */
     public function asMap( array $i_rMap ) : string {
@@ -563,7 +558,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
 
 
     /**
-     * @param array<string, string> $i_rMap
+     * @param array<string, mixed> $i_rMap
      * @return ?string The mapped value for the key specified by this parameter,
      *                 or null if the parameter is the empty string.
      */
@@ -578,7 +573,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
 
 
     /**
-     * @param array<string, string> $i_rMap
+     * @param array<string, mixed> $i_rMap
      * @return ?string The mapped value for the key specified by this parameter, or null.
      */
     public function asMapOrNull( array $i_rMap ) : ?string {
@@ -910,6 +905,7 @@ class Parameter implements ArrayAccess, Iterator, IParameter, Stringable {
     /**
      * @suppress PhanTypeMismatchDeclaredParamNullable
      * @param int|string $offset
+     * @param Parameter|mixed[]|string|null $value
      */
     public function offsetSet( mixed $offset, mixed $value ) : void {
         throw new LogicException( 'Parameter is immutable.' );
