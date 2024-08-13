@@ -121,9 +121,10 @@ class Parse {
     }
 
 
-    public static function glob( string $i_stGlob, int $i_iFlags = 0 ) : array {
+    /** @return list<string> A list of filenames matching the glob pattern. */
+    public static function glob( string $i_stGlob, int $i_iFlags = 0, bool $i_bAllowEmpty = false ) : array {
         $r = glob( $i_stGlob, $i_iFlags );
-        if ( is_array( $r ) && count( $r ) > 0 ) {
+        if ( is_array( $r ) && ( count( $r ) > 0 || $i_bAllowEmpty ) ) {
             return $r;
         }
         throw new ParseException( "Invalid glob pattern or no matches: {$i_stGlob}" );
