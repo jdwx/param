@@ -7,21 +7,19 @@ declare( strict_types = 1 );
 namespace JDWX\Param;
 
 
-use ArrayAccess;
 use Ds\Map;
 use Ds\Set;
 use InvalidArgumentException;
 use LogicException;
 
 
-/** @implements ArrayAccess<string, Parameter> */
-class ParameterSet implements ArrayAccess {
+class ParameterSet implements IParameterSet {
 
 
-    /** @var Map<string, Parameter> */
+    /** @var Map<string, IParameter> */
     private Map $mapParameters;
 
-    /** @var Map<string, Parameter> */
+    /** @var Map<string, IParameter> */
     private Map $mapDefaults;
 
     /** @var Set<string> */
@@ -70,8 +68,8 @@ class ParameterSet implements ArrayAccess {
     }
 
 
-    /** @param mixed[]|string|Parameter|null $i_xValue */
-    public function addDefault( string $i_stKey, array|string|Parameter|null $i_xValue = null ) : void {
+    /** @param mixed[]|string|IParameter|null $i_xValue */
+    public function addDefault( string $i_stKey, array|string|IParameter|null $i_xValue = null ) : void {
         if ( $this->mapDefaults->hasKey( $i_stKey ) ) {
             throw new InvalidArgumentException( "Adding key default already present in set: {$i_stKey}" );
         }
@@ -80,7 +78,7 @@ class ParameterSet implements ArrayAccess {
 
 
     /**
-     * @param iterable<string, mixed[]|string|Parameter|null>|null $i_itDefaults
+     * @param iterable<string, mixed[]|string|IParameter|null>|null $i_itDefaults
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function addDefaults( ?iterable $i_itDefaults = null ) : void {
@@ -93,8 +91,8 @@ class ParameterSet implements ArrayAccess {
     }
 
 
-    /** @param mixed[]|string|Parameter|null $i_xValue */
-    public function addParameter( string $i_stKey, array|string|Parameter|null $i_xValue = null ) : void {
+    /** @param mixed[]|string|IParameter|null $i_xValue */
+    public function addParameter( string $i_stKey, array|string|IParameter|null $i_xValue = null ) : void {
         if ( $this->mapParameters->hasKey( $i_stKey ) ) {
             throw new InvalidArgumentException( "Adding key already present in set: {$i_stKey}" );
         }
@@ -103,7 +101,7 @@ class ParameterSet implements ArrayAccess {
 
 
     /**
-     * @param iterable<string, mixed[]|string|Parameter|null>|null $i_itParameters
+     * @param iterable<string, mixed[]|string|IParameter|null>|null $i_itParameters
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function addParameters( ?iterable $i_itParameters = null ) : void {
@@ -116,7 +114,7 @@ class ParameterSet implements ArrayAccess {
     }
 
 
-    public function get( string $i_stKey, mixed $i_xDefault = null ) : ?Parameter {
+    public function get( string $i_stKey, mixed $i_xDefault = null ) : ?IParameter {
         if ( ! $this->isKeyAllowed( $i_stKey ) ) {
             return $i_xDefault;
         }
@@ -133,9 +131,9 @@ class ParameterSet implements ArrayAccess {
     }
 
 
-    public function getEx( string $i_stKey ) : Parameter {
+    public function getEx( string $i_stKey ) : IParameter {
         $np = $this->get( $i_stKey );
-        if ( $np instanceof Parameter ) {
+        if ( $np instanceof IParameter ) {
             return $np;
         }
         throw new InvalidArgumentException( "Key not found in ParameterSet: {$i_stKey}" );
@@ -196,7 +194,7 @@ class ParameterSet implements ArrayAccess {
 
 
     /** @param string|null $offset */
-    public function offsetGet( mixed $offset ) : Parameter {
+    public function offsetGet( mixed $offset ) : IParameter {
         if ( is_null( $offset ) ) {
             throw new InvalidArgumentException( 'Null key not allowed in ParameterSet.' );
         }
@@ -206,7 +204,7 @@ class ParameterSet implements ArrayAccess {
 
     /**
      * @param string|null $offset
-     * @param mixed[]|string|Parameter|null $value
+     * @param mixed[]|string|IParameter|null $value
      * @return void
      */
     public function offsetSet( mixed $offset, mixed $value ) : void {
@@ -236,8 +234,8 @@ class ParameterSet implements ArrayAccess {
     }
 
 
-    /** @param mixed[]|string|Parameter|null $i_xValue */
-    public function setDefault( string $i_stKey, array|string|Parameter|null $i_xValue ) : void {
+    /** @param mixed[]|string|IParameter|null $i_xValue */
+    public function setDefault( string $i_stKey, array|string|IParameter|null $i_xValue ) : void {
         if ( ! $this->isKeyAllowed( $i_stKey ) ) {
             $this->setIgnoredKeys->add( $i_stKey );
             return;
@@ -257,8 +255,8 @@ class ParameterSet implements ArrayAccess {
     }
 
 
-    /** @param mixed[]|string|Parameter|null $i_xValue */
-    public function setParameter( string $i_stKey, array|string|Parameter|null $i_xValue ) : void {
+    /** @param mixed[]|string|IParameter|null $i_xValue */
+    public function setParameter( string $i_stKey, array|string|IParameter|null $i_xValue ) : void {
         if ( ! $this->isKeyAllowed( $i_stKey ) ) {
             $this->setIgnoredKeys->add( $i_stKey );
             return;
@@ -266,7 +264,7 @@ class ParameterSet implements ArrayAccess {
         if ( $this->mapParameters->hasKey( $i_stKey ) && ! $this->bMutable ) {
             throw new InvalidArgumentException( "Key already present in immutable set: {$i_stKey}" );
         }
-        if ( ! $i_xValue instanceof Parameter ) {
+        if ( ! $i_xValue instanceof IParameter ) {
             $i_xValue = new Parameter( $i_xValue );
         }
         $this->mapParameters->put( $i_stKey, $i_xValue );
