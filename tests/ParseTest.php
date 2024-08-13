@@ -5,10 +5,20 @@ declare( strict_types = 1 );
 
 
 use JDWX\Param\Parse;
+use JDWX\Param\ParseException;
 use PHPUnit\Framework\TestCase;
 
 
 final class ParseTest extends TestCase {
+
+
+    public function testGlob() : void {
+        $r = Parse::glob( __DIR__ . '/*.php' );
+        self::assertContains( __FILE__, $r );
+
+        self::expectException( ParseException::class );
+        Parse::glob( __DIR__ . '/*.foo', GLOB_ERR );
+    }
 
 
     public function testSummarizeOptions() : void {

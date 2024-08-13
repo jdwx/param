@@ -121,6 +121,15 @@ class Parse {
     }
 
 
+    public static function glob( string $i_stGlob, int $i_iFlags = 0 ) : array {
+        $r = glob( $i_stGlob, $i_iFlags );
+        if ( is_array( $r ) && count( $r ) > 0 ) {
+            return $r;
+        }
+        throw new ParseException( "Invalid glob pattern or no matches: {$i_stGlob}" );
+    }
+
+
     public static function hostname( string $i_stHost, ?string $i_nstError = null ) : string {
         if ( Validate::hostname( $i_stHost ) ) {
             return $i_stHost;
