@@ -271,6 +271,11 @@ class ParameterSet implements IParameterSet {
     }
 
 
+    public function subsetByKeyPrefix( string $i_stPrefix ) : static {
+        return $this->subsetByKeys( fn( string $stKey ) => str_starts_with( $stKey, $i_stPrefix ) );
+    }
+
+
     /** @param callable(string) : bool $i_fnFilter */
     public function subsetByKeys( callable $i_fnFilter ) : static {
         /** @phpstan-ignore new.static */

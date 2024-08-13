@@ -84,7 +84,7 @@ final class ParameterSetTest extends TestCase {
 
         $set = new ParameterSet( [ 'foo' => 'bar' ], [ 'baz' => 'qux' ], [ 'quux' ] );
         self::assertSame( [], $set->listKeys() );
-        
+
     }
 
 
@@ -179,15 +179,27 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testSubsetByKeyPrefix() : void {
+        $set = new ParameterSet(
+            [ 'a:1' => 'foo', 'a:2' => 'bar', 'a:3' => 'baz', 'b:1' => 'qux' ],
+            [ 'a:2' => 'quux', 'a:3' => 'corge', 'b:2' => 'grault' ],
+            [ 'a:1', 'a:2', 'b:1', 'b:2' ]
+        );
+        $subset = $set->subsetByKeyPrefix( 'a:' );
+        self::assertSame( [ 'a:1', 'a:2' ], $subset->getAllowedKeys() );
+        self::assertSame( [ 'a:1', 'a:2' ], $subset->listKeys() );
+    }
+
+
     public function testSubsetByKeys() : void {
         $set = new ParameterSet(
             [ 'a:1' => 'foo', 'a:2' => 'bar', 'a:3' => 'baz', 'b:1' => 'qux' ],
             [ 'a:2' => 'quux', 'a:3' => 'corge', 'b:2' => 'grault' ],
             [ 'a:1', 'a:2', 'b:1', 'b:2' ]
         );
-        $subset = $set->subsetByKeys( fn( string $stKey ) => str_starts_with( $stKey, 'a:' ) );
-        self::assertSame( [ 'a:1', 'a:2' ], $subset->getAllowedKeys() );
-        self::assertSame( [ 'a:1', 'a:2' ], $subset->listKeys() );
+        $subset = $set->subsetByKeys( fn( string $stKey ) => str_ends_with( $stKey, ':1' ) );
+        self::assertSame( [ 'a:1', 'b:1' ], $subset->getAllowedKeys() );
+        self::assertSame( [ 'a:1', 'b:1' ], $subset->listKeys() );
     }
 
 

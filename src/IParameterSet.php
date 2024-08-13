@@ -104,6 +104,9 @@ interface IParameterSet extends ArrayAccess {
     public function setParameter( string $i_stKey, array|string|Parameter|null $i_xValue ) : void;
 
 
+    public function subsetByKeyPrefix( string $i_stPrefix ) : static;
+
+    
     /** @param callable(string) : bool $i_fnFilter */
     public function subsetByKeys( callable $i_fnFilter ) : static;
 
