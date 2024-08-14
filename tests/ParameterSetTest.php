@@ -12,6 +12,17 @@ use PHPUnit\Framework\TestCase;
 final class ParameterSetTest extends TestCase {
 
 
+    public function testAddAllowedKeys() : void {
+        $set = new ParameterSet();
+        $set->addAllowedKeys( [ 'foo', 'baz' ] );
+        self::assertSame( [ 'foo', 'baz' ], $set->getAllowedKeys() );
+
+        $set = new ParameterSet();
+        $set->addAllowedKeys( [ 'foo', 1 ] );
+        self::assertSame( [ 'foo', '1' ], $set->getAllowedKeys() );
+    }
+
+
     public function testAddDefaultForDuplicate() : void {
         $set = new ParameterSet();
         $set->setDefault( 'foo', 'bar' );
@@ -20,11 +31,27 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testAddDefaults() : void {
+        $set = new ParameterSet();
+        $set->addDefaults( [ 'foo' => 'bar', 1 => 'baz' ] );
+        self::assertSame( 'bar', $set->get( 'foo' )->asString() );
+        self::assertSame( 'baz', $set->get( '1' )->asString() );
+    }
+
+
     public function testAddParameterForDuplicate() : void {
         $set = new ParameterSet();
         $set->setParameter( 'foo', 'bar' );
         self::expectException( InvalidArgumentException::class );
         $set->addParameter( 'foo', 'baz' );
+    }
+
+
+    public function testAddParametersForIntegerKey() : void {
+        $set = new ParameterSet();
+        $set->addParameters( [ 'foo' => 'bar', 1 => 'baz' ] );
+        self::assertSame( 'bar', $set->get( 'foo' )->asString() );
+        self::assertSame( 'baz', $set->get( '1' )->asString() );
     }
 
 

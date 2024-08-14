@@ -33,9 +33,9 @@ class ParameterSet implements IParameterSet {
 
 
     /**
-     * @param iterable<string, string>|null $i_itParameters
-     * @param iterable<string, string>|null $i_itDefaults
-     * @param iterable<string>|null $i_itAllowedKeys
+     * @param iterable<int|string, string>|null $i_itParameters
+     * @param iterable<int|string, string>|null $i_itDefaults
+     * @param iterable<int|string>|null $i_itAllowedKeys
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function __construct( ?iterable $i_itParameters = null, ?iterable $i_itDefaults = null,
@@ -56,7 +56,7 @@ class ParameterSet implements IParameterSet {
 
 
     /**
-     * @param iterable<string>|null $i_itAllowedKeys
+     * @param iterable<int|string>|null $i_itAllowedKeys
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function addAllowedKeys( ?iterable $i_itAllowedKeys = null ) : void {
@@ -64,7 +64,7 @@ class ParameterSet implements IParameterSet {
             return;
         }
         foreach ( $i_itAllowedKeys as $stKey ) {
-            $this->addAllowedKey( $stKey );
+            $this->addAllowedKey( strval( $stKey ) );
         }
     }
 
@@ -79,7 +79,7 @@ class ParameterSet implements IParameterSet {
 
 
     /**
-     * @param iterable<string, mixed[]|string|IParameter|null>|null $i_itDefaults
+     * @param iterable<int|string, mixed[]|string|IParameter|null>|null $i_itDefaults
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function addDefaults( ?iterable $i_itDefaults = null ) : void {
@@ -87,7 +87,7 @@ class ParameterSet implements IParameterSet {
             return;
         }
         foreach ( $i_itDefaults as $stKey => $xValue ) {
-            $this->addDefault( $stKey, $xValue );
+            $this->addDefault( strval( $stKey ), $xValue );
         }
     }
 
@@ -102,7 +102,7 @@ class ParameterSet implements IParameterSet {
 
 
     /**
-     * @param iterable<string, mixed[]|string|IParameter|null>|null $i_itParameters
+     * @param iterable<int|string, mixed[]|string|IParameter|null>|null $i_itParameters
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function addParameters( ?iterable $i_itParameters = null ) : void {
@@ -110,7 +110,7 @@ class ParameterSet implements IParameterSet {
             return;
         }
         foreach ( $i_itParameters as $stKey => $xValue ) {
-            $this->addParameter( $stKey, $xValue );
+            $this->addParameter( strval( $stKey ), $xValue );
         }
     }
 
