@@ -36,16 +36,16 @@ class Parameter implements IParameter, Stringable {
 
 
     /**
-     * @param mixed[]|string|Parameter|null $xValue The value to encapsulate.
+     * @param mixed[]|string|IParameter|null $xValue The value to encapsulate.
      * @param bool $bAllowNull If true, null is allowed as a value. If false, an exception is thrown when null
      *                         is encountered.
      * @param int|null $nuAllowArrayDepth If not null, the number of levels of array nesting that are allowed.
      *                                    0 means arrays are not allowed, 1 means flat arrays are allowed,
      *                                    2 means arrays of arrays are allowed, etc.
      */
-    public function __construct( array|string|Parameter|null $xValue,
-                                 private readonly bool       $bAllowNull = true,
-                                 private readonly ?int       $nuAllowArrayDepth = null ) {
+    public function __construct( array|bool|float|int|string|IParameter|null $xValue,
+                                 private readonly bool                       $bAllowNull = true,
+                                 private readonly ?int                       $nuAllowArrayDepth = null ) {
         $this->_set( $xValue );
     }
 
@@ -865,8 +865,8 @@ class Parameter implements IParameter, Stringable {
     }
 
 
-    /** @param mixed[]|string|null $xValue */
-    public function new( array|string|null $xValue ) : static {
+    /** @param mixed[]|bool|float|int|string|IParameter|null $xValue */
+    public function new( array|bool|float|int|string|IParameter|null $xValue ) : static {
         /** @phpstan-ignore new.static */
         return new static( $xValue, $this->bAllowNull, $this->nuAllowArrayDepth );
     }
@@ -953,24 +953,30 @@ class Parameter implements IParameter, Stringable {
     }
 
 
-    /** @param mixed[]|string|Parameter|null $xValue */
-    protected function _set( array|string|Parameter|null $xValue ) : void {
+    /** @param mixed[]|bool|float|int|string|IParameter|null $i_xValue */
+    protected function _set( array|bool|float|int|string|IParameter|null $i_xValue ) : void {
         if ( $this->bSet && ! $this->bMutable ) {
             throw new LogicException( 'Parameter is immutable.' );
         }
-        if ( $xValue instanceof Parameter ) {
-            $xValue = $xValue->xValue;
+        if ( $i_xValue instanceof IParameter ) {
+            $i_xValue = $i_xValue->getValue();
         }
-        if ( is_null( $xValue ) && ! $this->bAllowNull ) {
+        if ( is_null( $i_xValue ) && ! $this->bAllowNull ) {
             throw new InvalidArgumentException( 'Parameter value is null but null is not allowed.' );
         }
-        if ( is_array( $xValue ) ) {
+        if ( is_array( $i_xValue ) ) {
             if ( is_int( $this->nuAllowArrayDepth ) && $this->nuAllowArrayDepth <= 0 ) {
                 throw new InvalidArgumentException( 'Array parameter is nested too deep.' );
             }
-            $this->rKeys = array_keys( $xValue );
+            $this->rKeys = array_keys( $i_xValue );
         }
-        $this->xValue = $xValue;
+        if ( is_bool( $i_xValue ) ) {
+            $i_xValue = $i_xValue ? 'true' : 'false';
+        }
+        if ( is_float( $i_xValue ) || is_int( $i_xValue ) ) {
+            $i_xValue = (string) $i_xValue;
+        }
+        $this->xValue = $i_xValue;
         $this->bSet = true;
     }
 

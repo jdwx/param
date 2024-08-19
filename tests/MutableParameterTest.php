@@ -34,6 +34,14 @@ class MutableParameterTest extends TestCase {
         static::assertSame( 'foo', $x->asString() );
         $x->set( 'bar' );
         static::assertSame( 'bar', $x->asString() );
+        $x->set( 5 );
+        static::assertSame( 5, $x->asInt() );
+        $x->set( 5.5 );
+        static::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
+        $x->set( true );
+        static::assertTrue( $x->asBool() );
+        $x->set( null );
+        static::assertTrue( $x->isNull() );
     }
 
 

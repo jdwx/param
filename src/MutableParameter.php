@@ -7,10 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Param;
 
 
-class MutableParameter extends StringParameter {
+class MutableParameter extends Parameter {
 
 
-    public function __construct( string|null $xValue = null ) {
+    public function __construct( array|bool|float|int|string|IParameter|null $xValue = null ) {
         parent::__construct( $xValue );
         $this->_mutate( true );
     }
@@ -21,14 +21,15 @@ class MutableParameter extends StringParameter {
     }
 
 
-    public function new( array|string|null $xValue ) : static {
+    public function new( array|bool|float|int|string|IParameter|null $xValue ) : static {
         /** @phpstan-ignore new.static */
         return new static( $xValue );
     }
 
 
-    public function set( string $i_stValue ) : void {
-        $this->_set( $i_stValue );
+    /** @param mixed[]|bool|float|int|string|IParameter|null $i_xValue */
+    public function set( array|bool|float|int|string|IParameter|null $i_xValue ) : void {
+        $this->_set( $i_xValue );
     }
 
 

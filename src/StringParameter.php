@@ -10,7 +10,7 @@ namespace JDWX\Param;
 class StringParameter extends Parameter {
 
 
-    public function __construct( string|null|Parameter $xValue = null ) {
+    public function __construct( bool|int|float|string|IParameter|null $xValue = null ) {
         parent::__construct( $xValue, true, 0 );
     }
 
@@ -20,8 +20,8 @@ class StringParameter extends Parameter {
     }
 
 
-    /** @param mixed[]|string|null $xValue */
-    public function new( array|string|null $xValue ) : static {
+    /** @param mixed[]|bool|int|float|string|IParameter|null $xValue */
+    public function new( array|bool|int|float|string|IParameter|null $xValue ) : static {
         /** @phpstan-ignore new.static */
         return new static( $xValue );
     }

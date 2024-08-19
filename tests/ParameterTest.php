@@ -1101,11 +1101,32 @@ class ParameterTest extends TestCase {
     }
 
 
-    /** @suppress PhanTypeMismatchArgumentReal */
+    public function testConstructWithBool() : void {
+        $x = self::p( true );
+        static::assertInstanceOf( Parameter::class, $x );
+        static::assertSame( 'true', $x->asString() );
+        static::assertTrue( $x->asBool() );
+
+        $x = self::p( false );
+        static::assertInstanceOf( Parameter::class, $x );
+        static::assertSame( 'false', $x->asString() );
+        static::assertFalse( $x->asBool() );
+    }
+
+
+    public function testConstructWithFloat() : void {
+        $x = self::p( 5.5 );
+        static::assertInstanceOf( Parameter::class, $x );
+        static::assertSame( '5.5', $x->asString() );
+        static::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
+    }
+
+
     public function testConstructWithInt() : void {
-        static::expectException( TypeError::class );
         $x = self::p( 5 );
-        unset( $x );
+        static::assertInstanceOf( Parameter::class, $x );
+        self::assertEquals( '5', $x->asString() );
+        self::assertSame( 5, $x->asInt() );
     }
 
 
