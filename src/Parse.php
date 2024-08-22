@@ -46,11 +46,12 @@ class Parse {
 
 
     public static function currency( string $i_stCurrency, ?string $i_nstError = null ) : int {
-        if ( Validate::currency( $i_stCurrency ) ) {
-            $f = self::roundedFloat( $i_stCurrency, 2 );
-            return (int) round( $f * 100 );
+        $st = Filter::currency( $i_stCurrency );
+        if ( $st === null ) {
+            throw new ParseException( $i_nstError ?? "Invalid currency: {$i_stCurrency}" );
         }
-        throw new ParseException( $i_nstError ?? "Invalid currency: {$i_stCurrency}" );
+        $f = self::roundedFloat( $st, 2 );
+        return intval( round( $f * 100 ) );
     }
 
 

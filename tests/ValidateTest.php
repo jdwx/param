@@ -35,4 +35,23 @@ class ValidateTest extends TestCase {
     }
 
 
+    public function testCurrency() : void {
+        self::assertTrue( Validate::currency( '1234.56' ) );
+        self::assertTrue( Validate::currency( '-1234.56' ) );
+        self::assertTrue( Validate::currency( '1,234.56' ) );
+        self::assertTrue( Validate::currency( '-1,234.56' ) );
+        self::assertTrue( Validate::currency( '$1234.56' ) );
+        self::assertTrue( Validate::currency( '-$1234.56' ) );
+        self::assertTrue( Validate::currency( '$-1234.56' ) );
+        self::assertTrue( Validate::currency( '$1,234.56' ) );
+        self::assertTrue( Validate::currency( '-$1,234.56' ) );
+        self::assertTrue( Validate::currency( '(1234.56)' ) );
+        self::assertTrue( Validate::currency( '(1,234.56)' ) );
+        self::assertTrue( Validate::currency( '($1234.56)' ) );
+        self::assertTrue( Validate::currency( '($1,234.56)' ) );
+        self::assertFalse( Validate::currency( '(-$1,234.56)' ) );
+        self::assertTrue( Validate::currency( '1234' ) );
+    }
+
+
 }

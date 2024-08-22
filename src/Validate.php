@@ -34,7 +34,7 @@ final class Validate {
 
 
     public static function currency( string $i_stCurrency ) : bool {
-        return is_numeric( $i_stCurrency );
+        return is_numeric( Filter::currency( $i_stCurrency ) );
     }
 
 

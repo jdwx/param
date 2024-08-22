@@ -12,6 +12,25 @@ use PHPUnit\Framework\TestCase;
 final class ParseTest extends TestCase {
 
 
+    public function testCurrency() : void {
+        self::assertSame( 123456, Parse::currency( '1234.56' ) );
+        self::assertSame( -123456, Parse::currency( '-1234.56' ) );
+        self::assertSame( 123456, Parse::currency( '1,234.56' ) );
+        self::assertSame( -123456, Parse::currency( '-1,234.56' ) );
+        self::assertSame( 123456, Parse::currency( '$1234.56' ) );
+        self::assertSame( -123456, Parse::currency( '-$1234.56' ) );
+        self::assertSame( -123456, Parse::currency( '$-1234.56' ) );
+        self::assertSame( 123456, Parse::currency( '$1,234.56' ) );
+        self::assertSame( -123456, Parse::currency( '-$1,234.56' ) );
+        self::assertSame( -123456, Parse::currency( '(1234.56)' ) );
+        self::assertSame( -123456, Parse::currency( '(1,234.56)' ) );
+        self::assertSame( -123456, Parse::currency( '($1234.56)' ) );
+        self::assertSame( -123456, Parse::currency( '($1,234.56)' ) );
+        static::expectException( ParseException::class );
+        Parse::currency( '(-$1,234.56)' );
+    }
+
+
     public function testGlob() : void {
         $r = Parse::glob( __DIR__ . '/*.php' );
         self::assertContains( __FILE__, $r );
