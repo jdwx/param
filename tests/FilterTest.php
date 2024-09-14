@@ -12,6 +12,10 @@ class FilterTest extends TestCase {
 
 
     public function testCurrency() : void {
+        self::assertSame( '-0.01', Filter::currency( '-0.01' ) );
+        self::assertSame( '0.01', Filter::currency( '0.01' ) );
+        self::assertSame( '0.01', Filter::currency( '.01' ) );
+        self::assertSame( '-0.01', Filter::currency( '-.01' ) );
         self::assertSame( '123.45', Filter::currency( '123.45' ) );
         self::assertSame( '-123.45', Filter::currency( '-123.45' ) );
         self::assertSame( '-123.45', Filter::currency( '(123.45)' ) );
