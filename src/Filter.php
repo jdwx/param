@@ -42,9 +42,6 @@ class Filter {
         if ( str_starts_with( $st, '.' ) ) {
             $st = '0' . $st;
         }
-        if ( str_starts_with( $st, '-.' ) ) {
-            $st = '-0' . substr( $st, 1 );
-        }
         if ( ! preg_match( '/^\d+(\.\d+)?$/', $st ) ) {
             return null;
         }
