@@ -328,6 +328,18 @@ class ParameterTest extends TestCase {
         static::assertIsFloat( $x->asFloat() );
         static::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
 
+        $x = self::p( '.01' );
+        static::assertIsFloat( $x->asFloat() );
+        static::assertEqualsWithDelta( 0.01, $x->asFloat(), 0.0001 );
+
+        $x = self::p( '-.01' );
+        static::assertIsFloat( $x->asFloat() );
+        static::assertEqualsWithDelta( -0.01, $x->asFloat(), 0.0001 );
+
+        $x = self::p( '5.5.4' );
+        static::expectException( ParseException::class );
+        $x->asFloat();
+
     }
 
 
