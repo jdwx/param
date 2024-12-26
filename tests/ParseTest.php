@@ -12,6 +12,13 @@ use PHPUnit\Framework\TestCase;
 final class ParseTest extends TestCase {
 
 
+    public function testConstant() : void {
+        self::assertSame( 'foo', Parse::constant( 'foo', 'foo' ) );
+        self::expectException( ParseException::class );
+        Parse::constant( 'foo', 'bar' );
+    }
+
+
     public function testCurrency() : void {
         self::assertSame( 123456, Parse::currency( '1234.56' ) );
         self::assertSame( -123456, Parse::currency( '-1234.56' ) );
@@ -26,7 +33,7 @@ final class ParseTest extends TestCase {
         self::assertSame( -123456, Parse::currency( '(1,234.56)' ) );
         self::assertSame( -123456, Parse::currency( '($1234.56)' ) );
         self::assertSame( -123456, Parse::currency( '($1,234.56)' ) );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         Parse::currency( '(-$1,234.56)' );
     }
 

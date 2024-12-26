@@ -45,6 +45,14 @@ class Parse {
     }
 
 
+    public static function constant( string $i_stString, string $i_stConstant, ?string $i_nstError = null ) : string {
+        if ( $i_stString === $i_stConstant ) {
+            return $i_stString;
+        }
+        throw new ParseException( $i_nstError ?? "Expected constant: {$i_stConstant}. Got: {$i_stString}" );
+    }
+
+
     public static function currency( string $i_stCurrency, ?string $i_nstError = null ) : int {
         $st = Filter::currency( $i_stCurrency );
         if ( $st === null ) {

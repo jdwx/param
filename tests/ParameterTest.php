@@ -112,7 +112,30 @@ class ParameterTest extends TestCase {
 
         $x = self::p( null );
         static::assertNull( $x->asBoolOrNull() );
+    }
 
+
+    public function testAsConstant() : void {
+        $x = self::p( 'foo' );
+        static::assertSame( 'foo', $x->asConstant( 'foo' ) );
+
+        $x = self::p( 'foo' );
+        static::expectException( ParseException::class );
+        $x->asConstant( 'bar' );
+    }
+
+
+    public function testAsConstantForArray() : void {
+        $x = self::p( [ 'foo', 'bar' ] );
+        static::expectException( TypeError::class );
+        $x->asConstant( 'foo' );
+    }
+
+
+    public function testAsConstantForNull() : void {
+        $x = self::p( null );
+        static::expectException( TypeError::class );
+        $x->asConstant( 'foo' );
     }
 
 

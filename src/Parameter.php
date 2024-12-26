@@ -105,6 +105,12 @@ class Parameter implements IParameter, Stringable {
     }
 
 
+    public function asConstant( string $i_stConstant ) : string {
+        $st = $this->asString();
+        return Parse::constant( $st, $i_stConstant, "Parameter is not the constant value '{$i_stConstant}': {$st}" );
+    }
+
+
     public function asCurrency() : int {
         $st = $this->asString();
         return Parse::currency( $st, "Parameter is not a currency amount: {$st}" );

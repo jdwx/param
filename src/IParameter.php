@@ -45,6 +45,10 @@ interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
     public function asBoolOrNull() : ?bool;
 
 
+    /** Requires the parameter to be exactly the given value. */
+    public function asConstant( string $i_stConstant ) : string;
+
+
     public function asCurrency() : int;
 
 
