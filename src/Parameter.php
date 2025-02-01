@@ -994,8 +994,8 @@ class Parameter implements IParameter, Stringable {
     }
 
 
-    /** @param mixed[]|string|null $i_xValue */
-    private function child( array|string|null $i_xValue ) : Parameter {
+    /** @param mixed[]|bool|float|int|string|IParameter|null $i_xValue */
+    private function child( array|bool|float|int|string|IParameter|null $i_xValue ) : Parameter {
         $nuNewArrayDepth = $this->nuAllowArrayDepth;
         if ( is_int( $nuNewArrayDepth ) && $nuNewArrayDepth > 0 ) {
             $nuNewArrayDepth--;
