@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/MyTestParameter.php';
 
 
-class ParameterTest extends TestCase {
+final class ParameterTest extends TestCase {
 
 
     public static function p( mixed $x, bool $bAllowNull = true,
@@ -25,13 +25,13 @@ class ParameterTest extends TestCase {
     public function testAsArrayOrNull() : void {
 
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertSame( [ 'foo', 'bar' ], $x->asArrayOrNull() );
+        self::assertSame( [ 'foo', 'bar' ], $x->asArrayOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asArrayOrNull() );
+        self::assertNull( $x->asArrayOrNull() );
 
         $x = self::p( 'foo' );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asArrayOrNull();
 
     }
@@ -39,33 +39,33 @@ class ParameterTest extends TestCase {
 
     public function testAsArrayOrString() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertSame( [ 'foo', 'bar' ], $x->asArrayOrString() );
+        self::assertSame( [ 'foo', 'bar' ], $x->asArrayOrString() );
 
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', $x->asArrayOrString() );
+        self::assertSame( 'foo', $x->asArrayOrString() );
 
         $x = self::p( null );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asArrayOrString();
     }
 
 
     public function testAsArrayWithArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertSame( [ 'foo', 'bar' ], $x->asArray() );
+        self::assertSame( [ 'foo', 'bar' ], $x->asArray() );
     }
 
 
     public function testAsArrayWithNull() : void {
         $x = self::p( null );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asArray();
     }
 
 
     public function testAsArrayWithString() : void {
         $x = self::p( '5' );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asArray();
     }
 
@@ -73,34 +73,34 @@ class ParameterTest extends TestCase {
     public function testAsBool() : void {
 
         $x = self::p( 'true' );
-        static::assertTrue( $x->asBool() );
+        self::assertTrue( $x->asBool() );
 
         $x = self::p( 'false' );
-        static::assertFalse( $x->asBool() );
+        self::assertFalse( $x->asBool() );
 
         $x = self::p( 'yes' );
-        static::assertTrue( $x->asBool() );
+        self::assertTrue( $x->asBool() );
 
         $x = self::p( 'no' );
-        static::assertFalse( $x->asBool() );
+        self::assertFalse( $x->asBool() );
 
         $x = self::p( 'on' );
-        static::assertTrue( $x->asBool() );
+        self::assertTrue( $x->asBool() );
 
         $x = self::p( 'off' );
-        static::assertFalse( $x->asBool() );
+        self::assertFalse( $x->asBool() );
 
         $x = self::p( '1' );
-        static::assertTrue( $x->asBool() );
+        self::assertTrue( $x->asBool() );
 
         $x = self::p( '0' );
-        static::assertFalse( $x->asBool() );
+        self::assertFalse( $x->asBool() );
 
         $x = self::p( null );
-        static::assertFalse( $x->asBool() );
+        self::assertFalse( $x->asBool() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asBool();
 
     }
@@ -108,239 +108,239 @@ class ParameterTest extends TestCase {
 
     public function testAsBoolOrNull() : void {
         $x = self::p( 'false' );
-        static::assertFalse( $x->asBoolOrNull() );
+        self::assertFalse( $x->asBoolOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asBoolOrNull() );
+        self::assertNull( $x->asBoolOrNull() );
     }
 
 
     public function testAsConstant() : void {
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', $x->asConstant( 'foo' ) );
+        self::assertSame( 'foo', $x->asConstant( 'foo' ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asConstant( 'bar' );
     }
 
 
     public function testAsConstantForArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asConstant( 'foo' );
     }
 
 
     public function testAsConstantForNull() : void {
         $x = self::p( null );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asConstant( 'foo' );
     }
 
 
     public function testAsCurrency() : void {
         $x = self::p( '5.5' );
-        static::assertSame( 550, $x->asCurrency() );
+        self::assertSame( 550, $x->asCurrency() );
 
         $x = self::p( '5' );
-        static::assertSame( 500, $x->asCurrency() );
+        self::assertSame( 500, $x->asCurrency() );
 
         $x = self::p( '5.000000000001' );
-        static::assertSame( 500, $x->asCurrency() );
+        self::assertSame( 500, $x->asCurrency() );
 
         $x = self::p( '4.999999999999' );
-        static::assertSame( 500, $x->asCurrency() );
+        self::assertSame( 500, $x->asCurrency() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asCurrency();
     }
 
 
     public function testAsCurrencyForEmpty() : void {
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asCurrency();
     }
 
 
     public function testAsCurrencyOrEmpty() : void {
         $x = self::p( '5.5' );
-        static::assertSame( 550, $x->asCurrencyOrEmpty() );
+        self::assertSame( 550, $x->asCurrencyOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asCurrencyOrEmpty() );
+        self::assertNull( $x->asCurrencyOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asCurrencyOrEmpty();
     }
 
 
     public function testAsCurrencyOrNull() : void {
         $x = self::p( '5.5' );
-        static::assertSame( 550, $x->asCurrencyOrNull() );
+        self::assertSame( 550, $x->asCurrencyOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asCurrencyOrNull() );
+        self::assertNull( $x->asCurrencyOrNull() );
     }
 
 
     public function testAsEmailAddress() : void {
         $x = self::p( 'test@example.tst' );
-        static::assertSame( 'test@example.tst', $x->asEmailAddress() );
+        self::assertSame( 'test@example.tst', $x->asEmailAddress() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asEmailAddress();
     }
 
 
     public function testAsEmailAddressOrEmpty() : void {
         $x = self::p( 'test@example.tst' );
-        static::assertSame( 'test@example.tst', $x->asEmailAddressOrEmpty() );
+        self::assertSame( 'test@example.tst', $x->asEmailAddressOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asEmailAddressOrEmpty() );
+        self::assertNull( $x->asEmailAddressOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asEmailAddressOrEmpty();
     }
 
 
     public function testAsEmailAddressOrNull() : void {
         $x = self::p( 'test@example.tst' );
-        static::assertSame( 'test@example.tst', $x->asEmailAddressOrNull() );
+        self::assertSame( 'test@example.tst', $x->asEmailAddressOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asEmailAddressOrNull() );
+        self::assertNull( $x->asEmailAddressOrNull() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asEmailAddressOrNull();
     }
 
 
     public function testAsEmailUsername() : void {
         $x = self::p( 'test' );
-        static::assertSame( 'test', $x->asEmailUsername() );
+        self::assertSame( 'test', $x->asEmailUsername() );
 
         $x = self::p( 'fo@o' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asEmailUsername();
     }
 
 
     public function testAsEmailUsernameOrEmpty() : void {
         $x = self::p( 'test' );
-        static::assertSame( 'test', $x->asEmailUsernameOrEmpty() );
+        self::assertSame( 'test', $x->asEmailUsernameOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asEmailUsernameOrEmpty() );
+        self::assertNull( $x->asEmailUsernameOrEmpty() );
 
         $x = self::p( 'fo o' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asEmailUsernameOrEmpty();
     }
 
 
     public function testAsEmailUsernameOrNull() : void {
         $x = self::p( 'test' );
-        static::assertSame( 'test', $x->asEmailUsernameOrNull() );
+        self::assertSame( 'test', $x->asEmailUsernameOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asEmailUsernameOrNull() );
+        self::assertNull( $x->asEmailUsernameOrNull() );
 
         $x = self::p( '<foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asEmailUsernameOrNull();
     }
 
 
     public function testAsExistingDirectory() : void {
         $x = self::p( sys_get_temp_dir() );
-        static::assertSame( sys_get_temp_dir(), $x->asExistingDirectory() );
+        self::assertSame( sys_get_temp_dir(), $x->asExistingDirectory() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asExistingDirectory();
     }
 
 
     public function testAsExistingDirectoryOrEmpty() : void {
         $x = self::p( sys_get_temp_dir() );
-        static::assertSame( sys_get_temp_dir(), $x->asExistingDirectoryOrEmpty() );
+        self::assertSame( sys_get_temp_dir(), $x->asExistingDirectoryOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asExistingDirectoryOrEmpty() );
+        self::assertNull( $x->asExistingDirectoryOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asExistingDirectoryOrEmpty();
     }
 
 
     public function testAsExistingDirectoryOrNull() : void {
         $x = self::p( sys_get_temp_dir() );
-        static::assertSame( sys_get_temp_dir(), $x->asExistingDirectoryOrNull() );
+        self::assertSame( sys_get_temp_dir(), $x->asExistingDirectoryOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asExistingDirectoryOrNull() );
+        self::assertNull( $x->asExistingDirectoryOrNull() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asExistingDirectoryOrNull();
     }
 
 
     public function testAsExistingFilename() : void {
         $x = self::p( __FILE__ );
-        static::assertSame( __FILE__, $x->asExistingFilename() );
+        self::assertSame( __FILE__, $x->asExistingFilename() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asExistingFilename();
     }
 
 
     public function testAsExistingFilenameOrEmpty() : void {
         $x = self::p( __FILE__ );
-        static::assertSame( __FILE__, $x->asExistingFilenameOrEmpty() );
+        self::assertSame( __FILE__, $x->asExistingFilenameOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asExistingFilenameOrEmpty() );
+        self::assertNull( $x->asExistingFilenameOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asExistingFilenameOrEmpty();
     }
 
 
     public function testAsExistingFilenameOrNull() : void {
         $x = self::p( __FILE__ );
-        static::assertSame( __FILE__, $x->asExistingFilenameOrNull() );
+        self::assertSame( __FILE__, $x->asExistingFilenameOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asExistingFilenameOrNull() );
+        self::assertNull( $x->asExistingFilenameOrNull() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asExistingFilenameOrNull();
     }
 
 
     public function testAsFloatForArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asFloat();
     }
 
 
     public function testAsFloatForNull() : void {
         $x = self::p( null );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asFloat();
     }
 
@@ -348,19 +348,19 @@ class ParameterTest extends TestCase {
     public function testAsFloatForStringFloat() : void {
 
         $x = self::p( '5.5' );
-        static::assertIsFloat( $x->asFloat() );
-        static::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
+        self::assertIsFloat( $x->asFloat() );
+        self::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
 
         $x = self::p( '.01' );
-        static::assertIsFloat( $x->asFloat() );
-        static::assertEqualsWithDelta( 0.01, $x->asFloat(), 0.0001 );
+        self::assertIsFloat( $x->asFloat() );
+        self::assertEqualsWithDelta( 0.01, $x->asFloat(), 0.0001 );
 
         $x = self::p( '-.01' );
-        static::assertIsFloat( $x->asFloat() );
-        static::assertEqualsWithDelta( -0.01, $x->asFloat(), 0.0001 );
+        self::assertIsFloat( $x->asFloat() );
+        self::assertEqualsWithDelta( -0.01, $x->asFloat(), 0.0001 );
 
         $x = self::p( '5.5.4' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloat();
 
     }
@@ -369,8 +369,8 @@ class ParameterTest extends TestCase {
     public function testAsFloatForStringInt() : void {
 
         $x = self::p( '5' );
-        static::assertIsFloat( $x->asFloat() );
-        static::assertEqualsWithDelta( 5.0, $x->asFloat(), 0.0001 );
+        self::assertIsFloat( $x->asFloat() );
+        self::assertEqualsWithDelta( 5.0, $x->asFloat(), 0.0001 );
 
     }
 
@@ -378,7 +378,7 @@ class ParameterTest extends TestCase {
     public function testAsFloatForStringText() : void {
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloat();
 
     }
@@ -386,27 +386,27 @@ class ParameterTest extends TestCase {
 
     public function testAsFloatOrEmpty() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatOrEmpty(), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatOrEmpty(), 0.0001 );
 
         $x = self::p( '' );
-        static::assertNull( $x->asFloatOrEmpty() );
+        self::assertNull( $x->asFloatOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatOrEmpty();
     }
 
 
     public function testAsFloatOrEmptyForArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asFloatOrEmpty();
     }
 
 
     public function testAsFloatOrEmptyForNull() : void {
         $x = self::p( null );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asFloatOrEmpty();
     }
 
@@ -414,31 +414,31 @@ class ParameterTest extends TestCase {
     public function testAsFloatOrNull() : void {
 
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatOrNull(), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatOrNull(), 0.0001 );
 
         $x = self::p( null );
-        static::assertNull( $x->asFloatOrNull() );
+        self::assertNull( $x->asFloatOrNull() );
 
     }
 
 
     public function testAsFloatRangeClosed() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosed( 5.4, 5.6 ), 0.0001 );
-        static::expectException( ParseException::class );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosed( 5.4, 5.6 ), 0.0001 );
+        self::expectException( ParseException::class );
         $x->asFloatRangeClosed( 5.5, 5.7 );
     }
 
 
     public function testAsFloatRangeClosedOrEmpty() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 ), 0.0001 );
 
         $x = self::p( '' );
-        static::assertNull( $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 ) );
+        self::assertNull( $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 );
 
     }
@@ -446,238 +446,238 @@ class ParameterTest extends TestCase {
 
     public function testAsFloatRangeClosedOrNull() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosedOrNull( 5.4, 5.6 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosedOrNull( 5.4, 5.6 ), 0.0001 );
 
         $x = self::p( null );
-        static::assertNull( $x->asFloatRangeClosedOrNull( 5.4, 5.6 ) );
+        self::assertNull( $x->asFloatRangeClosedOrNull( 5.4, 5.6 ) );
 
         $x = self::p( '5.5.4' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatRangeClosedOrNull( 5.4, 5.6 );
     }
 
 
     public function testAsFloatRangeHalfClosed() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.5, 5.6 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.5, 5.6 ), 0.0001 );
 
-        static::expectException( ParseException::class );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.4, 5.5 ), 0.0001 );
+        self::expectException( ParseException::class );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.4, 5.5 ), 0.0001 );
     }
 
 
     public function testAsFloatRangeHalfClosedOrEmpty() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 ), 0.0001 );
 
         $x = self::p( '' );
-        static::assertNull( $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 ) );
+        self::assertNull( $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 );
     }
 
 
     public function testAsFloatRangeHalfClosedOrNull() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 ), 0.0001 );
 
         $x = self::p( null );
-        static::assertNull( $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 ) );
+        self::assertNull( $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 ) );
 
         $x = self::p( '5.5.4' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 );
     }
 
 
     public function testAsFloatRangeOpen() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.4, 5.5 ), 0.0001 );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.5, 5.6 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.4, 5.5 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.5, 5.6 ), 0.0001 );
 
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatRangeOpen( 5.6, 5.7 );
     }
 
 
     public function testAsFloatRangeOpenOrEmpty() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 ), 0.0001 );
 
         $x = self::p( '' );
-        static::assertNull( $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 ) );
+        self::assertNull( $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 );
     }
 
 
     public function testAsFloatRangeOpenOrNull() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpenOrNull( 5.4, 5.5 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpenOrNull( 5.4, 5.5 ), 0.0001 );
 
         $x = self::p( null );
-        static::assertNull( $x->asFloatRangeOpenOrNull( 5.4, 5.5 ) );
+        self::assertNull( $x->asFloatRangeOpenOrNull( 5.4, 5.5 ) );
 
         $x = self::p( '5.5.4' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asFloatRangeOpenOrNull( 5.4, 5.5 );
     }
 
 
     public function testAsHostname() : void {
         $x = self::p( 'www.example.com' );
-        static::assertSame( 'www.example.com', $x->asHostname() );
+        self::assertSame( 'www.example.com', $x->asHostname() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asHostname();
     }
 
 
     public function testAsHostnameForTrailingDot() : void {
         $x = self::p( 'www.example.com.' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asHostname();
     }
 
 
     public function testAsHostnameOrEmpty() : void {
         $x = self::p( 'www.example.com' );
-        static::assertSame( 'www.example.com', $x->asHostnameOrEmpty() );
+        self::assertSame( 'www.example.com', $x->asHostnameOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asHostnameOrEmpty() );
+        self::assertNull( $x->asHostnameOrEmpty() );
 
         $x = self::p( 'www|example.com' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asHostnameOrEmpty();
     }
 
 
     public function testAsHostnameOrNull() : void {
         $x = self::p( 'www.example.com' );
-        static::assertSame( 'www.example.com', $x->asHostnameOrNull() );
+        self::assertSame( 'www.example.com', $x->asHostnameOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asHostnameOrNull() );
+        self::assertNull( $x->asHostnameOrNull() );
 
         $x = self::p( 'www example.com' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asHostnameOrNull();
     }
 
 
     public function testAsIP() : void {
         $x = self::p( '192.0.2.1' );
-        static::assertSame( '192.0.2.1', $x->asIP() );
+        self::assertSame( '192.0.2.1', $x->asIP() );
 
         $x = self::p( '2001:db8::1' );
-        static::assertSame( '2001:db8::1', $x->asIP() );
+        self::assertSame( '2001:db8::1', $x->asIP() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIP();
     }
 
 
     public function testAsIPOrEmpty() : void {
         $x = self::p( '192.0.2.2' );
-        static::assertSame( '192.0.2.2', $x->asIPOrEmpty() );
+        self::assertSame( '192.0.2.2', $x->asIPOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asIPOrEmpty() );
+        self::assertNull( $x->asIPOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPOrEmpty();
     }
 
 
     public function testAsIPOrNull() : void {
         $x = self::p( '192.0.2.3' );
-        static::assertSame( '192.0.2.3', $x->asIPOrNull() );
+        self::assertSame( '192.0.2.3', $x->asIPOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asIPOrNull() );
+        self::assertNull( $x->asIPOrNull() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPOrNull();
     }
 
 
     public function testAsIPv4() : void {
         $x = self::p( '192.0.2.1' );
-        static::assertSame( '192.0.2.1', $x->asIPv4() );
+        self::assertSame( '192.0.2.1', $x->asIPv4() );
 
         $x = self::p( '2001:db8::1' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPv4();
     }
 
 
     public function testAsIPv4OrEmpty() : void {
         $x = self::p( '192.0.2.2' );
-        static::assertSame( '192.0.2.2', $x->asIPv4OrEmpty() );
+        self::assertSame( '192.0.2.2', $x->asIPv4OrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asIPv4OrEmpty() );
+        self::assertNull( $x->asIPv4OrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPv4OrEmpty();
     }
 
 
     public function testAsIPv4OrNull() : void {
         $x = self::p( '192.0.2.3' );
-        static::assertSame( '192.0.2.3', $x->asIPv4OrNull() );
+        self::assertSame( '192.0.2.3', $x->asIPv4OrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asIPv4OrNull() );
+        self::assertNull( $x->asIPv4OrNull() );
 
         $x = self::p( '192.0.2.3.4' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPv4OrNull();
     }
 
 
     public function testAsIPv6() : void {
         $x = self::p( '2001:db8::1' );
-        static::assertSame( '2001:db8::1', $x->asIPv6() );
+        self::assertSame( '2001:db8::1', $x->asIPv6() );
 
         $x = self::p( '192.0.2.1' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPv6();
     }
 
 
     public function testAsIPv6OrEmpty() : void {
         $x = self::p( '2001:db8::2' );
-        static::assertSame( '2001:db8::2', $x->asIPv6OrEmpty() );
+        self::assertSame( '2001:db8::2', $x->asIPv6OrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asIPv6OrEmpty() );
+        self::assertNull( $x->asIPv6OrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPv6OrEmpty();
     }
 
 
     public function testAsIPv6OrNull() : void {
         $x = self::p( '::ffff:0:255.255.255.255' );
-        static::assertSame( '::ffff:0:255.255.255.255', $x->asIPv6OrNull() );
+        self::assertSame( '::ffff:0:255.255.255.255', $x->asIPv6OrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asIPv6OrNull() );
+        self::assertNull( $x->asIPv6OrNull() );
 
         $x = self::p( '2001:db8::3.4' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIPv6OrNull();
     }
 
@@ -685,12 +685,12 @@ class ParameterTest extends TestCase {
     public function testAsInt() : void {
 
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asInt() );
+        self::assertSame( 5, $x->asInt() );
 
         $x = self::p( '5.9' );
-        static::assertSame( 5, $x->asInt() );
+        self::assertSame( 5, $x->asInt() );
 
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x = self::p( 'foo' );
         $x->asInt();
 
@@ -699,23 +699,23 @@ class ParameterTest extends TestCase {
 
     public function testAsIntForEmpty() : void {
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asInt();
     }
 
 
     public function testAsIntOrEmpty() : void {
         $x = self::p( '' );
-        static::assertNull( $x->asIntOrEmpty() );
+        self::assertNull( $x->asIntOrEmpty() );
 
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntOrEmpty() );
+        self::assertSame( 5, $x->asIntOrEmpty() );
 
         $x = self::p( '5.9' );
-        static::assertSame( 5, $x->asIntOrEmpty() );
+        self::assertSame( 5, $x->asIntOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIntOrEmpty();
     }
 
@@ -723,156 +723,156 @@ class ParameterTest extends TestCase {
     public function testAsIntOrNull() : void {
 
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntOrNull() );
+        self::assertSame( 5, $x->asIntOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asIntOrNull() );
+        self::assertNull( $x->asIntOrNull() );
 
     }
 
 
     public function testAsIntRangeClosed() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeClosed( 4, 6 ) );
-        static::expectException( ParseException::class );
+        self::assertSame( 5, $x->asIntRangeClosed( 4, 6 ) );
+        self::expectException( ParseException::class );
         $x->asIntRangeClosed( 5, 7 );
     }
 
 
     public function testAsIntRangeClosedOrEmpty() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeClosedOrEmpty( 4, 6 ) );
+        self::assertSame( 5, $x->asIntRangeClosedOrEmpty( 4, 6 ) );
 
         $x = self::p( '' );
-        static::assertNull( $x->asIntRangeClosedOrEmpty( 4, 6 ) );
+        self::assertNull( $x->asIntRangeClosedOrEmpty( 4, 6 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIntRangeClosedOrEmpty( 4, 6 );
     }
 
 
     public function testAsIntRangeClosedOrNull() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeClosedOrNull( 4, 6 ) );
+        self::assertSame( 5, $x->asIntRangeClosedOrNull( 4, 6 ) );
 
         $x = self::p( null );
-        static::assertNull( $x->asIntRangeClosedOrNull( 4, 6 ) );
+        self::assertNull( $x->asIntRangeClosedOrNull( 4, 6 ) );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIntRangeClosedOrNull( 4, 6 );
     }
 
 
     public function testAsIntRangeHalfClosed() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeHalfClosed( 5, 6 ) );
-        static::expectException( ParseException::class );
+        self::assertSame( 5, $x->asIntRangeHalfClosed( 5, 6 ) );
+        self::expectException( ParseException::class );
         $x->asIntRangeHalfClosed( 4, 5 );
     }
 
 
     public function testAsIntRangeHalfClosedOrEmpty() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeHalfClosedOrEmpty( 5, 6 ) );
+        self::assertSame( 5, $x->asIntRangeHalfClosedOrEmpty( 5, 6 ) );
 
         $x = self::p( '' );
-        static::assertNull( $x->asIntRangeHalfClosedOrEmpty( 5, 6 ) );
+        self::assertNull( $x->asIntRangeHalfClosedOrEmpty( 5, 6 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIntRangeHalfClosedOrEmpty( 5, 6 );
     }
 
 
     public function testAsIntRangeHalfClosedOrNull() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeHalfClosedOrNull( 5, 6 ) );
+        self::assertSame( 5, $x->asIntRangeHalfClosedOrNull( 5, 6 ) );
 
         $x = self::p( null );
-        static::assertNull( $x->asIntRangeHalfClosedOrNull( 5, 6 ) );
+        self::assertNull( $x->asIntRangeHalfClosedOrNull( 5, 6 ) );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIntRangeHalfClosedOrNull( 5, 6 );
     }
 
 
     public function testAsIntRangeOpen() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeOpen( 4, 6 ) );
-        static::assertSame( 5, $x->asIntRangeOpen( 4, 5 ) );
-        static::assertSame( 5, $x->asIntRangeOpen( 5, 6 ) );
-        static::expectException( ParseException::class );
+        self::assertSame( 5, $x->asIntRangeOpen( 4, 6 ) );
+        self::assertSame( 5, $x->asIntRangeOpen( 4, 5 ) );
+        self::assertSame( 5, $x->asIntRangeOpen( 5, 6 ) );
+        self::expectException( ParseException::class );
         $x->asIntRangeOpen( 6, 7 );
     }
 
 
     public function testAsIntRangeOpenOrEmpty() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeOpenOrEmpty( 5, 6 ) );
+        self::assertSame( 5, $x->asIntRangeOpenOrEmpty( 5, 6 ) );
 
         $x = self::p( '' );
-        static::assertNull( $x->asIntRangeOpenOrEmpty( 4, 6 ) );
+        self::assertNull( $x->asIntRangeOpenOrEmpty( 4, 6 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIntRangeOpenOrEmpty( 4, 6 );
     }
 
 
     public function testAsIntRangeOpenOrNull() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asIntRangeOpenOrNull( 4, 6 ) );
+        self::assertSame( 5, $x->asIntRangeOpenOrNull( 4, 6 ) );
 
         $x = self::p( null );
-        static::assertNull( $x->asIntRangeOpenOrNull( 4, 6 ) );
+        self::assertNull( $x->asIntRangeOpenOrNull( 4, 6 ) );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asIntRangeOpenOrNull( 4, 6 );
     }
 
 
     public function testAsJSON() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertSame( '["foo","bar"]', $x->asJSON() );
+        self::assertSame( '["foo","bar"]', $x->asJSON() );
     }
 
 
     public function testAsKeyword() : void {
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', $x->asKeyword( [ 'foo', 'bar' ] ) );
+        self::assertSame( 'foo', $x->asKeyword( [ 'foo', 'bar' ] ) );
 
         $x = self::p( 'baz' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asKeyword( [ 'foo', 'bar' ] );
     }
 
 
     public function testAsKeywordOrEmpty() : void {
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', $x->asKeywordOrEmpty( [ 'foo', 'bar' ] ) );
+        self::assertSame( 'foo', $x->asKeywordOrEmpty( [ 'foo', 'bar' ] ) );
 
         $x = self::p( '' );
-        static::assertNull( $x->asKeywordOrEmpty( [ 'foo', 'bar' ] ) );
+        self::assertNull( $x->asKeywordOrEmpty( [ 'foo', 'bar' ] ) );
 
         $x = self::p( 'baz' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asKeywordOrEmpty( [ 'foo', 'bar' ] );
     }
 
 
     public function testAsKeywordOrNull() : void {
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', $x->asKeywordOrNull( [ 'foo', 'bar' ] ) );
+        self::assertSame( 'foo', $x->asKeywordOrNull( [ 'foo', 'bar' ] ) );
 
         $x = self::p( null );
-        static::assertNull( $x->asKeywordOrNull( [ 'foo', 'bar' ] ) );
+        self::assertNull( $x->asKeywordOrNull( [ 'foo', 'bar' ] ) );
 
         $x = self::p( 'baz' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asKeywordOrNull( [ 'foo', 'bar' ] );
     }
 
@@ -880,10 +880,10 @@ class ParameterTest extends TestCase {
     public function testAsMap() : void {
         $rMap = [ 'foo' => 'bar', 'baz' => 'qux' ];
         $x = self::p( 'foo' );
-        static::assertSame( 'bar', $x->asMap( $rMap ) );
+        self::assertSame( 'bar', $x->asMap( $rMap ) );
 
         $x = self::p( 'quux' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asMap( $rMap );
     }
 
@@ -891,13 +891,13 @@ class ParameterTest extends TestCase {
     public function testAsMapOrEmpty() : void {
         $rMap = [ 'foo' => 'bar', 'baz' => 'qux' ];
         $x = self::p( 'foo' );
-        static::assertSame( 'bar', $x->asMapOrEmpty( $rMap ) );
+        self::assertSame( 'bar', $x->asMapOrEmpty( $rMap ) );
 
         $x = self::p( '' );
-        static::assertNull( $x->asMapOrEmpty( $rMap ) );
+        self::assertNull( $x->asMapOrEmpty( $rMap ) );
 
         $x = self::p( '5' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asMapOrEmpty( $rMap );
     }
 
@@ -905,142 +905,142 @@ class ParameterTest extends TestCase {
     public function testAsMapOrNull() : void {
         $rMap = [ 'foo' => 'bar', 'baz' => 'qux' ];
         $x = self::p( 'foo' );
-        static::assertSame( 'bar', $x->asMapOrNull( $rMap ) );
+        self::assertSame( 'bar', $x->asMapOrNull( $rMap ) );
 
         $x = self::p( null );
-        static::assertNull( $x->asMapOrNull( $rMap ) );
+        self::assertNull( $x->asMapOrNull( $rMap ) );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asMapOrNull( $rMap );
     }
 
 
     public function testAsNonexistentFilename() : void {
         $x = self::p( __DIR__ . '/foo' );
-        static::assertSame( __DIR__ . '/foo', $x->asNonexistentFilename() );
+        self::assertSame( __DIR__ . '/foo', $x->asNonexistentFilename() );
 
         $x = self::p( __FILE__ );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asNonexistentFilename();
     }
 
 
     public function testAsNonexistentFilenameOrEmpty() : void {
         $x = self::p( __DIR__ . '/foo' );
-        static::assertSame( __DIR__ . '/foo', $x->asNonexistentFilenameOrEmpty() );
+        self::assertSame( __DIR__ . '/foo', $x->asNonexistentFilenameOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asNonexistentFilenameOrEmpty() );
+        self::assertNull( $x->asNonexistentFilenameOrEmpty() );
 
         $x = self::p( '/no/such/dir/file.txt' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asNonexistentFilenameOrEmpty();
     }
 
 
     public function testAsNonexistentFilenameOrNull() : void {
         $x = self::p( __DIR__ . '/foo' );
-        static::assertSame( __DIR__ . '/foo', $x->asNonexistentFilenameOrNull() );
+        self::assertSame( __DIR__ . '/foo', $x->asNonexistentFilenameOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asNonexistentFilenameOrNull() );
+        self::assertNull( $x->asNonexistentFilenameOrNull() );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asNonexistentFilenameOrNull();
     }
 
 
     public function testAsPositiveFloat() : void {
         $x = self::p( '3.14' );
-        static::assertEqualsWithDelta( 3.14, $x->asPositiveFloat(), 0.0001 );
+        self::assertEqualsWithDelta( 3.14, $x->asPositiveFloat(), 0.0001 );
 
         $x = self::p( '-1.23' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asPositiveFloat();
     }
 
 
     public function testAsPositiveFloatOrEmpty() : void {
         $x = self::p( '0.1' );
-        static::assertEqualsWithDelta( 0.1, $x->asPositiveFloatOrEmpty(), 0.0001 );
+        self::assertEqualsWithDelta( 0.1, $x->asPositiveFloatOrEmpty(), 0.0001 );
 
         $x = self::p( '' );
-        static::assertNull( $x->asPositiveFloatOrEmpty() );
+        self::assertNull( $x->asPositiveFloatOrEmpty() );
 
         $x = self::p( '0' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asPositiveFloatOrEmpty();
     }
 
 
     public function testAsPositiveFloatOrNull() : void {
         $x = self::p( '3.14' );
-        static::assertEqualsWithDelta( 3.14, $x->asPositiveFloatOrNull(), 0.0001 );
+        self::assertEqualsWithDelta( 3.14, $x->asPositiveFloatOrNull(), 0.0001 );
 
         $x = self::p( null );
-        static::assertNull( $x->asPositiveFloatOrNull() );
+        self::assertNull( $x->asPositiveFloatOrNull() );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asPositiveFloatOrNull();
     }
 
 
     public function testAsPositiveInt() : void {
         $x = self::p( '3' );
-        static::assertSame( 3, $x->asPositiveInt() );
+        self::assertSame( 3, $x->asPositiveInt() );
 
         $x = self::p( '-1' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asPositiveInt();
     }
 
 
     public function testAsPositiveIntOrEmpty() : void {
         $x = self::p( '3' );
-        static::assertSame( 3, $x->asPositiveIntOrEmpty() );
+        self::assertSame( 3, $x->asPositiveIntOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asPositiveIntOrEmpty() );
+        self::assertNull( $x->asPositiveIntOrEmpty() );
 
         $x = self::p( '0' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asPositiveIntOrEmpty();
     }
 
 
     public function testAsPositiveIntOrNull() : void {
         $x = self::p( '3' );
-        static::assertSame( 3, $x->asPositiveIntOrNull() );
+        self::assertSame( 3, $x->asPositiveIntOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asPositiveIntOrNull() );
+        self::assertNull( $x->asPositiveIntOrNull() );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asPositiveIntOrNull();
     }
 
 
     public function testAsRoundedInt() : void {
         $x = self::p( '5.5' );
-        static::assertSame( 6, $x->asRoundedInt() );
+        self::assertSame( 6, $x->asRoundedInt() );
 
         $x = self::p( '5.4' );
-        static::assertSame( 5, $x->asRoundedInt() );
+        self::assertSame( 5, $x->asRoundedInt() );
     }
 
 
     public function testAsString() : void {
         $x = self::p( '5.5' );
-        static::assertIsString( $x->asString() );
-        static::assertSame( '5.5', $x->asString() );
+        self::assertIsString( $x->asString() );
+        self::assertSame( '5.5', $x->asString() );
         $x = self::p( '5' );
-        static::assertIsString( $x->asString() );
-        static::assertSame( '5', $x->asString() );
-        static::expectException( TypeError::class );
+        self::assertIsString( $x->asString() );
+        self::assertSame( '5', $x->asString() );
+        self::expectException( TypeError::class );
         $x = self::p( [ 'foo', 'bar' ] );
         $x->asString();
     }
@@ -1049,117 +1049,117 @@ class ParameterTest extends TestCase {
     public function testAsStringOrNull() : void {
 
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', $x->asStringOrNull() );
+        self::assertSame( 'foo', $x->asStringOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asStringOrNull() );
+        self::assertNull( $x->asStringOrNull() );
 
     }
 
 
     public function testAsUnsignedFloat() : void {
         $x = self::p( '1.23' );
-        static::assertEqualsWithDelta( 1.23, $x->asUnsignedFloat(), 0.0001 );
+        self::assertEqualsWithDelta( 1.23, $x->asUnsignedFloat(), 0.0001 );
 
         $x = self::p( '-1.23' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asUnsignedFloat();
     }
 
 
     public function testAsUnsignedFloatOrEmpty() : void {
         $x = self::p( '0' );
-        static::assertEqualsWithDelta( 0.0, $x->asUnsignedFloatOrEmpty(), 0.0001 );
+        self::assertEqualsWithDelta( 0.0, $x->asUnsignedFloatOrEmpty(), 0.0001 );
 
         $x = self::p( '' );
-        static::assertNull( $x->asUnsignedFloatOrEmpty() );
+        self::assertNull( $x->asUnsignedFloatOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asUnsignedFloatOrEmpty();
     }
 
 
     public function testAsUnsignedFloatOrNull() : void {
         $x = self::p( '1.23' );
-        static::assertEqualsWithDelta( 1.23, $x->asUnsignedFloatOrNull(), 0.0001 );
+        self::assertEqualsWithDelta( 1.23, $x->asUnsignedFloatOrNull(), 0.0001 );
 
         $x = self::p( null );
-        static::assertNull( $x->asUnsignedFloatOrNull() );
+        self::assertNull( $x->asUnsignedFloatOrNull() );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asUnsignedFloatOrNull();
     }
 
 
     public function testAsUnsignedInt() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asUnsignedInt() );
+        self::assertSame( 5, $x->asUnsignedInt() );
 
         $x = self::p( '-5' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asUnsignedInt();
     }
 
 
     public function testAsUnsignedIntOrEmpty() : void {
         $x = self::p( '0' );
-        static::assertSame( 0, $x->asUnsignedIntOrEmpty() );
+        self::assertSame( 0, $x->asUnsignedIntOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asUnsignedIntOrEmpty() );
+        self::assertNull( $x->asUnsignedIntOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asUnsignedIntOrEmpty();
     }
 
 
     public function testAsUnsignedIntOrNull() : void {
         $x = self::p( '5' );
-        static::assertSame( 5, $x->asUnsignedIntOrNull() );
+        self::assertSame( 5, $x->asUnsignedIntOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asUnsignedIntOrNull() );
+        self::assertNull( $x->asUnsignedIntOrNull() );
 
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asUnsignedIntOrNull();
     }
 
 
     public function testConstructWithArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertInstanceOf( Parameter::class, $x );
+        self::assertInstanceOf( Parameter::class, $x );
 
     }
 
 
     public function testConstructWithBool() : void {
         $x = self::p( true );
-        static::assertInstanceOf( Parameter::class, $x );
-        static::assertSame( 'true', $x->asString() );
-        static::assertTrue( $x->asBool() );
+        self::assertInstanceOf( Parameter::class, $x );
+        self::assertSame( 'true', $x->asString() );
+        self::assertTrue( $x->asBool() );
 
         $x = self::p( false );
-        static::assertInstanceOf( Parameter::class, $x );
-        static::assertSame( 'false', $x->asString() );
-        static::assertFalse( $x->asBool() );
+        self::assertInstanceOf( Parameter::class, $x );
+        self::assertSame( 'false', $x->asString() );
+        self::assertFalse( $x->asBool() );
     }
 
 
     public function testConstructWithFloat() : void {
         $x = self::p( 5.5 );
-        static::assertInstanceOf( Parameter::class, $x );
-        static::assertSame( '5.5', $x->asString() );
-        static::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
+        self::assertInstanceOf( Parameter::class, $x );
+        self::assertSame( '5.5', $x->asString() );
+        self::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
     }
 
 
     public function testConstructWithInt() : void {
         $x = self::p( 5 );
-        static::assertInstanceOf( Parameter::class, $x );
+        self::assertInstanceOf( Parameter::class, $x );
         self::assertEquals( '5', $x->asString() );
         self::assertSame( 5, $x->asInt() );
     }
@@ -1170,18 +1170,18 @@ class ParameterTest extends TestCase {
             [ 'foo', 'bar' ],
             [ 'baz', 'qux' ],
         ] );
-        static::assertInstanceOf( Parameter::class, $x );
-        static::assertTrue( $x->isArray() );
-        static::assertTrue( isset( $x[ 0 ] ) );
-        static::assertTrue( $x[ 0 ]->isArray() );
-        static::assertTrue( isset( $x[ 0 ][ 0 ] ) );
-        static::assertSame( 'foo', $x[ 0 ][ 0 ]->asString() );
+        self::assertInstanceOf( Parameter::class, $x );
+        self::assertTrue( $x->isArray() );
+        self::assertTrue( isset( $x[ 0 ] ) );
+        self::assertTrue( $x[ 0 ]->isArray() );
+        self::assertTrue( isset( $x[ 0 ][ 0 ] ) );
+        self::assertSame( 'foo', $x[ 0 ][ 0 ]->asString() );
 
         $x = self::p( [
             [ 'foo', 'bar' ],
             [ 'baz', 'qux' ],
         ], nuAllowArrayDepth: 1 );
-        static::expectException( InvalidArgumentException::class );
+        self::expectException( InvalidArgumentException::class );
         $y = $x[ 0 ];
         unset( $y );
     }
@@ -1189,8 +1189,8 @@ class ParameterTest extends TestCase {
 
     public function testConstructWithNull() : void {
         $x = self::p( null );
-        static::assertInstanceOf( Parameter::class, $x );
-        static::expectException( InvalidArgumentException::class );
+        self::assertInstanceOf( Parameter::class, $x );
+        self::expectException( InvalidArgumentException::class );
         $x = self::p( null, bAllowNull: false );
         unset( $x );
     }
@@ -1198,64 +1198,65 @@ class ParameterTest extends TestCase {
 
     public function testConstructWithParameter() : void {
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', $x->asString() );
+        self::assertSame( 'foo', $x->asString() );
         $y = self::p( $x );
-        static::assertSame( 'foo', $y->asString() );
+        self::assertSame( 'foo', $y->asString() );
     }
 
 
     public function testConstructWithString() : void {
         $x = self::p( 'foo' );
-        static::assertInstanceOf( Parameter::class, $x );
+        self::assertInstanceOf( Parameter::class, $x );
     }
 
 
     public function testForEach() : void {
         $x = self::p( [ 'foo', 'bar' ] );
         $r = [];
+        /** @noinspection PhpLoopCanBeConvertedToArrayMapInspection */
         foreach ( $x as $i => $p ) {
             $r[ $i ] = $p->asString();
         }
-        static::assertSame( [ 'foo', 'bar' ], $r );
+        self::assertSame( [ 'foo', 'bar' ], $r );
     }
 
 
     public function testFreeze() : void {
         $x = new MyTestParameter( 'foo' );
-        static::assertFalse( $x->isFrozen() );
+        self::assertFalse( $x->isFrozen() );
         $x->freeze();
-        static::assertTrue( $x->isFrozen() );
+        self::assertTrue( $x->isFrozen() );
     }
 
 
     public function testGetValue() : void {
         $x = self::p( '5' );
-        static::assertSame( '5', $x->getValue() );
+        self::assertSame( '5', $x->getValue() );
 
         $x = self::p( null );
-        static::assertNull( $x->getValue() );
+        self::assertNull( $x->getValue() );
 
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertSame( [ 'foo', 'bar' ], $x->getValue() );
+        self::assertSame( [ 'foo', 'bar' ], $x->getValue() );
 
     }
 
 
     public function testHas() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertTrue( $x->offsetExists( 0 ) );
-        static::assertTrue( $x->offsetExists( 1 ) );
-        static::assertFalse( $x->offsetExists( 2 ) );
-        static::assertFalse( $x->offsetExists( 'foo' ) );
+        self::assertTrue( $x->offsetExists( 0 ) );
+        self::assertTrue( $x->offsetExists( 1 ) );
+        self::assertFalse( $x->offsetExists( 2 ) );
+        self::assertFalse( $x->offsetExists( 'foo' ) );
 
         $x = self::p( [ 'foo' => 'bar', 'baz' => 'qux' ] );
-        static::assertTrue( $x->offsetExists( 'foo' ) );
-        static::assertTrue( $x->offsetExists( 'baz' ) );
-        static::assertFalse( $x->offsetExists( 'qux' ) );
-        static::assertFalse( $x->offsetExists( 0 ) );
+        self::assertTrue( $x->offsetExists( 'foo' ) );
+        self::assertTrue( $x->offsetExists( 'baz' ) );
+        self::assertFalse( $x->offsetExists( 'qux' ) );
+        self::assertFalse( $x->offsetExists( 0 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->has( 0 );
     }
 
@@ -1263,82 +1264,82 @@ class ParameterTest extends TestCase {
     public function testIndexOrDefault() : void {
 
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertSame( 'foo', $x->indexOrDefault( 0, 'baz' )->asString() );
-        static::assertSame( 'baz', $x->indexOrDefault( 2, 'baz' )->asString() );
+        self::assertSame( 'foo', $x->indexOrDefault( 0, 'baz' )->asString() );
+        self::assertSame( 'baz', $x->indexOrDefault( 2, 'baz' )->asString() );
 
     }
 
 
     public function testIndexOrNull() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertSame( 'foo', $x->indexOrNull( 0 )->asString() );
-        static::assertNull( $x->indexOrNull( 2 ) );
+        self::assertSame( 'foo', $x->indexOrNull( 0 )->asString() );
+        self::assertNull( $x->indexOrNull( 2 ) );
     }
 
 
     public function testIsArray() : void {
         $x = self::p( '5.5' );
-        static::assertFalse( $x->isArray() );
+        self::assertFalse( $x->isArray() );
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertTrue( $x->isArray() );
+        self::assertTrue( $x->isArray() );
     }
 
 
     public function testIsEmpty() : void {
         $x = self::p( '5' );
-        static::assertFalse( $x->isEmpty() );
+        self::assertFalse( $x->isEmpty() );
 
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertFalse( $x->isEmpty() );
+        self::assertFalse( $x->isEmpty() );
 
         $x = self::p( null );
-        static::assertTrue( $x->isEmpty() );
+        self::assertTrue( $x->isEmpty() );
 
         $x = self::p( '' );
-        static::assertTrue( $x->isEmpty() );
+        self::assertTrue( $x->isEmpty() );
 
         $x = self::p( [] );
-        static::assertTrue( $x->isEmpty() );
+        self::assertTrue( $x->isEmpty() );
 
         $x = self::p( 'yup' );
         $y = self::p( $x );
-        static::assertFalse( $y->isEmpty() );
+        self::assertFalse( $y->isEmpty() );
 
         $x = self::p( null );
         $y = self::p( $x );
-        static::assertTrue( $y->isEmpty() );
+        self::assertTrue( $y->isEmpty() );
     }
 
 
     public function testIsNull() : void {
 
         $x = self::p( '5' );
-        static::assertFalse( $x->isNull() );
+        self::assertFalse( $x->isNull() );
 
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertFalse( $x->isNull() );
+        self::assertFalse( $x->isNull() );
 
         $x = self::p( null );
-        static::assertTrue( $x->isNull() );
+        self::assertTrue( $x->isNull() );
 
     }
 
 
     public function testIsSet() : void {
         $x = self::p( '5' );
-        static::assertTrue( $x->isSet() );
+        self::assertTrue( $x->isSet() );
     }
 
 
     public function testIsString() : void {
         $x = self::p( 'foo' );
-        static::assertTrue( $x->isString() );
+        self::assertTrue( $x->isString() );
 
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertFalse( $x->isString() );
+        self::assertFalse( $x->isString() );
 
         $x = self::p( null );
-        static::assertFalse( $x->isString() );
+        self::assertFalse( $x->isString() );
 
     }
 
@@ -1357,11 +1358,11 @@ class ParameterTest extends TestCase {
 
     public function testMutable() : void {
         $x = new MyTestParameter( 'foo' );
-        static::assertFalse( $x->isMutable() );
+        self::assertFalse( $x->isMutable() );
         $x->mutate( true );
-        static::assertTrue( $x->isMutable() );
+        self::assertTrue( $x->isMutable() );
         $x->mutate( false );
-        static::expectException( LogicException::class );
+        self::expectException( LogicException::class );
         $x->set( 'bar' );
     }
 
@@ -1369,7 +1370,7 @@ class ParameterTest extends TestCase {
     public function testMutableFrozen() : void {
         $x = new MyTestParameter( 'foo' );
         $x->freeze();
-        static::expectException( LogicException::class );
+        self::expectException( LogicException::class );
         $x->mutate( true );
     }
 
@@ -1377,18 +1378,18 @@ class ParameterTest extends TestCase {
     public function testNew() : void {
         $x = self::p( 'foo' );
         $y = $x->new( 'bar' );
-        static::assertSame( 'bar', $y->asString() );
-        static::assertSame( $x::class, $y::class );
+        self::assertSame( 'bar', $y->asString() );
+        self::assertSame( $x::class, $y::class );
     }
 
 
     public function testOffsetExists() : void {
 
         $x = self::p( [ 'foo' => 'bar', 'baz' => 'qux' ] );
-        static::assertTrue( isset( $x[ 'foo' ] ) );
-        static::assertFalse( isset( $x[ 'qux' ] ) );
+        self::assertTrue( isset( $x[ 'foo' ] ) );
+        self::assertFalse( isset( $x[ 'qux' ] ) );
 
-        static::expectException( InvalidArgumentException::class );
+        self::expectException( InvalidArgumentException::class );
         $y = isset( $x[ null ] );
         unset( $y );
 
@@ -1397,15 +1398,15 @@ class ParameterTest extends TestCase {
 
     public function testOffsetGet() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::assertTrue( isset( $x[ 0 ] ) );
-        static::assertSame( 'foo', $x[ 0 ]->asString() );
-        static::assertSame( 'bar', $x[ 1 ]->asString() );
+        self::assertTrue( isset( $x[ 0 ] ) );
+        self::assertSame( 'foo', $x[ 0 ]->asString() );
+        self::assertSame( 'bar', $x[ 1 ]->asString() );
     }
 
 
     public function testOffsetGetForInvalidArgument() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( InvalidArgumentException::class );
+        self::expectException( InvalidArgumentException::class );
         $y = $x[ null ];
         unset( $y );
     }
@@ -1413,15 +1414,21 @@ class ParameterTest extends TestCase {
 
     public function testOffsetGetForOutOfBounds() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( OutOfBoundsException::class );
+        self::expectException( OutOfBoundsException::class );
         $y = $x[ 2 ];
         unset( $y );
     }
 
 
+    public function testOffsetGetWithInt() : void {
+        $x = self::p( [ 'foo' => 3 ] );
+        self::assertSame( 3, $x[ 'foo' ]->asInt() );
+    }
+
+
     public function testOffsetGetWithString() : void {
         $x = self::p( 'foo' );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $y = $x[ 0 ];
         unset( $y );
     }
@@ -1429,131 +1436,131 @@ class ParameterTest extends TestCase {
 
     public function testOffsetSet() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( LogicException::class );
+        self::expectException( LogicException::class );
         $x[ 0 ] = 'baz';
     }
 
 
     public function testOffsetUnset() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( LogicException::class );
+        self::expectException( LogicException::class );
         unset( $x[ 0 ] );
     }
 
 
     public function testRoundedFloat() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asRoundedFloat( 1 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asRoundedFloat( 1 ), 0.0001 );
 
         $x = self::p( '5.4' );
-        static::assertEqualsWithDelta( 5.4, $x->asRoundedFloat( 1 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.4, $x->asRoundedFloat( 1 ), 0.0001 );
 
         $x = self::p( '1.2345' );
-        static::assertEqualsWithDelta( 1.0, $x->asRoundedFloat(), 0.0001 );
-        static::assertEqualsWithDelta( 1.2, $x->asRoundedFloat( 1 ), 0.0001 );
-        static::assertEqualsWithDelta( 1.23, $x->asRoundedFloat( 2 ), 0.0001 );
-        static::assertEqualsWithDelta( 1.235, $x->asRoundedFloat( 3 ), 0.0001 );
-        static::assertEqualsWithDelta( 1.2345, $x->asRoundedFloat( 4 ), 0.0001 );
-        static::assertEqualsWithDelta( 1.2345, $x->asRoundedFloat( 5 ), 0.0001 );
+        self::assertEqualsWithDelta( 1.0, $x->asRoundedFloat(), 0.0001 );
+        self::assertEqualsWithDelta( 1.2, $x->asRoundedFloat( 1 ), 0.0001 );
+        self::assertEqualsWithDelta( 1.23, $x->asRoundedFloat( 2 ), 0.0001 );
+        self::assertEqualsWithDelta( 1.235, $x->asRoundedFloat( 3 ), 0.0001 );
+        self::assertEqualsWithDelta( 1.2345, $x->asRoundedFloat( 4 ), 0.0001 );
+        self::assertEqualsWithDelta( 1.2345, $x->asRoundedFloat( 5 ), 0.0001 );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asRoundedFloat();
     }
 
 
     public function testRoundedFloatForEmpty() : void {
         $x = self::p( '' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asRoundedFloat();
     }
 
 
     public function testRoundedFloatOrEmpty() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asRoundedFloatOrEmpty( 1 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asRoundedFloatOrEmpty( 1 ), 0.0001 );
 
         $x = self::p( '' );
-        static::assertNull( $x->asRoundedFloatOrEmpty() );
+        self::assertNull( $x->asRoundedFloatOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asRoundedFloatOrEmpty();
     }
 
 
     public function testRoundedFloatOrEmptyForNull() : void {
         $x = self::p( null );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $x->asRoundedFloatOrEmpty();
     }
 
 
     public function testRoundedFloatOrNull() : void {
         $x = self::p( '5.5' );
-        static::assertEqualsWithDelta( 5.5, $x->asRoundedFloatOrNull( 1 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asRoundedFloatOrNull( 1 ), 0.0001 );
 
         $x = self::p( '5.4' );
-        static::assertEqualsWithDelta( 5.4, $x->asRoundedFloatOrNull( 1 ), 0.0001 );
+        self::assertEqualsWithDelta( 5.4, $x->asRoundedFloatOrNull( 1 ), 0.0001 );
 
         $x = self::p( null );
-        static::assertNull( $x->asRoundedFloatOrNull() );
+        self::assertNull( $x->asRoundedFloatOrNull() );
     }
 
 
     public function testRoundedInt() : void {
         $x = self::p( '5.5' );
-        static::assertSame( 6, $x->asRoundedInt() );
-        static::assertSame( 5, $x->asRoundedInt( 1 ) );
+        self::assertSame( 6, $x->asRoundedInt() );
+        self::assertSame( 5, $x->asRoundedInt( 1 ) );
 
 
         $x = self::p( '5.4' );
-        static::assertSame( 5, $x->asRoundedInt() );
+        self::assertSame( 5, $x->asRoundedInt() );
 
         $x = self::p( '153.456' );
-        static::assertSame( 153, $x->asRoundedInt() );
-        static::assertSame( 150, $x->asRoundedInt( -1 ) );
-        static::assertSame( 200, $x->asRoundedInt( -2 ) );
+        self::assertSame( 153, $x->asRoundedInt() );
+        self::assertSame( 150, $x->asRoundedInt( -1 ) );
+        self::assertSame( 200, $x->asRoundedInt( -2 ) );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asRoundedInt();
     }
 
 
     public function testRoundedIntOrEmpty() : void {
         $x = self::p( '5.5' );
-        static::assertSame( 6, $x->asRoundedIntOrEmpty() );
+        self::assertSame( 6, $x->asRoundedIntOrEmpty() );
 
         $x = self::p( '' );
-        static::assertNull( $x->asRoundedIntOrEmpty() );
+        self::assertNull( $x->asRoundedIntOrEmpty() );
 
         $x = self::p( 'foo' );
-        static::expectException( ParseException::class );
+        self::expectException( ParseException::class );
         $x->asRoundedIntOrEmpty();
     }
 
 
     public function testRoundedIntOrNull() : void {
         $x = self::p( '5.5' );
-        static::assertSame( 6, $x->asRoundedIntOrNull() );
+        self::assertSame( 6, $x->asRoundedIntOrNull() );
 
         $x = self::p( '5.4' );
-        static::assertSame( 5, $x->asRoundedIntOrNull() );
+        self::assertSame( 5, $x->asRoundedIntOrNull() );
 
         $x = self::p( null );
-        static::assertNull( $x->asRoundedIntOrNull() );
+        self::assertNull( $x->asRoundedIntOrNull() );
     }
 
 
     public function testToString() : void {
         $x = self::p( 'foo' );
-        static::assertSame( 'foo', (string) $x );
+        self::assertSame( 'foo', (string) $x );
 
-        static::assertSame( 'xfoox', 'x' . $x . 'x' );
+        self::assertSame( 'xfoox', 'x' . $x . 'x' );
 
         $x = self::p( [ 'foo', 'bar' ] );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         $y = (string) $x;
         unset( $y );
     }
