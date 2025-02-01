@@ -13,7 +13,7 @@ This is useful in a number of contexts:
 
 You can require it directly with Composer:
 
-```php
+```shell
 composer require jdwx/param
 ```
 
