@@ -184,7 +184,7 @@ class ParameterSet implements IParameterSet {
             return [];
         }
         $keys = $keys->toArray();
-        /** @phpstan-ignore booleanAnd.alwaysTrue */
+        /** @phpstan-ignore-next-line */
         assert( is_array( $keys ) && is_string( $keys[ array_key_first( $keys ) ] ) );
         return $keys;
     }

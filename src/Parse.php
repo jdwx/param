@@ -28,6 +28,7 @@ class Parse {
         if ( Validate::arrayValue( $i_stValue, $i_r ) ) {
             return $i_stValue;
         }
+        /** @phpstan-ignore arrayValues.list */
         $stOptions = self::summarizeOptions( array_values( $i_r ) );
         throw new ParseException( $i_nstError ?? "Expected one of {$stOptions}. Got: {$i_stValue}" );
     }
