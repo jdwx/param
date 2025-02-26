@@ -39,6 +39,18 @@ interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
     public function asArrayOrString() : array|string;
 
 
+    /** @return mixed[] */
+    public function asArrayRecursive() : array;
+
+
+    /** @return mixed[]|null */
+    public function asArrayRecursiveOrNull() : ?array;
+
+
+    /** @return mixed[]|string */
+    public function asArrayRecursiveOrString() : array|string;
+
+
     public function asBool() : bool;
 
 

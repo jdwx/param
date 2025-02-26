@@ -50,6 +50,28 @@ class Parameter implements IParameter, Stringable {
     }
 
 
+    /**
+     * @param mixed[]|IParameter $i_xValue
+     * @return mixed[]
+     */
+    private static function unwrap( array|IParameter $i_xValue ) : array {
+        if ( $i_xValue instanceof IParameter ) {
+            $i_xValue = $i_xValue->asArray();
+        }
+        $r = [];
+        foreach ( $i_xValue as $k => $v ) {
+            if ( is_array( $v ) || ( $v instanceof IParameter && $v->isArray() ) ) {
+                $r[ $k ] = self::unwrap( $v );
+            } elseif ( $v instanceof IParameter ) {
+                $r[ $k ] = $v->getValue();
+            } else {
+                $r[ $k ] = $v;
+            }
+        }
+        return $r;
+    }
+
+
     public function __toString() : string {
         return $this->asString();
     }
@@ -77,6 +99,27 @@ class Parameter implements IParameter, Stringable {
     public function asArrayOrString() : array|string {
         if ( is_array( $this->xValue ) ) {
             return $this->xValue;
+        }
+        return $this->asString();
+    }
+
+
+    public function asArrayRecursive( ?string $i_nstError = null ) : array {
+        return self::unwrap( $this->asArray( $i_nstError ) );
+    }
+
+
+    public function asArrayRecursiveOrNull() : ?array {
+        if ( $this->isNull() ) {
+            return null;
+        }
+        return $this->asArrayRecursive();
+    }
+
+
+    public function asArrayRecursiveOrString() : array|string {
+        if ( is_array( $this->xValue ) ) {
+            return self::unwrap( $this->xValue );
         }
         return $this->asString();
     }
@@ -889,7 +932,7 @@ class Parameter implements IParameter, Stringable {
      * @param int|string $offset
      */
     public function offsetExists( mixed $offset ) : bool {
-        /** @phpstan-ignore booleanAnd.alwaysFalse */
+        /** @phpstan-ignore booleanAnd.alwaysFalse, function.alreadyNarrowedType */
         if ( ! is_int( $offset ) && ! is_string( $offset ) ) {
             throw new InvalidArgumentException( 'Parameter key is not an integer or string.' );
         }
@@ -902,7 +945,7 @@ class Parameter implements IParameter, Stringable {
      * @param int|string $offset
      */
     public function offsetGet( mixed $offset ) : Parameter {
-        /** @phpstan-ignore booleanAnd.alwaysFalse */
+        /** @phpstan-ignore booleanAnd.alwaysFalse, function.alreadyNarrowedType */
         if ( ! is_int( $offset ) && ! is_string( $offset ) ) {
             throw new InvalidArgumentException( 'Parameter key is not an integer or string.' );
         }

@@ -50,6 +50,41 @@ final class ParameterTest extends TestCase {
     }
 
 
+    public function testAsArrayRecursive() : void {
+        $x = self::p( [ 'foo', [ 'bar', self::p( 'baz' ), self::p( [ 'qux', self::p( 'quux' ) ] ) ] ] );
+        self::assertSame( [ 'foo', [ 'bar', 'baz', [ 'qux', 'quux' ] ] ], $x->asArrayRecursive() );
+
+        self::expectException( TypeError::class );
+        self::p( 'foo' )->asArrayRecursive();
+    }
+
+
+    public function testAsArrayRecursiveOrNull() : void {
+        $x = self::p( [ 'foo', [ 'bar', self::p( 'baz' ), self::p( [ 'qux', self::p( 'quux' ) ] ) ] ] );
+        self::assertSame( [ 'foo', [ 'bar', 'baz', [ 'qux', 'quux' ] ] ], $x->asArrayRecursiveOrNull() );
+
+        $x = self::p( null );
+        self::assertNull( $x->asArrayRecursiveOrNull() );
+
+        $x = self::p( 'foo' );
+        self::expectException( TypeError::class );
+        $x->asArrayRecursiveOrNull();
+    }
+
+
+    public function testAsArrayRecursiveOrString() : void {
+        $x = self::p( [ 'foo', [ 'bar', self::p( 'baz' ), self::p( [ 'qux', self::p( 'quux' ) ] ) ] ] );
+        self::assertSame( [ 'foo', [ 'bar', 'baz', [ 'qux', 'quux' ] ] ], $x->asArrayRecursiveOrString() );
+
+        $x = self::p( 'foo' );
+        self::assertSame( 'foo', $x->asArrayRecursiveOrString() );
+
+        $x = self::p( null );
+        self::expectException( TypeError::class );
+        $x->asArrayRecursiveOrString();
+    }
+
+
     public function testAsArrayWithArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
         self::assertSame( [ 'foo', 'bar' ], $x->asArray() );
@@ -348,14 +383,17 @@ final class ParameterTest extends TestCase {
     public function testAsFloatForStringFloat() : void {
 
         $x = self::p( '5.5' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsFloat( $x->asFloat() );
         self::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
 
         $x = self::p( '.01' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsFloat( $x->asFloat() );
         self::assertEqualsWithDelta( 0.01, $x->asFloat(), 0.0001 );
 
         $x = self::p( '-.01' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsFloat( $x->asFloat() );
         self::assertEqualsWithDelta( -0.01, $x->asFloat(), 0.0001 );
 
@@ -369,6 +407,7 @@ final class ParameterTest extends TestCase {
     public function testAsFloatForStringInt() : void {
 
         $x = self::p( '5' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsFloat( $x->asFloat() );
         self::assertEqualsWithDelta( 5.0, $x->asFloat(), 0.0001 );
 
@@ -1035,9 +1074,11 @@ final class ParameterTest extends TestCase {
 
     public function testAsString() : void {
         $x = self::p( '5.5' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( $x->asString() );
         self::assertSame( '5.5', $x->asString() );
         $x = self::p( '5' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( $x->asString() );
         self::assertSame( '5', $x->asString() );
         self::expectException( TypeError::class );
