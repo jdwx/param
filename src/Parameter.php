@@ -908,12 +908,13 @@ class Parameter implements IParameter, Stringable {
 
 
     public function isBool() : bool {
-        try {
-            $this->asBool();
-            return true;
-        } catch ( ParseException|TypeError ) {
+        if ( is_array( $this->xValue ) ) {
+            return false;
         }
-        return false;
+        if ( is_null( $this->xValue ) ) {
+            return true;
+        }
+        return Validate::bool( strval( $this->xValue ) );
     }
 
 

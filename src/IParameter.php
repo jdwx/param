@@ -375,8 +375,6 @@ interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
      * Checks if the value is parseable as a boolean. Note that null is considered
      * parseable as a boolean (false).
      *
-     * This method is inefficient.
-     *
      * @return bool True if the value is parseable as a boolean, otherwise false.
      */
     public function isBool() : bool;
