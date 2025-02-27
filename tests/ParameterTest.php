@@ -1318,11 +1318,101 @@ final class ParameterTest extends TestCase {
     }
 
 
+    public function testIs() : void {
+        $x = self::p( 1 );
+        self::assertTrue( $x->is( '1' ) );
+        self::assertTrue( $x->is( self::p( '1' ) ) );
+        self::assertTrue( $x->is( 1 ) );
+        self::assertTrue( $x->is( 1.0 ) );
+        self::assertTrue( $x->is( true ) );
+        self::assertFalse( $x->is( 'foo' ) );
+        self::assertFalse( $x->is( false ) );
+        self::assertFalse( $x->is( null ) );
+        self::assertFalse( $x->is( [ 'foo', 'bar' ] ) );
+
+        $x = self::p( 'foo' );
+        self::assertTrue( $x->is( 'foo' ) );
+        self::assertFalse( $x->is( 'bar' ) );
+        self::assertFalse( $x->is( null ) );
+        self::assertFalse( $x->is( 0 ) );
+        self::assertFalse( $x->is( 1 ) );
+        self::assertFalse( $x->is( 1.0 ) );
+        self::assertFalse( $x->is( true ) );
+        self::assertFalse( $x->is( false ) );
+
+        $x = self::p( [ 'foo', 'bar' ] );
+        self::assertFalse( $x->is( 'foo' ) );
+        self::assertFalse( $x->is( 'bar' ) );
+        self::assertFalse( $x->is( null ) );
+        self::assertFalse( $x->is( 0 ) );
+        self::assertFalse( $x->is( 1 ) );
+        self::assertFalse( $x->is( 1.0 ) );
+        self::assertFalse( $x->is( true ) );
+        self::assertFalse( $x->is( false ) );
+
+        $x = self::p( null );
+        self::assertTrue( $x->is( null ) );
+        self::assertFalse( $x->is( '' ) );
+        self::assertFalse( $x->is( 'foo' ) );
+        self::assertFalse( $x->is( 0 ) );
+        self::assertFalse( $x->is( 1 ) );
+        self::assertFalse( $x->is( 1.0 ) );
+        self::assertFalse( $x->is( true ) );
+        self::assertFalse( $x->is( false ) );
+        self::assertFalse( $x->is( [ 'foo', 'bar' ] ) );
+
+        $x = self::p( [ 'foo', 'bar' ] );
+        self::assertTrue( $x->is( [ 'foo', 'bar' ] ) );
+        self::assertTrue( $x->is( self::p( [ 'foo', 'bar' ] ) ) );
+        self::assertFalse( $x->is( [ 'foo' ] ) );
+        self::assertFalse( $x->is( [ 'bar', 'foo' ] ) );
+        self::assertFalse( $x->is( self::p( [ 'bar', 'foo' ] ) ) );
+        self::assertFalse( $x->is( [ 'foo', 'bar', 'baz' ] ) );
+        self::assertFalse( $x->is( 'foo' ) );
+        self::assertFalse( $x->is( 'bar' ) );
+        self::assertFalse( $x->is( null ) );
+        self::assertFalse( $x->is( 0 ) );
+        self::assertFalse( $x->is( 1 ) );
+        self::assertFalse( $x->is( 1.0 ) );
+        self::assertFalse( $x->is( true ) );
+        self::assertFalse( $x->is( false ) );
+
+        $x = self::p( true );
+        self::assertTrue( $x->is( true ) );
+
+        # This is an interesting case, because it's false but the reverse
+        # is true. I.e., parameter(true)->is(1) is false but
+        # parameter(1)->is(true) is true because the value true is stored
+        # as "1" internally.
+        self::assertFalse( $x->is( 1 ) );
+        self::assertFalse( $x->is( 'yes' ) );
+        self::assertFalse( $x->is( 'no' ) );
+        self::assertFalse( $x->is( 'foo' ) );
+        self::assertFalse( $x->is( false ) );
+        self::assertFalse( $x->is( null ) );
+        self::assertFalse( $x->is( 0 ) );
+
+    }
+
+
     public function testIsArray() : void {
         $x = self::p( '5.5' );
         self::assertFalse( $x->isArray() );
         $x = self::p( [ 'foo', 'bar' ] );
         self::assertTrue( $x->isArray() );
+    }
+
+
+    public function testIsBool() : void {
+        self::assertTrue( self::p( true )->isBool() );
+        self::assertTrue( self::p( false )->isBool() );
+        self::assertTrue( self::p( null )->isBool() );
+        self::assertTrue( self::p( 'true' )->isBool() );
+        self::assertTrue( self::p( 'no' )->isBool() );
+        self::assertTrue( self::p( '5' )->isBool() );
+        self::assertTrue( self::p( '0' )->isBool() );
+        self::assertFalse( self::p( 'foo' )->isBool() );
+        self::assertFalse( self::p( [ 'foo', 'bar' ] )->isBool() );
     }
 
 

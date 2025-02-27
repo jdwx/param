@@ -757,7 +757,7 @@ class Parameter implements IParameter, Stringable {
         if ( is_string( $this->xValue ) ) {
             return $this->xValue;
         }
-        throw new TypeError( 'Parameter is not a string' );
+        throw new TypeError( 'Parameter is not a string: ' . gettype( $this->xValue ) );
     }
 
 
@@ -856,8 +856,64 @@ class Parameter implements IParameter, Stringable {
     }
 
 
+    /**
+     * @param mixed[]|int|string|float|bool|IParameter|null $i_xValue
+     * @return bool
+     */
+    public function is( array|int|string|float|bool|null|IParameter $i_xValue ) : bool {
+
+        # If the value is a Parameter, get its value. (Recursively, if an array.)
+        if ( $i_xValue instanceof IParameter ) {
+            if ( $i_xValue->isArray() ) {
+                $i_xValue = $i_xValue->asArrayRecursive();
+            } else {
+                $i_xValue = $i_xValue->getValue();
+            }
+        }
+
+        # Nulls only match each other.
+        if ( $this->isNull() ) {
+            return $i_xValue === null;
+        }
+        if ( is_null( $i_xValue ) ) {
+            return false;
+        }
+
+        # Bools match only the allowable boolean values.
+        # NOTE: This does include all numeric values.
+        if ( is_bool( $i_xValue ) ) {
+            if ( ! $this->isBool() ) {
+                return false;
+            }
+            return $this->asBool() === $i_xValue;
+        }
+
+        # Arrays are compared recursively.
+        if ( is_array( $i_xValue ) ) {
+            if ( ! $this->isArray() ) {
+                return false;
+            }
+            return $this->asArrayRecursive() == $i_xValue;
+        }
+
+        # Options remaining are int, string, and float. These
+        # can be directly compared with ==.
+        return $this->getValue() == $i_xValue;
+    }
+
+
     public function isArray() : bool {
         return is_array( $this->xValue );
+    }
+
+
+    public function isBool() : bool {
+        try {
+            $this->asBool();
+            return true;
+        } catch ( ParseException|TypeError ) {
+        }
+        return false;
     }
 
 

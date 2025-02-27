@@ -355,7 +355,31 @@ interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
     public function indexOrNull( int|string $key ) : ?IParameter;
 
 
+    /**
+     * Provides an easy way to test whether the parameter is equal to a given
+     * value without getting too hung up on types. Int, string, array, and
+     * float values are compared using ==. In the case of arrays, the
+     * parameter's value is recursively collapsed first. If the given value
+     * is null, the parameter's value must be null to match.
+     *
+     * @param mixed[]|int|string|float|bool|IParameter|null $i_xValue
+     * @return bool True if this parameter equals the given value.
+     */
+    public function is( array|int|string|float|bool|null|IParameter $i_xValue ) : bool;
+
+
     public function isArray() : bool;
+
+
+    /**
+     * Checks if the value is parseable as a boolean. Note that null is considered
+     * parseable as a boolean (false).
+     *
+     * This method is inefficient.
+     *
+     * @return bool True if the value is parseable as a boolean, otherwise false.
+     */
+    public function isBool() : bool;
 
 
     /**
