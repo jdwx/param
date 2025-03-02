@@ -1173,6 +1173,27 @@ final class ParameterTest extends TestCase {
     }
 
 
+    public function testAsTimeStamp() : void {
+        $tm = time();
+        $x = self::p( date( 'r', $tm ) );
+        self::assertSame( $tm, $x->asTimeStamp() );
+
+        $x = self::p( 'foo' );
+        self::expectException( ParseException::class );
+        $x->asTimeStamp();
+    }
+
+
+    public function testAsTimeStampOrNull() : void {
+        $tm = time();
+        $x = self::p( date( 'r', $tm ) );
+        self::assertSame( $tm, $x->asTimeStampOrNull() );
+
+        $x = self::p( null );
+        self::assertNull( $x->asTimeStampOrNull() );
+    }
+
+
     public function testAsUnsignedFloat() : void {
         $x = self::p( '1.23' );
         self::assertEqualsWithDelta( 1.23, $x->asUnsignedFloat(), 0.0001 );

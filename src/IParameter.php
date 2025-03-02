@@ -81,119 +81,173 @@ interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
 
     public function asDateTimeOrNull() : ?string;
 
+
     public function asEmailAddress() : string;
+
 
     public function asEmailAddressOrEmpty() : ?string;
 
+
     public function asEmailAddressOrNull() : ?string;
+
 
     public function asEmailUsername() : string;
 
+
     public function asEmailUsernameOrEmpty() : ?string;
+
 
     public function asEmailUsernameOrNull() : ?string;
 
+
     public function asExistingDirectory() : string;
+
 
     public function asExistingDirectoryOrEmpty() : ?string;
 
+
     public function asExistingDirectoryOrNull() : ?string;
+
 
     public function asExistingFilename() : string;
 
+
     public function asExistingFilenameOrEmpty() : ?string;
+
 
     public function asExistingFilenameOrNull() : ?string;
 
+
     public function asFloat() : float;
+
 
     public function asFloatOrEmpty() : ?float;
 
+
     public function asFloatOrNull() : ?float;
+
 
     public function asFloatRangeClosed( float $i_fMin, float $i_fMax ) : float;
 
+
     public function asFloatRangeClosedOrEmpty( float $i_fMin, float $i_fMax ) : ?float;
+
 
     public function asFloatRangeClosedOrNull( float $i_fMin, float $i_fMax ) : ?float;
 
+
     public function asFloatRangeHalfClosed( float $i_fMin, float $i_fMax ) : float;
+
 
     public function asFloatRangeHalfClosedOrEmpty( float $i_fMin, float $i_fMax ) : ?float;
 
+
     public function asFloatRangeHalfClosedOrNull( float $i_fMin, float $i_fMax ) : ?float;
+
 
     public function asFloatRangeOpen( float $i_fMin, float $i_fMax ) : float;
 
+
     public function asFloatRangeOpenOrEmpty( float $i_fMin, float $i_fMax ) : ?float;
+
 
     public function asFloatRangeOpenOrNull( float $i_fMin, float $i_fMax ) : ?float;
 
+
     public function asHostname() : string;
+
 
     public function asHostnameOrEmpty() : ?string;
 
+
     public function asHostnameOrNull() : ?string;
+
 
     public function asIP() : string;
 
+
     public function asIPOrEmpty() : ?string;
+
 
     public function asIPOrNull() : ?string;
 
+
     public function asIPv4() : string;
+
 
     public function asIPv4OrEmpty() : ?string;
 
+
     public function asIPv4OrNull() : ?string;
+
 
     public function asIPv6() : string;
 
+
     public function asIPv6OrEmpty() : ?string;
+
 
     public function asIPv6OrNull() : ?string;
 
+
     public function asInt() : int;
+
 
     /** Returns the integer value or null for the empty string. */
     public function asIntOrEmpty() : ?int;
 
+
     public function asIntOrNull() : ?int;
+
 
     public function asIntRangeClosed( int $i_iMin, int $i_iMax ) : int;
 
+
     public function asIntRangeClosedOrEmpty( int $i_iMin, int $i_iMax ) : ?int;
+
 
     public function asIntRangeClosedOrNull( int $i_iMin, int $i_iMax ) : ?int;
 
+
     public function asIntRangeHalfClosed( int $i_iMin, int $i_iMax ) : int;
+
 
     public function asIntRangeHalfClosedOrEmpty( int $i_iMin, int $i_iMax ) : ?int;
 
+
     public function asIntRangeHalfClosedOrNull( int $i_iMin, int $i_iMax ) : ?int;
+
 
     public function asIntRangeOpen( int $i_iMin, int $i_iMax ) : int;
 
+
     public function asIntRangeOpenOrEmpty( int $i_iMin, int $i_iMax ) : ?int;
+
 
     public function asIntRangeOpenOrNull( int $i_iMin, int $i_iMax ) : ?int;
 
+
     public function asJSON() : string;
+
 
     /** @param list<string> $i_rKeywords List of allowable keywords. */
     public function asKeyword( array $i_rKeywords ) : string;
 
+
     /** @param list<string> $i_rKeywords List of allowable keywords. */
     public function asKeywordOrEmpty( array $i_rKeywords ) : ?string;
 
+
     /** @param list<string> $i_rKeywords List of allowable keywords. */
     public function asKeywordOrNull( array $i_rKeywords ) : ?string;
+
 
     /**
      * @param array<string, mixed> $i_rMap
      * @return string The mapped value for the key specified by this parameter.
      */
     public function asMap( array $i_rMap ) : string;
+
 
     /**
      * @param array<string, mixed> $i_rMap
@@ -202,49 +256,76 @@ interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
      */
     public function asMapOrEmpty( array $i_rMap ) : ?string;
 
+
     /**
      * @param array<string, mixed> $i_rMap
      * @return ?string The mapped value for the key specified by this parameter, or null.
      */
     public function asMapOrNull( array $i_rMap ) : ?string;
 
+
     public function asNonexistentFilename() : string;
+
 
     public function asNonexistentFilenameOrEmpty() : ?string;
 
+
     public function asNonexistentFilenameOrNull() : ?string;
+
 
     public function asPositiveFloat() : float;
 
+
     public function asPositiveFloatOrEmpty() : ?float;
+
 
     public function asPositiveFloatOrNull() : ?float;
 
+
     public function asPositiveInt() : int;
+
 
     public function asPositiveIntOrEmpty() : ?int;
 
+
     public function asPositiveIntOrNull() : ?int;
+
 
     public function asRoundedFloat( int $i_iPrecision = 0 ) : float;
 
+
     public function asRoundedFloatOrEmpty( int $i_iPrecision = 0 ) : ?float;
+
 
     public function asRoundedFloatOrNull( int $i_iPrecision = 0 ) : ?float;
 
+
     public function asRoundedInt( int $i_iPrecision = 0 ) : int;
+
 
     public function asRoundedIntOrEmpty( int $i_iPrecision = 0 ) : ?int;
 
+
     public function asRoundedIntOrNull( int $i_iPrecision = 0 ) : ?int;
+
 
     public function asString() : string;
 
+
     public function asStringOrNull() : ?string;
+
 
     public function asTime() : string;
 
+
     public function asTimeOrNull() : ?string;
+
+
+    public function asTimeStamp() : int;
+
+
+    public function asTimeStampOrNull() : ?int;
+
 
     public function asUnsignedFloat() : float;
 

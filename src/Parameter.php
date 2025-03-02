@@ -811,6 +811,22 @@ class Parameter implements IParameter, Stringable {
     }
 
 
+    public function asTimeStamp() : int {
+        $tm = strtotime( $this->asDateTime() );
+        # This has already been validated as a date and time.
+        assert( is_int( $tm ) );
+        return $tm;
+    }
+
+
+    public function asTimeStampOrNull() : ?int {
+        if ( $this->isNull() ) {
+            return null;
+        }
+        return $this->asTimeStamp();
+    }
+
+
     public function asUnsignedFloat() : float {
         $st = $this->asString();
         return Parse::unsignedFloat( $st, "Parameter is not a non-negative number: {$st}" );
