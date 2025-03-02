@@ -52,4 +52,31 @@ class Filter {
     }
 
 
+    public static function date( string $i_st ) : ?string {
+        $bst = strtotime( $i_st );
+        if ( $bst === false ) {
+            return null;
+        }
+        return gmdate( 'Y-m-d', $bst );
+    }
+
+
+    public static function dateTime( string $i_st ) : ?string {
+        $bst = strtotime( $i_st );
+        if ( $bst === false ) {
+            return null;
+        }
+        return gmdate( 'Y-m-d H:i:s', $bst );
+    }
+
+
+    public static function time( string $i_st ) : ?string {
+        $bst = strtotime( $i_st );
+        if ( $bst === false ) {
+            return null;
+        }
+        return gmdate( 'H:i:s', $bst );
+    }
+
+
 }

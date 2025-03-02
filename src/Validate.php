@@ -38,6 +38,11 @@ final class Validate {
     }
 
 
+    public static function dateTime( string $i_stDate ) : bool {
+        return strtotime( $i_stDate ) !== false;
+    }
+
+
     public static function emailAddress( string $i_stEmail ) : bool {
         return filter_var( $i_stEmail, FILTER_VALIDATE_EMAIL ) !== false;
     }

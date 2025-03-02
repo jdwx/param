@@ -64,6 +64,24 @@ class Parse {
     }
 
 
+    public static function date( string $i_stDate, ?string $i_nstError = null ) : string {
+        $nst = Filter::date( $i_stDate );
+        if ( $nst === null ) {
+            throw new ParseException( $i_nstError ?? "Invalid date: {$i_stDate}" );
+        }
+        return $nst;
+    }
+
+
+    public static function dateTime( string $i_stDateTime, ?string $i_nstError = null ) : string {
+        $nst = Filter::dateTime( $i_stDateTime );
+        if ( $nst === null ) {
+            throw new ParseException( $i_nstError ?? "Invalid date/time: {$i_stDateTime}" );
+        }
+        return $nst;
+    }
+
+
     public static function emailAddress( string $i_stEmail, ?string $i_nstError = null ) : string {
         if ( Validate::emailAddress( $i_stEmail ) ) {
             return $i_stEmail;
@@ -262,6 +280,15 @@ class Parse {
             return '(no options)';
         }
         return join( ', ', $i_rOptions );
+    }
+
+
+    public static function time( string $i_stTime, ?string $i_nstError = null ) : string {
+        $nst = Filter::time( $i_stTime );
+        if ( $nst === null ) {
+            throw new ParseException( $i_nstError ?? "Invalid time: {$i_stTime}" );
+        }
+        return $nst;
     }
 
 

@@ -38,6 +38,24 @@ final class ParseTest extends TestCase {
     }
 
 
+    public function testDate() : void {
+        self::assertSame( '2024-01-25', Parse::date( '2024-01-25 12:34:56' ) );
+        self::assertSame( '2025-03-02', Parse::date( 'March 2, 2025 3:53 PM' ) );
+        self::assertSame( '2024-01-28', Parse::date( '2024-01-26 + 2 days' ) );
+        self::expectException( ParseException::class );
+        Parse::date( 'foo' );
+    }
+
+
+    public function testDateTime() : void {
+        self::assertSame( '2024-01-25 12:34:56', Parse::dateTime( '2024-01-25 12:34:56' ) );
+        self::assertSame( '2025-03-02 15:53:00', Parse::dateTime( 'March 2, 2025 3:53 PM' ) );
+        self::assertSame( '2024-01-28 00:00:00', Parse::dateTime( '2024-01-26 + 2 days' ) );
+        self::expectException( ParseException::class );
+        Parse::dateTime( 'foo' );
+    }
+
+
     public function testGlob() : void {
         $r = Parse::glob( __DIR__ . '/*.php' );
         self::assertContains( __FILE__, $r );
@@ -59,6 +77,15 @@ final class ParseTest extends TestCase {
 
         $r = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' ];
         self::assertEquals( 'a, b, c, d, ...', Parse::summarizeOptions( $r ) );
+    }
+
+
+    public function testTime() : void {
+        self::assertSame( '12:34:56', Parse::time( '2024-01-25 12:34:56' ) );
+        self::assertSame( '15:53:00', Parse::time( 'March 2, 2025 3:53 PM' ) );
+        self::assertSame( '00:00:00', Parse::time( '2024-01-26 + 2 days' ) );
+        self::expectException( ParseException::class );
+        Parse::time( 'foo' );
     }
 
 

@@ -222,6 +222,56 @@ final class ParameterTest extends TestCase {
     }
 
 
+    public function testAsDate() : void {
+        $x = self::p( '2024-01-25 12:34:56' );
+        self::assertSame( '2024-01-25', $x->asDate() );
+
+        $x = self::p( 'March 2, 2025 3:53 PM' );
+        self::assertSame( '2025-03-02', $x->asDate() );
+
+        $x = self::p( '2024-01-26 + 2 days' );
+        self::assertSame( '2024-01-28', $x->asDate() );
+
+        $x = self::p( 'foo' );
+        self::expectException( ParseException::class );
+        $x->asDate();
+    }
+
+
+    public function testAsDateOrNull() : void {
+        $x = self::p( '2024-01-25 12:34:56' );
+        self::assertSame( '2024-01-25', $x->asDateOrNull() );
+
+        $x = self::p( null );
+        self::assertNull( $x->asDateOrNull() );
+    }
+
+
+    public function testAsDateTime() : void {
+        $x = self::p( '2024-01-25 12:34:56' );
+        self::assertSame( '2024-01-25 12:34:56', $x->asDateTime() );
+
+        $x = self::p( 'March 2, 2025 3:53 PM' );
+        self::assertSame( '2025-03-02 15:53:00', $x->asDateTime() );
+
+        $x = self::p( '2024-01-26 + 2 days' );
+        self::assertSame( '2024-01-28 00:00:00', $x->asDateTime() );
+
+        $x = self::p( 'foo' );
+        self::expectException( ParseException::class );
+        $x->asDateTime();
+    }
+
+
+    public function testAsDateTimeOrNull() : void {
+        $x = self::p( '2024-01-25 12:34:56' );
+        self::assertSame( '2024-01-25 12:34:56', $x->asDateTimeOrNull() );
+
+        $x = self::p( null );
+        self::assertNull( $x->asDateTimeOrNull() );
+    }
+
+
     public function testAsEmailAddress() : void {
         $x = self::p( 'test@example.tst' );
         self::assertSame( 'test@example.tst', $x->asEmailAddress() );
@@ -1095,6 +1145,31 @@ final class ParameterTest extends TestCase {
         $x = self::p( null );
         self::assertNull( $x->asStringOrNull() );
 
+    }
+
+
+    public function testAsTime() : void {
+        $x = self::p( '2024-01-25 12:34:56' );
+        self::assertSame( '12:34:56', $x->asTime() );
+
+        $x = self::p( 'March 2, 2025 3:53 PM' );
+        self::assertSame( '15:53:00', $x->asTime() );
+
+        $x = self::p( '2024-01-26 + 2 days' );
+        self::assertSame( '00:00:00', $x->asTime() );
+
+        $x = self::p( 'foo' );
+        self::expectException( ParseException::class );
+        $x->asTime();
+    }
+
+
+    public function testAsTimeOrNull() : void {
+        $x = self::p( '2024-01-25 12:34:56' );
+        self::assertSame( '12:34:56', $x->asTimeOrNull() );
+
+        $x = self::p( null );
+        self::assertNull( $x->asTimeOrNull() );
     }
 
 

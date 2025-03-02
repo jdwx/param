@@ -177,6 +177,34 @@ class Parameter implements IParameter, Stringable {
     }
 
 
+    public function asDate() : string {
+        $st = $this->asString();
+        return Parse::date( $st, "Parameter is not a date: {$st}" );
+    }
+
+
+    public function asDateOrNull() : ?string {
+        if ( $this->isNull() ) {
+            return null;
+        }
+        return $this->asDate();
+    }
+
+
+    public function asDateTime() : string {
+        $st = $this->asString();
+        return Parse::dateTime( $st, "Parameter is not a date and time: {$st}" );
+    }
+
+
+    public function asDateTimeOrNull() : ?string {
+        if ( $this->isNull() ) {
+            return null;
+        }
+        return $this->asDateTime();
+    }
+
+
     public function asEmailAddress() : string {
         $st = $this->asString();
         return Parse::emailAddress( $st, "Parameter is not an email address: {$st}" );
@@ -766,6 +794,20 @@ class Parameter implements IParameter, Stringable {
             return null;
         }
         return $this->asString();
+    }
+
+
+    public function asTime() : string {
+        $st = $this->asString();
+        return Parse::time( $st, "Parameter is not a time: {$st}" );
+    }
+
+
+    public function asTimeOrNull() : ?string {
+        if ( $this->isNull() ) {
+            return null;
+        }
+        return $this->asTime();
     }
 
 

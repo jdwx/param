@@ -54,4 +54,11 @@ class ValidateTest extends TestCase {
     }
 
 
+    public function testDateTime() : void {
+        self::assertTrue( Validate::dateTime( '2024-01-25' ) );
+        self::assertTrue( Validate::dateTime( '2024-01-26 + 2 days' ) );
+        self::assertFalse( Validate::dateTime( 'foo' ) );
+    }
+
+
 }
