@@ -34,6 +34,7 @@ class FilterTest extends TestCase {
         self::assertSame( '2024-01-25', Filter::date( '2024-01-25 12:34:56' ) );
         self::assertSame( '2025-03-02', Filter::date( 'March 2, 2025 3:53 PM' ) );
         self::assertSame( '2024-01-28', Filter::date( '2024-01-26 + 2 days' ) );
+        self::assertSame( '2018-06-12', Filter::date( '2018-06-12T19:30' ) );
         self::assertNull( Filter::date( 'foo' ) );
     }
 
@@ -42,6 +43,7 @@ class FilterTest extends TestCase {
         self::assertSame( '2024-01-25 12:34:56', Filter::dateTime( '2024-01-25 12:34:56' ) );
         self::assertSame( '2025-03-02 15:53:00', Filter::dateTime( 'March 2, 2025 3:53 PM' ) );
         self::assertSame( '2024-01-28 00:00:00', Filter::dateTime( '2024-01-26 + 2 days' ) );
+        self::assertSame( '2018-06-12 19:30:00', Filter::dateTime( '2018-06-12T19:30' ) );
         self::assertNull( Filter::dateTime( 'foo' ) );
     }
 
@@ -50,6 +52,7 @@ class FilterTest extends TestCase {
         self::assertSame( '12:34:56', Filter::time( '2024-01-25 12:34:56' ) );
         self::assertSame( '15:53:00', Filter::time( 'March 2, 2025 3:53 PM' ) );
         self::assertSame( '00:00:00', Filter::time( '2024-01-26 + 2 days' ) );
+        self::assertSame( '19:30:00', Filter::time( '2018-06-12T19:30' ) );
         self::assertNull( Filter::time( 'foo' ) );
     }
 
