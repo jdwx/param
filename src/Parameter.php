@@ -812,10 +812,8 @@ class Parameter implements IParameter, Stringable {
 
 
     public function asTimeStamp() : int {
-        $tm = strtotime( $this->asDateTime() );
-        # This has already been validated as a date and time.
-        assert( is_int( $tm ) );
-        return $tm;
+        $st = $this->asString();
+        return Parse::timeStamp( $st, "Parameter is not a timestamp: {$st}" );
     }
 
 

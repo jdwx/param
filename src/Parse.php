@@ -292,6 +292,18 @@ class Parse {
     }
 
 
+    public static function timeStamp( string $i_stTimeStamp, ?string $i_nstError = null ) : int {
+        $nst = Filter::dateTime( $i_stTimeStamp );
+        if ( $nst === null ) {
+            throw new ParseException( $i_nstError ?? "Invalid timestamp: {$i_stTimeStamp}" );
+        }
+        $tm = strtotime( $nst );
+        # The date and time have already been validated.
+        assert( is_int( $tm ) );
+        return $tm;
+    }
+
+
     public static function unsignedFloat( string $i_stFloat, ?string $i_nstError = null ) : float {
         if ( Validate::unsignedFloat( $i_stFloat ) ) {
             return floatval( $i_stFloat );
