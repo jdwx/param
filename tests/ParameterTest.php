@@ -1266,6 +1266,14 @@ final class ParameterTest extends TestCase {
     }
 
 
+    public function testCoerce() : void {
+        $p = self::p( 'foo' );
+        self::assertSame( $p, Parameter::coerce( $p ) );
+        self::assertSame( 'foo', Parameter::coerce( 'foo' )->asString() );
+        self::assertNull( Parameter::coerce( null ) );
+    }
+
+
     public function testConstructWithArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
         self::assertInstanceOf( Parameter::class, $x );
