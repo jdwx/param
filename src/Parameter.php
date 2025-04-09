@@ -51,6 +51,23 @@ class Parameter implements IParameter, Stringable {
 
 
     /**
+     * @param mixed $i_xValue
+     * @return IParameter|null
+     *
+     * Makes sure a value is a Parameter or null. Useful for
+     * handling arbitrary default values while passing
+     * through Parameter values unmodified.
+     */
+    public static function coerce( mixed $i_xValue ) : ?IParameter {
+        if ( is_null( $i_xValue ) || $i_xValue instanceof IParameter ) {
+            return $i_xValue;
+        }
+        /** @phpstan-ignore new.static */
+        return new static( $i_xValue );
+    }
+
+
+    /**
      * @param mixed[]|IParameter $i_xValue
      * @return mixed[]
      */

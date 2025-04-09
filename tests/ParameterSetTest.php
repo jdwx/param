@@ -65,6 +65,27 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testGetForAllowedKey() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'quux' => 'corge' ], [ 'baz' => 'qux' ], [ 'foo', 'baz', 'grault' ] );
+        self::assertEquals( 'bar', $set->get( 'foo' )->asString() );
+        self::assertEquals( 'qux', $set->get( 'baz' )->asString() );
+        self::assertNull( $set->get( 'grault' ) );
+        self::assertSame(
+            'garply',
+            $set->get( 'grault', new Parameter( 'garply' ) )->asString()
+        );
+        self::assertSame( 'garply', $set->get( 'grault', 'garply' )->asString() );
+    }
+
+
+    public function testGetForDisallowedKey() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'quux' => 'corge' ], [ 'baz' => 'qux' ], [ 'foo', 'baz' ] );
+        self::assertNull( $set->get( 'quux' ) );
+        self::assertSame( 'grault', $set->get( 'quux', new Parameter( 'grault' ) )->asString() );
+        self::assertSame( 'grault', $set->get( 'quux', 'grault' )->asString() );
+    }
+
+
     public function testGetIgnoredKeys() : void {
         $set = new ParameterSet( i_itAllowedKeys: [ 'foo', 'baz' ] );
         $set->setParameter( 'foo', 'bar' );

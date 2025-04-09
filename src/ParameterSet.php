@@ -117,15 +117,12 @@ class ParameterSet implements IParameterSet {
 
     public function get( string $i_stKey, mixed $i_xDefault = null ) : ?IParameter {
         if ( $this->isKeyAllowed( $i_stKey ) ) {
-            return $this->mapParameters->get(
+            return Parameter::coerce( $this->mapParameters->get(
                 $i_stKey,
                 $this->mapDefaults->get( $i_stKey, $i_xDefault )
-            );
+            ) );
         }
-        if ( is_null( $i_xDefault ) || $i_xDefault instanceof IParameter ) {
-            return null;
-        }
-        return new Parameter( $i_xDefault );
+        return Parameter::coerce( $i_xDefault );
     }
 
 
