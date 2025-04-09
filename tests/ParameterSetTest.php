@@ -61,6 +61,7 @@ final class ParameterSetTest extends TestCase {
         self::assertEquals( 'qux', $set->get( 'baz' )->asString() );
         self::assertNull( $set->get( 'nope' ) );
         self::assertNull( $set->get( 'quux' ) );
+        self::assertSame( 'grault', $set->get( 'quux', 'grault' )->asString() );
     }
 
 
@@ -96,6 +97,7 @@ final class ParameterSetTest extends TestCase {
     public function testIter() : void {
         $set = new ParameterSet( [ 'foo' => 'bar', 'quux' => 'corge' ], [ 'baz' => 'qux' ], [ 'foo', 'baz', 'grault' ] );
         $a = [];
+        /** @noinspection PhpLoopCanBeConvertedToArrayMapInspection */
         foreach ( $set->iter() as $stKey => $oParam ) {
             $a[ $stKey ] = $oParam->asString();
         }
