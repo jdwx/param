@@ -606,7 +606,7 @@ class Parameter implements IParameter, Stringable {
 
     /** This is primarily intended for debugging. */
     public function asJSON() : string {
-        return json_encode( $this->xValue );
+        return json_encode( $this->xValue, JSON_THROW_ON_ERROR );
     }
 
 
