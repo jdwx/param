@@ -92,7 +92,7 @@ interface IParameterSet extends ArrayAccess {
 
 
     /**
-     * @param list<string>|string|null $offset
+     * @param iterable<string>|string|null $offset
      */
     public function offsetUnset( mixed $offset ) : void;
 
@@ -120,6 +120,17 @@ interface IParameterSet extends ArrayAccess {
      * @return list<string>
      */
     public function testKeys( string ...$i_rstKeys ) : array;
+
+
+    /**
+     * @param string|iterable<string> $i_keys The key (or keys) to remove from the set
+     * @param bool $i_bAlsoDropDefault If true, any default value for the key will also be removed.
+     * @return void
+     *
+     * Drops the parameter from the set. If the parameter is not in the set, it does nothing.
+     * @noinspection PhpDocSignatureInspection
+     */
+    public function unset( string|iterable $i_keys, bool $i_bAlsoDropDefault ) : void;
 
 
 }

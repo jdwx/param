@@ -231,15 +231,7 @@ class ParameterSet implements IParameterSet {
         if ( is_null( $offset ) ) {
             throw new InvalidArgumentException( 'Cannot unset ParameterSet without key.' );
         }
-        if ( ! $this->bMutable ) {
-            throw new LogicException( "Cannot unset key in immutable set: {$offset}" );
-        }
-        if ( ! is_array( $offset ) ) {
-            $offset = [ $offset ];
-        }
-        foreach ( $offset as $stKey ) {
-            $this->mapParameters->remove( $stKey );
-        }
+        $this->unset( $offset );
     }
 
 
@@ -310,6 +302,28 @@ class ParameterSet implements IParameterSet {
      */
     public function testKeys( string ...$i_rstKeys ) : array {
         return array_values( array_intersect( $i_rstKeys, $this->listKeys() ) );
+    }
+
+
+    /**
+     * @param string|iterable<string> $i_keys
+     * @noinspection PhpDocSignatureInspection
+     */
+    public function unset( string|iterable $i_keys, bool $i_bAlsoDropDefault = false ) : void {
+        if ( ! $this->bMutable ) {
+            throw new LogicException( 'Cannot drop keys in immutable set' );
+        }
+        if ( is_string( $i_keys ) ) {
+            $i_keys = [ $i_keys ];
+        }
+        foreach ( $i_keys as $stKey ) {
+            if ( $this->mapParameters->hasKey( $stKey ) ) {
+                $this->mapParameters->remove( $stKey );
+            }
+            if ( $i_bAlsoDropDefault && $this->mapDefaults->hasKey( $stKey ) ) {
+                $this->mapDefaults->remove( $stKey );
+            }
+        }
     }
 
 

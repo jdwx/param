@@ -263,4 +263,21 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testUnset() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'baz' => 'quux' ], [ 'baz' => 'qux' ] );
+        self::assertTrue( $set->has( 'foo' ) );
+        $set->setMutable( true );
+        $set->unset( 'foo' );
+        self::assertFalse( $set->has( 'foo' ) );
+        self::assertSame( 'quux', $set->get( 'baz' )->asString() );
+        $set->unset( 'baz' );
+        self::assertSame( 'qux', $set->get( 'baz' )->asString() );
+        $set->unset( 'baz', true );
+        self::assertNull( $set->get( 'baz' ) );
+        $set->setMutable( false );
+        self::expectException( LogicException::class );
+        $set->unset( 'foo' );
+    }
+
+
 }
