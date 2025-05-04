@@ -130,7 +130,7 @@ interface IParameterSet extends ArrayAccess {
      * Drops the parameter from the set. If the parameter is not in the set, it does nothing.
      * @noinspection PhpDocSignatureInspection
      */
-    public function unset( string|iterable $i_keys, bool $i_bAlsoDropDefault ) : void;
+    public function unset( string|iterable $i_keys, bool $i_bAlsoDropDefault = false ) : void;
 
 
 }
