@@ -111,6 +111,13 @@ final class ParameterSetTest extends TestCase {
         self::assertSame( 'bar', $r[ 'foo' ] );
         self::assertSame( [ 'qux', 'quux' ], $r[ 'baz' ] );
         self::assertSame( 'garply', $r[ 'corge' ] );
+
+        $set = new ParameterSet( [ 'foo' => 'bar', 'baz' => 'qux' ], [ 'baz' => 'quux', 'corge' => 'garply' ] );
+        $r = $set->getValues();
+        self::assertCount( 3, $r );
+        self::assertSame( 'bar', $r[ 'foo' ] );
+        self::assertSame( 'qux', $r[ 'baz' ] );
+        self::assertSame( 'garply', $r[ 'corge' ] );
     }
 
 
