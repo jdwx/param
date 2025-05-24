@@ -1588,6 +1588,11 @@ final class ParameterTest extends TestCase {
 
         $x = self::p( null );
         self::assertSame( 'null', json_encode( $x ) );
+
+        $pBar = self::p( 'bar' );
+        $pFoo = self::p( [ 'foo' => $pBar ] );
+        self::assertSame( '"bar"', json_encode( $pBar ) );
+        self::assertSame( '{"foo":"bar"}', json_encode( $pFoo ) );
     }
 
 

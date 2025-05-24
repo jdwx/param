@@ -15,7 +15,7 @@ use TypeError;
 
 
 /**
- * Parameter is suitable to encapsulate a value that is received as a string or array (or NULL)
+ * Parameter is suitable to encapsulate a value received as a string or array (or NULL)
  * from a web request or database query.  It is used to validate and safely convert inputs to a more
  * useful type.
  */
@@ -39,7 +39,7 @@ class Parameter implements IParameter, Stringable {
      * @param mixed[]|string|IParameter|null $xValue The value to encapsulate.
      * @param bool $bAllowNull If true, null is allowed as a value. If false, an exception is thrown when null
      *                         is encountered.
-     * @param int|null $nuAllowArrayDepth If not null, the number of levels of array nesting that are allowed.
+     * @param int|null $nuAllowArrayDepth If not null, the maximum levels of array nesting that are allowed.
      *                                    0 means arrays are not allowed, 1 means flat arrays are allowed,
      *                                    2 means arrays of arrays are allowed, etc.
      */
@@ -1034,7 +1034,10 @@ class Parameter implements IParameter, Stringable {
 
     /** @return mixed[]|string|null */
     public function jsonSerialize() : array|string|null {
-        return $this->xValue;
+        if ( ! is_array( $this->xValue ) ) {
+            return $this->xValue;
+        }
+        return static::unwrap( $this->xValue );
     }
 
 
