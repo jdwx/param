@@ -147,6 +147,19 @@ class ParameterSet implements IParameterSet {
     }
 
 
+    public function getValues() : array {
+        $r = [];
+        foreach ( $this->iter() as $stKey => $pValue ) {
+            if ( $pValue->isArray() ) {
+                $r[ $stKey ] = $pValue->asArrayRecursiveOrNull();
+            } else {
+                $r[ $stKey ] = $pValue->getValue();
+            }
+        }
+        return $r;
+    }
+
+
     /** @param string ...$i_rstKeys */
     public function has( string ...$i_rstKeys ) : bool {
         foreach ( $i_rstKeys as $stKey ) {
@@ -170,6 +183,16 @@ class ParameterSet implements IParameterSet {
         foreach ( $this->listKeys() as $stKey ) {
             yield $stKey => $this->getEx( $stKey );
         }
+    }
+
+
+    public function jsonSerialize() : array {
+        $r = [];
+        /** @noinspection PhpLoopCanBeConvertedToArrayMapInspection */
+        foreach ( $this->iter() as $stKey => $pValue ) {
+            $r[ $stKey ] = $pValue->jsonSerialize();
+        }
+        return $r;
     }
 
 

@@ -95,6 +95,25 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testGetValues() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ], [ 'corge' => 'garply' ] );
+        $r = $set->getValues();
+        self::assertCount( 3, $r );
+        self::assertSame( 'bar', $r[ 'foo' ] );
+        self::assertSame( [ 'qux', 'quux' ], $r[ 'baz' ] );
+        self::assertSame( 'garply', $r[ 'corge' ] );
+
+        $pQux = new Parameter( 'qux' );
+        $pBar = new Parameter( 'bar' );
+        $set = new ParameterSet( [ 'foo' => $pBar, 'baz' => [ $pQux, 'quux' ] ], [ 'corge' => 'garply' ] );
+        $r = $set->getValues();
+        self::assertCount( 3, $r );
+        self::assertSame( 'bar', $r[ 'foo' ] );
+        self::assertSame( [ 'qux', 'quux' ], $r[ 'baz' ] );
+        self::assertSame( 'garply', $r[ 'corge' ] );
+    }
+
+
     public function testHas() : void {
         $set = new ParameterSet( [ 'foo' => 'bar', 'quux' => 'corge' ], [ 'baz' => 'qux' ], [ 'foo', 'baz', 'grault' ] );
         self::assertTrue( $set->has( 'foo' ) );
@@ -123,6 +142,19 @@ final class ParameterSetTest extends TestCase {
             $a[ $stKey ] = $oParam->asString();
         }
         self::assertSame( [ 'foo' => 'bar', 'baz' => 'qux' ], $a );
+    }
+
+
+    public function testJsonSerialize() : void {
+        $pQux = new Parameter( 'qux' );
+        $pBar = new Parameter( 'bar' );
+        $set = new ParameterSet( [ 'foo' => $pBar, 'baz' => [ $pQux, 'quux' ] ], [ 'corge' => 'garply' ] );
+        $r = $set->jsonSerialize();
+        self::assertCount( 3, $r );
+        self::assertSame( 'bar', $r[ 'foo' ] );
+        self::assertSame( [ 'qux', 'quux' ], $r[ 'baz' ] );
+        self::assertSame( 'garply', $r[ 'corge' ] );
+
     }
 
 
@@ -188,6 +220,7 @@ final class ParameterSetTest extends TestCase {
     public function testOffsetSet() : void {
         $set = new ParameterSet();
         $set[ 'foo' ] = 'bar';
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
         self::assertInstanceOf( Parameter::class, $set[ 'foo' ] );
         self::expectException( InvalidArgumentException::class );
         $set[ 'foo' ] = 'baz';

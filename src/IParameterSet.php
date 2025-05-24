@@ -9,13 +9,14 @@ namespace JDWX\Param;
 
 use ArrayAccess;
 use Generator;
+use JsonSerializable;
 
 
 /**
  * @suppress PhanAccessWrongInheritanceCategoryInternal
  * @extends ArrayAccess<string, IParameter>
  */
-interface IParameterSet extends ArrayAccess {
+interface IParameterSet extends ArrayAccess, JsonSerializable {
 
 
     public function addAllowedKey( string $i_stKey ) : void;
@@ -62,6 +63,14 @@ interface IParameterSet extends ArrayAccess {
 
     /** @return list<string> */
     public function getIgnoredKeys() : array;
+
+
+    /**
+     * @return array All values, de-parameterized.
+     *
+     * Suitable for displaying in debug output or serializing.
+     */
+    public function getValues() : array;
 
 
     /** @param string ...$i_rstKeys */
