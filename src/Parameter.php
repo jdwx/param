@@ -1037,7 +1037,7 @@ class Parameter implements IParameter, Stringable {
         if ( ! is_array( $this->xValue ) ) {
             return $this->xValue;
         }
-        return static::unwrap( $this->xValue );
+        return self::unwrap( $this->xValue );
     }
 
 
