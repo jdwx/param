@@ -33,8 +33,8 @@ class ParameterSet implements IParameterSet {
 
 
     /**
-     * @param iterable<int|string, string>|null $i_itParameters
-     * @param iterable<int|string, string>|null $i_itDefaults
+     * @param iterable<int|string, list<string|IParameter>|string|IParameter>|null $i_itParameters
+     * @param iterable<int|string, list<string|IParameter>|string|IParameter>|null $i_itDefaults
      * @param iterable<int|string>|null $i_itAllowedKeys
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
@@ -147,6 +147,7 @@ class ParameterSet implements IParameterSet {
     }
 
 
+    /** @return array<int|string, string|list<string>> */
     public function getValues() : array {
         $r = [];
         foreach ( $this->iter() as $stKey => $pValue ) {
@@ -186,6 +187,7 @@ class ParameterSet implements IParameterSet {
     }
 
 
+    /** @return array<int|string, mixed[]|bool|float|int|string|null> */
     public function jsonSerialize() : array {
         $r = [];
         /** @noinspection PhpLoopCanBeConvertedToArrayMapInspection */
@@ -316,6 +318,11 @@ class ParameterSet implements IParameterSet {
         }
         $set->setMutable( $this->bMutable );
         return $set;
+    }
+
+
+    public function subsetByRegExp( string $i_reFilter ) : static {
+        return $this->subsetByKeys( fn( string $stKey ) => preg_match( $i_reFilter, $stKey ) );
     }
 
 

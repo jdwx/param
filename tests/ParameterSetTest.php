@@ -303,6 +303,32 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testSubsetByRegExp() : void {
+        $set = new ParameterSet(
+            [ 'a:1' => 'foo', 'a:2' => 'bar', 'a:3' => 'baz', 'b:1' => 'qux' ],
+            [ 'a:2' => 'quux', 'a:3' => 'corge', 'b:2' => 'grault' ],
+            [ 'a:1', 'a:2', 'b:1', 'b:2' ]
+        );
+        $subset = $set->subsetByRegExp( '/^a:/' );
+        self::assertSame( [ 'a:1', 'a:2' ], $subset->getAllowedKeys() );
+        self::assertSame( [ 'a:1', 'a:2' ], $subset->listKeys() );
+        self::assertSame( 'foo', $subset->get( 'a:1' )->asString() );
+        self::assertSame( 'bar', $subset->get( 'a:2' )->asString() );
+        self::assertNull( $subset->get( 'a:3' ) );
+        self::assertNull( $subset->get( 'b:1' ) );
+        self::assertNull( $subset->get( 'b:2' ) );
+
+        $subset = $set->subsetByRegExp( '/:2$/' );
+        self::assertSame( [ 'a:2', 'b:2' ], $subset->getAllowedKeys() );
+        self::assertSame( [ 'a:2', 'b:2' ], $subset->listKeys() );
+        self::assertNull( $subset->get( 'a:1' ) );
+        self::assertSame( 'bar', $subset->get( 'a:2' )->asString() );
+        self::assertSame( 'grault', $subset->get( 'b:2' )->asString() );
+        self::assertNull( $subset->get( 'a:3' ) );
+        self::assertNull( $subset->get( 'b:1' ) );
+    }
+
+
     public function testUnset() : void {
         $set = new ParameterSet( [ 'foo' => 'bar', 'baz' => 'quux' ], [ 'baz' => 'qux' ] );
         self::assertTrue( $set->has( 'foo' ) );

@@ -66,7 +66,7 @@ interface IParameterSet extends ArrayAccess, JsonSerializable {
 
 
     /**
-     * @return array All values, de-parameterized.
+     * @return array<int|string, string|list<string>> All values, de-parameterized.
      *
      * Suitable for displaying in debug output or serializing.
      */
@@ -122,6 +122,9 @@ interface IParameterSet extends ArrayAccess, JsonSerializable {
 
     /** @param callable(string) : bool $i_fnFilter */
     public function subsetByKeys( callable $i_fnFilter ) : static;
+
+
+    public function subsetByRegExp( string $i_reFilter ) : static;
 
 
     /**
