@@ -28,7 +28,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\JDWX\\Param\\IParameter",
             "name": "IParameter",
-            "summary": "A\u0020parameter\u0020is\u0020suitable\u0020to\u0020encapsulate\u0020a\u0020value\u0020that\u0020is\u0020received\u0020as\u0020a\u0020string\u0020or\u0020array\u0020\u0028or\u0020NULL\u0029\nfrom\u0020a\u0020web\u0020request\u0020or\u0020database\u0020query.\u0020\u0020It\u0020is\u0020used\u0020to\u0020validate\u0020and\u0020safely\u0020convert\u0020inputs\u0020to\u0020a\u0020more\nuseful\u0020type.",
+            "summary": "Enable\u0020safe\u0020handling\u0020of\u0020untrusted\u0020data\u0020received\u0020as\u0020string,\u0020array,\u0020or\u0020null\u0020values.",
             "url": "classes/JDWX-Param-IParameter.html"
         },                {
             "fqsen": "\\JDWX\\Param\\IParameter\u003A\u003A__toString\u0028\u0029",

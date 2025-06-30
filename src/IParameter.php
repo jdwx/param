@@ -13,8 +13,10 @@ use JsonSerializable;
 
 
 /**
+ * Enable safe handling of untrusted data received as string, array, or null values.
+ *
  * A parameter is suitable to encapsulate a value that is received as a string or array (or NULL)
- * from a web request or database query.  It is used to validate and safely convert inputs to a more
+ * from a web request or database query result.  It is used to validate and safely convert inputs to a more
  * useful type.
  *
  * @suppress PhanAccessWrongInheritanceCategoryInternal
