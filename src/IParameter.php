@@ -22,6 +22,7 @@ use JsonSerializable;
  * @suppress PhanAccessWrongInheritanceCategoryInternal
  * @extends ArrayAccess<int|string, IParameter|string|array|null>
  * @extends Iterator<int|string, IParameter>
+ * @see Parameter for the base implementation
  */
 interface IParameter extends ArrayAccess, Iterator, JsonSerializable {
 
