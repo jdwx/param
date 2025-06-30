@@ -194,13 +194,9 @@ final class ParameterSetTest extends TestCase {
         self::assertFalse( isset( $set[ 'quux' ] ) );
         self::assertFalse( isset( $set[ 'grault' ] ) );
         self::assertFalse( isset( $set[ 'nope' ] ) );
-        /** @phpstan-ignore isset.offset, staticMethod.impossibleType */
         self::assertTrue( isset( $set[ [ 'foo', 'baz' ] ] ) );
-        /** @phpstan-ignore isset.offset, staticMethod.alreadyNarrowedType */
         self::assertFalse( isset( $set[ [ 'foo', 'quux' ] ] ) );
-        /** @phpstan-ignore isset.offset, staticMethod.alreadyNarrowedType */
         self::assertFalse( isset( $set[ [ 'foo', 'grault' ] ] ) );
-        /** @phpstan-ignore isset.offset, staticMethod.alreadyNarrowedType */
         self::assertFalse( isset( $set[ [ 'foo', 'nope' ] ] ) );
         self::assertFalse( isset( $set[ null ] ) );
     }

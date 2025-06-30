@@ -1,4 +1,5 @@
 /.idea
+/.phpdoc
 /.phpunit.result.cache
 /composer.lock
 /phan.txt
