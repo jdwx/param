@@ -748,7 +748,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\JDWX\\Param\\Parameter",
             "name": "Parameter",
-            "summary": "Enable\u0020safe\u0020handling\u0020of\u0020untrusted\u0020values\u0020received\u0020as\u0020string,\u0020array,\u0020or\u0020null\u0020values.",
+            "summary": "Enable\u0020safe\u0020handling\u0020of\u0020untrusted\u0020data\u0020received\u0020as\u0020string,\u0020array,\u0020or\u0020null\u0020values.",
             "url": "classes/JDWX-Param-Parameter.html"
         },                {
             "fqsen": "\\JDWX\\Param\\Parameter\u003A\u003A__construct\u0028\u0029",
