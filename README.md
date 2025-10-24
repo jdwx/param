@@ -52,6 +52,8 @@ try {
 }
 ```
 
+Experimental documentation is available at: https://jdwx.github.io/param/namespaces/jdwx-param.html
+
 ## Stability
 
 This library is stable and has been used in production code. It is not
