@@ -90,6 +90,9 @@ class Parameter implements IParameter, Stringable {
 
 
     public function __toString() : string {
+        if ( $this->isArray() ) {
+            return $this->asJSON();
+        }
         return $this->asString();
     }
 
@@ -911,12 +914,12 @@ class Parameter implements IParameter, Stringable {
 
 
     /** @param mixed[]|string|null $default */
-    public function indexOrDefault( int|string $key, array|string|null $default ) : Parameter {
+    public function indexOrDefault( int|string $key, array|string|null $default ) : self {
         $x = $this->indexOrNull( $key );
-        if ( $x instanceof Parameter ) {
+        if ( $x instanceof self ) {
             return $x;
         }
-        return new Parameter( $default, $this->bAllowNull, $this->nuAllowArrayDepth );
+        return new self( $default, $this->bAllowNull, $this->nuAllowArrayDepth );
     }
 
 
@@ -1077,13 +1080,13 @@ class Parameter implements IParameter, Stringable {
      * @suppress PhanTypeMismatchDeclaredParamNullable
      * @param int|string $offset
      */
-    public function offsetGet( mixed $offset ) : Parameter {
+    public function offsetGet( mixed $offset ) : self {
         /** @phpstan-ignore booleanAnd.alwaysFalse, function.alreadyNarrowedType */
         if ( ! is_int( $offset ) && ! is_string( $offset ) ) {
             throw new InvalidArgumentException( 'Parameter key is not an integer or string.' );
         }
         $x = $this->indexOrNull( $offset );
-        if ( $x instanceof Parameter ) {
+        if ( $x instanceof self ) {
             return $x;
         }
         throw new OutOfBoundsException( "Parameter does not have key '{$offset}'." );

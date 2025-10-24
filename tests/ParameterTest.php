@@ -31,7 +31,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asArrayOrNull() );
 
         $x = self::p( 'foo' );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asArrayOrNull();
 
     }
@@ -45,7 +45,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'foo', $x->asArrayOrString() );
 
         $x = self::p( null );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asArrayOrString();
     }
 
@@ -54,7 +54,7 @@ final class ParameterTest extends TestCase {
         $x = self::p( [ 'foo', [ 'bar', self::p( 'baz' ), self::p( [ 'qux', self::p( 'quux' ) ] ) ] ] );
         self::assertSame( [ 'foo', [ 'bar', 'baz', [ 'qux', 'quux' ] ] ], $x->asArrayRecursive() );
 
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         self::p( 'foo' )->asArrayRecursive();
     }
 
@@ -67,7 +67,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asArrayRecursiveOrNull() );
 
         $x = self::p( 'foo' );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asArrayRecursiveOrNull();
     }
 
@@ -80,7 +80,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'foo', $x->asArrayRecursiveOrString() );
 
         $x = self::p( null );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asArrayRecursiveOrString();
     }
 
@@ -93,14 +93,14 @@ final class ParameterTest extends TestCase {
 
     public function testAsArrayWithNull() : void {
         $x = self::p( null );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asArray();
     }
 
 
     public function testAsArrayWithString() : void {
         $x = self::p( '5' );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asArray();
     }
 
@@ -135,7 +135,7 @@ final class ParameterTest extends TestCase {
         self::assertFalse( $x->asBool() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asBool();
 
     }
@@ -155,21 +155,21 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'foo', $x->asConstant( 'foo' ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asConstant( 'bar' );
     }
 
 
     public function testAsConstantForArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asConstant( 'foo' );
     }
 
 
     public function testAsConstantForNull() : void {
         $x = self::p( null );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asConstant( 'foo' );
     }
 
@@ -188,14 +188,14 @@ final class ParameterTest extends TestCase {
         self::assertSame( 500, $x->asCurrency() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asCurrency();
     }
 
 
     public function testAsCurrencyForEmpty() : void {
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asCurrency();
     }
 
@@ -208,7 +208,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asCurrencyOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asCurrencyOrEmpty();
     }
 
@@ -233,7 +233,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( '2024-01-28', $x->asDate() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asDate();
     }
 
@@ -258,7 +258,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( '2024-01-28 00:00:00', $x->asDateTime() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asDateTime();
     }
 
@@ -277,7 +277,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'test@example.tst', $x->asEmailAddress() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asEmailAddress();
     }
 
@@ -290,7 +290,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asEmailAddressOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asEmailAddressOrEmpty();
     }
 
@@ -303,7 +303,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asEmailAddressOrNull() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asEmailAddressOrNull();
     }
 
@@ -313,7 +313,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'test', $x->asEmailUsername() );
 
         $x = self::p( 'fo@o' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asEmailUsername();
     }
 
@@ -326,7 +326,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asEmailUsernameOrEmpty() );
 
         $x = self::p( 'fo o' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asEmailUsernameOrEmpty();
     }
 
@@ -339,7 +339,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asEmailUsernameOrNull() );
 
         $x = self::p( '<foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asEmailUsernameOrNull();
     }
 
@@ -349,7 +349,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( sys_get_temp_dir(), $x->asExistingDirectory() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asExistingDirectory();
     }
 
@@ -362,7 +362,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asExistingDirectoryOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asExistingDirectoryOrEmpty();
     }
 
@@ -375,7 +375,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asExistingDirectoryOrNull() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asExistingDirectoryOrNull();
     }
 
@@ -385,7 +385,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( __FILE__, $x->asExistingFilename() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asExistingFilename();
     }
 
@@ -398,7 +398,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asExistingFilenameOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asExistingFilenameOrEmpty();
     }
 
@@ -411,21 +411,21 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asExistingFilenameOrNull() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asExistingFilenameOrNull();
     }
 
 
     public function testAsFloatForArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asFloat();
     }
 
 
     public function testAsFloatForNull() : void {
         $x = self::p( null );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asFloat();
     }
 
@@ -448,7 +448,7 @@ final class ParameterTest extends TestCase {
         self::assertEqualsWithDelta( -0.01, $x->asFloat(), 0.0001 );
 
         $x = self::p( '5.5.4' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloat();
 
     }
@@ -467,7 +467,7 @@ final class ParameterTest extends TestCase {
     public function testAsFloatForStringText() : void {
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloat();
 
     }
@@ -481,21 +481,21 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asFloatOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatOrEmpty();
     }
 
 
     public function testAsFloatOrEmptyForArray() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asFloatOrEmpty();
     }
 
 
     public function testAsFloatOrEmptyForNull() : void {
         $x = self::p( null );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asFloatOrEmpty();
     }
 
@@ -514,7 +514,7 @@ final class ParameterTest extends TestCase {
     public function testAsFloatRangeClosed() : void {
         $x = self::p( '5.5' );
         self::assertEqualsWithDelta( 5.5, $x->asFloatRangeClosed( 5.4, 5.6 ), 0.0001 );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeClosed( 5.5, 5.7 );
     }
 
@@ -527,7 +527,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeClosedOrEmpty( 5.4, 5.6 );
 
     }
@@ -541,7 +541,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asFloatRangeClosedOrNull( 5.4, 5.6 ) );
 
         $x = self::p( '5.5.4' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeClosedOrNull( 5.4, 5.6 );
     }
 
@@ -550,7 +550,7 @@ final class ParameterTest extends TestCase {
         $x = self::p( '5.5' );
         self::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.5, 5.6 ), 0.0001 );
 
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         self::assertEqualsWithDelta( 5.5, $x->asFloatRangeHalfClosed( 5.4, 5.5 ), 0.0001 );
     }
 
@@ -563,7 +563,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeHalfClosedOrEmpty( 5.5, 5.6 );
     }
 
@@ -576,7 +576,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 ) );
 
         $x = self::p( '5.5.4' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeHalfClosedOrNull( 5.5, 5.6 );
     }
 
@@ -586,7 +586,7 @@ final class ParameterTest extends TestCase {
         self::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.4, 5.5 ), 0.0001 );
         self::assertEqualsWithDelta( 5.5, $x->asFloatRangeOpen( 5.5, 5.6 ), 0.0001 );
 
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeOpen( 5.6, 5.7 );
     }
 
@@ -599,7 +599,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeOpenOrEmpty( 5.4, 5.5 );
     }
 
@@ -612,7 +612,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asFloatRangeOpenOrNull( 5.4, 5.5 ) );
 
         $x = self::p( '5.5.4' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asFloatRangeOpenOrNull( 5.4, 5.5 );
     }
 
@@ -622,14 +622,14 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'www.example.com', $x->asHostname() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asHostname();
     }
 
 
     public function testAsHostnameForTrailingDot() : void {
         $x = self::p( 'www.example.com.' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asHostname();
     }
 
@@ -642,7 +642,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asHostnameOrEmpty() );
 
         $x = self::p( 'www|example.com' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asHostnameOrEmpty();
     }
 
@@ -655,7 +655,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asHostnameOrNull() );
 
         $x = self::p( 'www example.com' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asHostnameOrNull();
     }
 
@@ -668,7 +668,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( '2001:db8::1', $x->asIP() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIP();
     }
 
@@ -681,7 +681,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIPOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPOrEmpty();
     }
 
@@ -694,7 +694,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIPOrNull() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPOrNull();
     }
 
@@ -704,7 +704,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( '192.0.2.1', $x->asIPv4() );
 
         $x = self::p( '2001:db8::1' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPv4();
     }
 
@@ -717,7 +717,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIPv4OrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPv4OrEmpty();
     }
 
@@ -730,7 +730,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIPv4OrNull() );
 
         $x = self::p( '192.0.2.3.4' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPv4OrNull();
     }
 
@@ -740,7 +740,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( '2001:db8::1', $x->asIPv6() );
 
         $x = self::p( '192.0.2.1' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPv6();
     }
 
@@ -753,7 +753,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIPv6OrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPv6OrEmpty();
     }
 
@@ -766,7 +766,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIPv6OrNull() );
 
         $x = self::p( '2001:db8::3.4' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIPv6OrNull();
     }
 
@@ -779,7 +779,7 @@ final class ParameterTest extends TestCase {
         $x = self::p( '5.9' );
         self::assertSame( 5, $x->asInt() );
 
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x = self::p( 'foo' );
         $x->asInt();
 
@@ -788,7 +788,7 @@ final class ParameterTest extends TestCase {
 
     public function testAsIntForEmpty() : void {
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asInt();
     }
 
@@ -804,7 +804,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 5, $x->asIntOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntOrEmpty();
     }
 
@@ -823,7 +823,7 @@ final class ParameterTest extends TestCase {
     public function testAsIntRangeClosed() : void {
         $x = self::p( '5' );
         self::assertSame( 5, $x->asIntRangeClosed( 4, 6 ) );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeClosed( 5, 7 );
     }
 
@@ -836,7 +836,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIntRangeClosedOrEmpty( 4, 6 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeClosedOrEmpty( 4, 6 );
     }
 
@@ -849,7 +849,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIntRangeClosedOrNull( 4, 6 ) );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeClosedOrNull( 4, 6 );
     }
 
@@ -857,7 +857,7 @@ final class ParameterTest extends TestCase {
     public function testAsIntRangeHalfClosed() : void {
         $x = self::p( '5' );
         self::assertSame( 5, $x->asIntRangeHalfClosed( 5, 6 ) );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeHalfClosed( 4, 5 );
     }
 
@@ -870,7 +870,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIntRangeHalfClosedOrEmpty( 5, 6 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeHalfClosedOrEmpty( 5, 6 );
     }
 
@@ -883,7 +883,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIntRangeHalfClosedOrNull( 5, 6 ) );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeHalfClosedOrNull( 5, 6 );
     }
 
@@ -893,7 +893,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 5, $x->asIntRangeOpen( 4, 6 ) );
         self::assertSame( 5, $x->asIntRangeOpen( 4, 5 ) );
         self::assertSame( 5, $x->asIntRangeOpen( 5, 6 ) );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeOpen( 6, 7 );
     }
 
@@ -906,7 +906,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIntRangeOpenOrEmpty( 4, 6 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeOpenOrEmpty( 4, 6 );
     }
 
@@ -919,7 +919,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asIntRangeOpenOrNull( 4, 6 ) );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asIntRangeOpenOrNull( 4, 6 );
     }
 
@@ -935,7 +935,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'foo', $x->asKeyword( [ 'foo', 'bar' ] ) );
 
         $x = self::p( 'baz' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asKeyword( [ 'foo', 'bar' ] );
     }
 
@@ -948,7 +948,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asKeywordOrEmpty( [ 'foo', 'bar' ] ) );
 
         $x = self::p( 'baz' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asKeywordOrEmpty( [ 'foo', 'bar' ] );
     }
 
@@ -961,7 +961,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asKeywordOrNull( [ 'foo', 'bar' ] ) );
 
         $x = self::p( 'baz' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asKeywordOrNull( [ 'foo', 'bar' ] );
     }
 
@@ -972,7 +972,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'bar', $x->asMap( $rMap ) );
 
         $x = self::p( 'quux' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asMap( $rMap );
     }
 
@@ -986,7 +986,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asMapOrEmpty( $rMap ) );
 
         $x = self::p( '5' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asMapOrEmpty( $rMap );
     }
 
@@ -1000,7 +1000,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asMapOrNull( $rMap ) );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asMapOrNull( $rMap );
     }
 
@@ -1010,7 +1010,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( __DIR__ . '/foo', $x->asNonexistentFilename() );
 
         $x = self::p( __FILE__ );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asNonexistentFilename();
     }
 
@@ -1023,7 +1023,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asNonexistentFilenameOrEmpty() );
 
         $x = self::p( '/no/such/dir/file.txt' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asNonexistentFilenameOrEmpty();
     }
 
@@ -1036,7 +1036,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asNonexistentFilenameOrNull() );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asNonexistentFilenameOrNull();
     }
 
@@ -1046,7 +1046,7 @@ final class ParameterTest extends TestCase {
         self::assertEqualsWithDelta( 3.14, $x->asPositiveFloat(), 0.0001 );
 
         $x = self::p( '-1.23' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asPositiveFloat();
     }
 
@@ -1059,7 +1059,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asPositiveFloatOrEmpty() );
 
         $x = self::p( '0' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asPositiveFloatOrEmpty();
     }
 
@@ -1072,7 +1072,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asPositiveFloatOrNull() );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asPositiveFloatOrNull();
     }
 
@@ -1082,7 +1082,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 3, $x->asPositiveInt() );
 
         $x = self::p( '-1' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asPositiveInt();
     }
 
@@ -1095,7 +1095,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asPositiveIntOrEmpty() );
 
         $x = self::p( '0' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asPositiveIntOrEmpty();
     }
 
@@ -1108,7 +1108,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asPositiveIntOrNull() );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asPositiveIntOrNull();
     }
 
@@ -1131,7 +1131,7 @@ final class ParameterTest extends TestCase {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( $x->asString() );
         self::assertSame( '5', $x->asString() );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x = self::p( [ 'foo', 'bar' ] );
         $x->asString();
     }
@@ -1159,7 +1159,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( '00:00:00', $x->asTime() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asTime();
     }
 
@@ -1179,7 +1179,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( $tm, $x->asTimeStamp() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asTimeStamp();
     }
 
@@ -1199,7 +1199,7 @@ final class ParameterTest extends TestCase {
         self::assertEqualsWithDelta( 1.23, $x->asUnsignedFloat(), 0.0001 );
 
         $x = self::p( '-1.23' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asUnsignedFloat();
     }
 
@@ -1212,7 +1212,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asUnsignedFloatOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asUnsignedFloatOrEmpty();
     }
 
@@ -1225,7 +1225,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asUnsignedFloatOrNull() );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asUnsignedFloatOrNull();
     }
 
@@ -1235,7 +1235,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 5, $x->asUnsignedInt() );
 
         $x = self::p( '-5' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asUnsignedInt();
     }
 
@@ -1248,7 +1248,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asUnsignedIntOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asUnsignedIntOrEmpty();
     }
 
@@ -1261,7 +1261,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asUnsignedIntOrNull() );
 
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asUnsignedIntOrNull();
     }
 
@@ -1326,7 +1326,7 @@ final class ParameterTest extends TestCase {
             [ 'foo', 'bar' ],
             [ 'baz', 'qux' ],
         ], nuAllowArrayDepth: 1 );
-        self::expectException( InvalidArgumentException::class );
+        $this->expectException( InvalidArgumentException::class );
         $y = $x[ 0 ];
         unset( $y );
     }
@@ -1335,7 +1335,7 @@ final class ParameterTest extends TestCase {
     public function testConstructWithNull() : void {
         $x = self::p( null );
         self::assertInstanceOf( Parameter::class, $x );
-        self::expectException( InvalidArgumentException::class );
+        $this->expectException( InvalidArgumentException::class );
         $x = self::p( null, bAllowNull: false );
         unset( $x );
     }
@@ -1401,7 +1401,7 @@ final class ParameterTest extends TestCase {
         self::assertFalse( $x->offsetExists( 0 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->has( 0 );
     }
 
@@ -1581,18 +1581,18 @@ final class ParameterTest extends TestCase {
 
     public function testJsonSerialize() : void {
         $x = self::p( 'foo' );
-        self::assertSame( '"foo"', json_encode( $x ) );
+        self::assertSame( '"foo"', json_encode( $x, JSON_THROW_ON_ERROR ) );
 
         $x = self::p( [ 'foo', 'bar' ] );
-        self::assertSame( '["foo","bar"]', json_encode( $x ) );
+        self::assertSame( '["foo","bar"]', json_encode( $x, JSON_THROW_ON_ERROR ) );
 
         $x = self::p( null );
-        self::assertSame( 'null', json_encode( $x ) );
+        self::assertSame( 'null', json_encode( $x, JSON_THROW_ON_ERROR ) );
 
         $pBar = self::p( 'bar' );
         $pFoo = self::p( [ 'foo' => $pBar ] );
-        self::assertSame( '"bar"', json_encode( $pBar ) );
-        self::assertSame( '{"foo":"bar"}', json_encode( $pFoo ) );
+        self::assertSame( '"bar"', json_encode( $pBar, JSON_THROW_ON_ERROR ) );
+        self::assertSame( '{"foo":"bar"}', json_encode( $pFoo, JSON_THROW_ON_ERROR ) );
     }
 
 
@@ -1602,7 +1602,7 @@ final class ParameterTest extends TestCase {
         $x->mutate( true );
         self::assertTrue( $x->isMutable() );
         $x->mutate( false );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $x->set( 'bar' );
     }
 
@@ -1610,7 +1610,7 @@ final class ParameterTest extends TestCase {
     public function testMutableFrozen() : void {
         $x = new MyTestParameter( 'foo' );
         $x->freeze();
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $x->mutate( true );
     }
 
@@ -1629,7 +1629,7 @@ final class ParameterTest extends TestCase {
         self::assertTrue( isset( $x[ 'foo' ] ) );
         self::assertFalse( isset( $x[ 'qux' ] ) );
 
-        self::expectException( InvalidArgumentException::class );
+        $this->expectException( InvalidArgumentException::class );
         $y = isset( $x[ null ] );
         unset( $y );
 
@@ -1646,7 +1646,7 @@ final class ParameterTest extends TestCase {
 
     public function testOffsetGetForInvalidArgument() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( InvalidArgumentException::class );
+        $this->expectException( InvalidArgumentException::class );
         $y = $x[ null ];
         unset( $y );
     }
@@ -1654,7 +1654,7 @@ final class ParameterTest extends TestCase {
 
     public function testOffsetGetForOutOfBounds() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( OutOfBoundsException::class );
+        $this->expectException( OutOfBoundsException::class );
         $y = $x[ 2 ];
         unset( $y );
     }
@@ -1668,7 +1668,7 @@ final class ParameterTest extends TestCase {
 
     public function testOffsetGetWithString() : void {
         $x = self::p( 'foo' );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $y = $x[ 0 ];
         unset( $y );
     }
@@ -1676,14 +1676,15 @@ final class ParameterTest extends TestCase {
 
     public function testOffsetSet() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $x[ 0 ] = 'baz';
+        unset( $x );
     }
 
 
     public function testOffsetUnset() : void {
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         unset( $x[ 0 ] );
     }
 
@@ -1704,14 +1705,14 @@ final class ParameterTest extends TestCase {
         self::assertEqualsWithDelta( 1.2345, $x->asRoundedFloat( 5 ), 0.0001 );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asRoundedFloat();
     }
 
 
     public function testRoundedFloatForEmpty() : void {
         $x = self::p( '' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asRoundedFloat();
     }
 
@@ -1724,14 +1725,14 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asRoundedFloatOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asRoundedFloatOrEmpty();
     }
 
 
     public function testRoundedFloatOrEmptyForNull() : void {
         $x = self::p( null );
-        self::expectException( TypeError::class );
+        $this->expectException( TypeError::class );
         $x->asRoundedFloatOrEmpty();
     }
 
@@ -1763,7 +1764,7 @@ final class ParameterTest extends TestCase {
         self::assertSame( 200, $x->asRoundedInt( -2 ) );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asRoundedInt();
     }
 
@@ -1776,7 +1777,7 @@ final class ParameterTest extends TestCase {
         self::assertNull( $x->asRoundedIntOrEmpty() );
 
         $x = self::p( 'foo' );
-        self::expectException( ParseException::class );
+        $this->expectException( ParseException::class );
         $x->asRoundedIntOrEmpty();
     }
 
@@ -1800,9 +1801,8 @@ final class ParameterTest extends TestCase {
         self::assertSame( 'xfoox', 'x' . $x . 'x' );
 
         $x = self::p( [ 'foo', 'bar' ] );
-        self::expectException( TypeError::class );
-        $y = (string) $x;
-        unset( $y );
+        self::assertSame( '["foo","bar"]', (string) $x );
+
     }
 
 
