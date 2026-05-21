@@ -55,6 +55,48 @@ final class ParameterSetTest extends TestCase {
     }
 
 
+    public function testCountForComplicated() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'baz' => 'qux', 'quux' => 'corge' ],
+            [ 'quux' => 'grault', 'garply' => 'waldo' ],
+            [ 'foo', 'quux', 'garply' ]
+        );
+        self::assertCount( 3, $set->getValues() );
+    }
+
+
+    public function testCountForDefaultsOnly() : void {
+        $set = new ParameterSet( i_itDefaults: [ 'foo' => 'bar', 'baz' => 'qux' ] );
+        self::assertCount( 2, $set->getValues() );
+    }
+
+
+    public function testCountForMixedOverlap() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'baz' => 'qux' ], [ 'baz' => 'quux', 'corge' => 'grault' ] );
+        self::assertCount( 3, $set->getValues() );
+    }
+
+
+    public function testCountForValuesOnly() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar', 'baz' => 'qux' ] );
+        self::assertCount( 2, $set->getValues() );
+    }
+
+
+    public function testEmpty() : void {
+        $set = new ParameterSet();
+        self::assertTrue( $set->empty() );
+
+        $set->addParameter( 'foo', 'bar' );
+        self::assertFalse( $set->empty() );
+
+        $set = new ParameterSet( i_itDefaults: [ 'foo' => 'bar' ] );
+        self::assertFalse( $set->empty() );
+
+        $set = new ParameterSet( [ 'foo' => 'bar' ], i_itAllowedKeys: [ 'baz' ] );
+        self::assertTrue( $set->empty() );
+    }
+
+
     public function testGet() : void {
         $set = new ParameterSet( [ 'foo' => 'bar', 'quux' => 'corge' ], [ 'baz' => 'qux' ], [ 'foo', 'baz' ] );
         self::assertEquals( 'bar', $set->get( 'foo' )->asString() );

@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Param;
 
 
+use Countable;
 use Ds\Map;
 use Ds\Set;
 use Generator;
@@ -16,12 +17,12 @@ use LogicException;
 
 /**
  * A collection of named parameters with support for defaults, allowed keys, and filtering.
- * 
+ *
  * ParameterSet provides a type-safe way to manage collections of parameters,
  * commonly used for handling web request data, configuration options, or database query results.
  * It supports default values, key filtering, and various subset operations.
  */
-class ParameterSet implements IParameterSet {
+class ParameterSet implements IParameterSet, Countable {
 
 
     /**
@@ -57,10 +58,10 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Creates a new ParameterSet with optional initial parameters, defaults, and allowed keys.
-     * 
-     * @param iterable<int|string, list<string|IParameter>|string|IParameter>|null $i_itParameters Initial parameters
-     * @param iterable<int|string, list<string|IParameter>|string|IParameter>|null $i_itDefaults Default values
-     * @param iterable<int|string>|null $i_itAllowedKeys Keys that are allowed (null means all keys allowed)
+     *
+     * @param iterable<int|string, list<string|IParameter>|string|IParameter>|null $i_itParameters  Initial parameters
+     * @param iterable<int|string, list<string|IParameter>|string|IParameter>|null $i_itDefaults    Default values
+     * @param iterable<int|string>|null                                            $i_itAllowedKeys Keys that are allowed (null means all keys allowed)
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
      */
     public function __construct( ?iterable $i_itParameters = null, ?iterable $i_itDefaults = null,
@@ -77,7 +78,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Adds a key to the set of allowed keys.
-     * 
+     *
      * @param string $i_stKey The key to allow
      * @return void
      */
@@ -88,7 +89,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Adds multiple keys to the set of allowed keys.
-     * 
+     *
      * @param iterable<int|string>|null $i_itAllowedKeys The keys to allow
      * @return void
      * @noinspection PhpDocSignatureInspection iterable<whatever> is broken in PhpStorm
@@ -105,8 +106,8 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Adds a default value for a key (throws exception if default already exists).
-     * 
-     * @param string $i_stKey The parameter key
+     *
+     * @param string                         $i_stKey  The parameter key
      * @param mixed[]|string|IParameter|null $i_xValue The default value
      * @return void
      * @throws InvalidArgumentException If a default for this key already exists
@@ -121,7 +122,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Adds multiple default values (throws exception if any defaults already exist).
-     * 
+     *
      * @param iterable<int|string, mixed[]|string|IParameter|null>|null $i_itDefaults The defaults to add
      * @return void
      * @throws InvalidArgumentException If any defaults for the keys already exist
@@ -139,8 +140,8 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Adds a parameter value (throws exception if parameter already exists).
-     * 
-     * @param string $i_stKey The parameter key
+     *
+     * @param string                         $i_stKey  The parameter key
      * @param mixed[]|string|IParameter|null $i_xValue The parameter value
      * @return void
      * @throws InvalidArgumentException If a parameter for this key already exists
@@ -155,7 +156,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Adds multiple parameters (throws exception if any parameters already exist).
-     * 
+     *
      * @param iterable<int|string, mixed[]|string|IParameter|null>|null $i_itParameters The parameters to add
      * @return void
      * @throws InvalidArgumentException If any parameters for the keys already exist
@@ -171,11 +172,21 @@ class ParameterSet implements IParameterSet {
     }
 
 
+    public function count() : int {
+        return count( $this->listKeys() );
+    }
+
+
+    public function empty() : bool {
+        return $this->count() === 0;
+    }
+
+
     /**
      * Gets a parameter by key, falling back to defaults and then the provided default.
-     * 
-     * @param string $i_stKey The parameter key
-     * @param mixed $i_xDefault The default value if parameter and default are not found
+     *
+     * @param string $i_stKey    The parameter key
+     * @param mixed  $i_xDefault The default value if parameter and default are not found
      * @return IParameter|null The parameter, or null if not found and no default provided
      */
     public function get( string $i_stKey, mixed $i_xDefault = null ) : ?IParameter {
@@ -191,7 +202,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns the list of allowed keys, or null if all keys are allowed.
-     * 
+     *
      * @return list<string>|null The allowed keys, or null if no restrictions
      */
     public function getAllowedKeys() : ?array {
@@ -201,7 +212,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Gets a parameter by key, throwing an exception if not found.
-     * 
+     *
      * @param string $i_stKey The parameter key
      * @return IParameter The parameter
      * @throws InvalidArgumentException If the key is not found
@@ -217,7 +228,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns the list of keys that were ignored due to not being in allowed keys.
-     * 
+     *
      * @return list<string> The ignored keys
      */
     public function getIgnoredKeys() : array {
@@ -227,9 +238,9 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns all parameter values as an associative array.
-     * 
+     *
      * Arrays are recursively unwrapped, other values are returned as-is.
-     * 
+     *
      * @return array<int|string, mixed[]|string|null> The parameter values
      */
     public function getValues() : array {
@@ -247,7 +258,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Checks if all specified keys exist (either as parameters or defaults).
-     * 
+     *
      * @param string ...$i_rstKeys The keys to check
      * @return bool True if all keys exist, false otherwise
      */
@@ -270,7 +281,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns a generator that yields all key-parameter pairs.
-     * 
+     *
      * @return Generator<string, IParameter> Generator yielding key => parameter pairs
      */
     public function iter() : Generator {
@@ -282,7 +293,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns the parameter set as an array suitable for JSON serialization.
-     * 
+     *
      * @return array<int|string, mixed[]|bool|float|int|string|null> The JSON-serializable array
      */
     public function jsonSerialize() : array {
@@ -297,7 +308,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns a list of all available keys (parameters + defaults, filtered by allowed keys).
-     * 
+     *
      * @return list<string> The available keys
      */
     public function listKeys() : array {
@@ -318,7 +329,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Checks whether an offset exists (ArrayAccess interface).
-     * 
+     *
      * @param mixed $offset The offset to check (string key or array of keys)
      * @return bool True if the offset(s) exist, false otherwise
      */
@@ -335,7 +346,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns the parameter at the specified offset (ArrayAccess interface).
-     * 
+     *
      * @param mixed $offset The offset to retrieve (must be a string key)
      * @return IParameter The parameter at the specified offset
      * @throws InvalidArgumentException If the offset is null or the key is not found
@@ -350,9 +361,9 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Sets the parameter at the specified offset (ArrayAccess interface).
-     * 
+     *
      * @param mixed $offset The offset to set (must be a string key)
-     * @param mixed $value The parameter value to set
+     * @param mixed $value  The parameter value to set
      * @return void
      * @throws LogicException If the offset is null
      */
@@ -366,7 +377,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Unsets the parameter at the specified offset (ArrayAccess interface).
-     * 
+     *
      * @param mixed $offset The offset to unset (string key or array of keys)
      * @return void
      * @throws InvalidArgumentException If the offset is null
@@ -382,8 +393,8 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Sets or updates a default value for a key.
-     * 
-     * @param string $i_stKey The parameter key
+     *
+     * @param string                         $i_stKey  The parameter key
      * @param mixed[]|string|IParameter|null $i_xValue The default value
      * @return void
      * @throws LogicException If trying to reset a default in an immutable set
@@ -405,7 +416,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Sets the mutability state of this parameter set.
-     * 
+     *
      * @param bool $i_bMutable Whether the parameter set should be mutable
      * @return void
      */
@@ -416,8 +427,8 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Sets or updates a parameter value.
-     * 
-     * @param string $i_stKey The parameter key
+     *
+     * @param string                         $i_stKey  The parameter key
      * @param mixed[]|string|IParameter|null $i_xValue The parameter value
      * @return void
      * @throws InvalidArgumentException If trying to set a parameter in an immutable set
@@ -439,7 +450,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Creates a subset containing only parameters with keys that start with the given prefix.
-     * 
+     *
      * @param string $i_stPrefix The key prefix to filter by
      * @return static A new ParameterSet containing only matching parameters
      */
@@ -450,7 +461,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Creates a subset containing only parameters whose keys match the filter function.
-     * 
+     *
      * @param callable(string): bool $i_fnFilter Function that returns true for keys to include
      * @return static A new ParameterSet containing only matching parameters
      */
@@ -474,7 +485,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Creates a subset containing only parameters with keys that match the regular expression.
-     * 
+     *
      * @param string $i_reFilter The regular expression to match keys against
      * @return static A new ParameterSet containing only matching parameters
      */
@@ -485,7 +496,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Returns which of the specified keys actually exist in this parameter set.
-     * 
+     *
      * @param string ...$i_rstKeys The keys to test
      * @return list<string> The keys that exist (subset of the input keys)
      */
@@ -496,9 +507,9 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Removes parameters (and optionally their defaults) from the set.
-     * 
-     * @param string|iterable<string> $i_keys The key(s) to remove
-     * @param bool $i_bAlsoDropDefault Whether to also remove default values
+     *
+     * @param string|iterable<string> $i_keys             The key(s) to remove
+     * @param bool                    $i_bAlsoDropDefault Whether to also remove default values
      * @return void
      * @throws LogicException If the set is not mutable
      * @noinspection PhpDocSignatureInspection
@@ -523,7 +534,7 @@ class ParameterSet implements IParameterSet {
 
     /**
      * Checks if a key is allowed based on the allowed keys set.
-     * 
+     *
      * @param string $i_stKey The key to check
      * @return bool True if the key is allowed (or if no allowed keys are set), false otherwise
      */

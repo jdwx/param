@@ -50,20 +50,17 @@ interface IParameterSet extends ArrayAccess, JsonSerializable {
      */
     public function addParameters( ?iterable $i_itParameters = null ) : void;
 
+    public function empty() : bool;
 
     public function get( string $i_stKey, mixed $i_xDefault = null ) : ?IParameter;
-
 
     /** @return list<string>|null */
     public function getAllowedKeys() : ?array;
 
-
     public function getEx( string $i_stKey ) : IParameter;
-
 
     /** @return list<string> */
     public function getIgnoredKeys() : array;
-
 
     /**
      * @return array<int|string, string|list<string>> All values, de-parameterized.
@@ -72,10 +69,8 @@ interface IParameterSet extends ArrayAccess, JsonSerializable {
      */
     public function getValues() : array;
 
-
     /** @param string ...$i_rstKeys */
     public function has( string ...$i_rstKeys ) : bool;
-
 
     public function iter() : Generator;
 
@@ -93,7 +88,7 @@ interface IParameterSet extends ArrayAccess, JsonSerializable {
 
 
     /**
-     * @param string|null $offset
+     * @param string|null                   $offset
      * @param mixed[]|string|Parameter|null $value
      * @return void
      */
@@ -135,8 +130,8 @@ interface IParameterSet extends ArrayAccess, JsonSerializable {
 
 
     /**
-     * @param string|iterable<string> $i_keys The key (or keys) to remove from the set
-     * @param bool $i_bAlsoDropDefault If true, any default value for the key will also be removed.
+     * @param string|iterable<string> $i_keys             The key (or keys) to remove from the set
+     * @param bool                    $i_bAlsoDropDefault If true, any default value for the key will also be removed.
      * @return void
      *
      * Drops the parameter from the set. If the parameter is not in the set, it does nothing.
