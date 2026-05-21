@@ -9,7 +9,7 @@ namespace JDWX\Param;
 
 /**
  * Static utility class for validation without throwing exceptions.
- * 
+ *
  * The Validate class provides boolean validation methods that return true/false
  * rather than throwing exceptions. These methods are used by the Parse class
  * to check validity before conversion. All methods are static and the class
@@ -20,42 +20,50 @@ final class Validate {
 
     /**
      * Validates that a key exists in an associative array.
-     * 
-     * @param string $i_stKey The key to check for
-     * @param array<string, mixed> $i_r The array to search
+     *
+     * @param ?string              $i_nstKey The key to check for
+     * @param array<string, mixed> $i_r      The array to search
      * @return bool True if the key exists, false otherwise
      */
-    public static function arrayKey( string $i_stKey, array $i_r ) : bool {
-        return array_key_exists( $i_stKey, $i_r );
+    public static function arrayKey( ?string $i_nstKey, array $i_r ) : bool {
+        if ( is_null( $i_nstKey ) ) {
+            return false;
+        }
+        return array_key_exists( $i_nstKey, $i_r );
     }
 
 
     /**
      * Validates that a value exists in an array.
-     * 
-     * @param string $i_stValue The value to search for
-     * @param array<int|string, string> $i_r The array of values to search
+     *
+     * @param mixed                     $i_xValue The value to search for
+     * @param array<int|string, string> $i_r      The array of values to search
      * @return bool True if the value exists in the array, false otherwise
+     *
+     * Strict comparison is always used.
      */
-    public static function arrayValue( string $i_stValue, array $i_r ) : bool {
-        return in_array( $i_stValue, $i_r );
+    public static function arrayValue( mixed $i_xValue, array $i_r ) : bool {
+        return in_array( $i_xValue, $i_r, true );
     }
 
 
     /**
      * Validates if a string can be parsed as a boolean.
-     * 
+     *
      * Accepts numeric values and text values like 'true', 'yes', 'on',
      * 'false', 'no', 'off' (case-insensitive).
-     * 
-     * @param string $i_stBool The string to validate
+     *
+     * @param ?string $i_nstBool The string to validate
      * @return bool True if the string can be parsed as a boolean, false otherwise
      */
-    public static function bool( string $i_stBool ) : bool {
-        if ( is_numeric( $i_stBool ) ) {
+    public static function bool( ?string $i_nstBool ) : bool {
+        if ( ! is_string( $i_nstBool ) ) {
+            return false;
+        }
+        if ( is_numeric( $i_nstBool ) ) {
             return true;
         }
-        return match ( strtolower( trim( $i_stBool ) ) ) {
+        return match ( strtolower( trim( $i_nstBool ) ) ) {
             'true', 'yes', 'yeah', 'y', 'on', 'false', 'no', 'nope', 'n', 'off' => true,
             default => false,
         };
@@ -64,51 +72,63 @@ final class Validate {
 
     /**
      * Validates if a string can be parsed as a currency amount.
-     * 
-     * @param string $i_stCurrency The string to validate
+     *
+     * @param ?string $i_nstCurrency The string to validate
      * @return bool True if the string can be parsed as currency, false otherwise
      */
-    public static function currency( string $i_stCurrency ) : bool {
-        return is_numeric( Filter::currency( $i_stCurrency ) );
+    public static function currency( ?string $i_nstCurrency ) : bool {
+        if ( ! is_string( $i_nstCurrency ) ) {
+            return false;
+        }
+        return is_numeric( Filter::currency( $i_nstCurrency ) );
     }
 
 
     /**
      * Validates if a string can be parsed as a date-time.
-     * 
-     * @param string $i_stDate The string to validate
+     *
+     * @param ?string $i_nstDate The string to validate
      * @return bool True if the string can be parsed as a date-time, false otherwise
      */
-    public static function dateTime( string $i_stDate ) : bool {
-        return strtotime( $i_stDate ) !== false;
+    public static function dateTime( ?string $i_nstDate ) : bool {
+        if ( ! is_string( $i_nstDate ) ) {
+            return false;
+        }
+        return strtotime( $i_nstDate ) !== false;
     }
 
 
     /**
      * Validates if a string is a valid email address.
-     * 
-     * @param string $i_stEmail The string to validate
+     *
+     * @param ?string $i_nstEmail The string to validate
      * @return bool True if the string is a valid email address, false otherwise
      */
-    public static function emailAddress( string $i_stEmail ) : bool {
-        return filter_var( $i_stEmail, FILTER_VALIDATE_EMAIL ) !== false;
+    public static function emailAddress( ?string $i_nstEmail ) : bool {
+        if ( ! $i_nstEmail ) {
+            return false;
+        }
+        return filter_var( $i_nstEmail, FILTER_VALIDATE_EMAIL ) !== false;
     }
 
 
     /**
      * Validates if a string is a valid email username (local part).
-     * 
-     * @param string $i_stUsername The string to validate
+     *
+     * @param ?string $i_nstUsername The string to validate
      * @return bool True if the string is a valid email username, false otherwise
      */
-    public static function emailUsername( string $i_stUsername ) : bool {
-        return self::emailAddress( $i_stUsername . '@example.com' );
+    public static function emailUsername( ?string $i_nstUsername ) : bool {
+        if ( ! $i_nstUsername ) {
+            return false;
+        }
+        return self::emailAddress( $i_nstUsername . '@example.com' );
     }
 
 
     /**
      * Validates if a path is an existing directory.
-     * 
+     *
      * @param string $i_stDir The path to validate
      * @return bool True if the path is an existing directory, false otherwise
      */
@@ -122,7 +142,7 @@ final class Validate {
 
     /**
      * Validates if a path is an existing file or directory.
-     * 
+     *
      * @param string $i_stFile The path to validate
      * @return bool True if the path exists, false otherwise
      */
@@ -133,75 +153,81 @@ final class Validate {
 
     /**
      * Validates if a string can be parsed as a floating-point number.
-     * 
-     * @param string $i_stFloat The string to validate
+     *
+     * @param ?string $i_nstFloat The string to validate
      * @return bool True if the string is numeric, false otherwise
      */
-    public static function float( string $i_stFloat ) : bool {
-        return is_numeric( $i_stFloat );
+    public static function float( ?string $i_nstFloat ) : bool {
+        if ( ! is_string( $i_nstFloat ) ) {
+            return false;
+        }
+        return is_numeric( $i_nstFloat );
     }
 
 
     /**
      * Validates if a string is a float within a closed range (exclusive bounds).
-     * 
-     * @param string $i_stFloat The string to validate
-     * @param float $i_fMin The minimum value (exclusive)
-     * @param float $i_fMax The maximum value (exclusive)
+     *
+     * @param ?string $i_nstFloat The string to validate
+     * @param float   $i_fMin     The minimum value (exclusive)
+     * @param float   $i_fMax     The maximum value (exclusive)
      * @return bool True if the string is a valid float within the range, false otherwise
      */
-    public static function floatRangeClosed( string $i_stFloat, float $i_fMin, float $i_fMax ) : bool {
-        if ( ! self::float( $i_stFloat ) ) {
+    public static function floatRangeClosed( ?string $i_nstFloat, float $i_fMin, float $i_fMax ) : bool {
+        if ( ! self::float( $i_nstFloat ) ) {
             return false;
         }
-        $f = floatval( $i_stFloat );
+        $f = floatval( $i_nstFloat );
         return $f > $i_fMin && $f < $i_fMax;
     }
 
 
     /**
      * Validates if a string is a float within a half-closed range [min, max).
-     * 
-     * @param string $i_stFloat The string to validate
-     * @param float $i_fMin The minimum value (inclusive)
-     * @param float $i_fMax The maximum value (exclusive)
+     *
+     * @param ?string $i_nstFloat The string to validate
+     * @param float   $i_fMin     The minimum value (inclusive)
+     * @param float   $i_fMax     The maximum value (exclusive)
      * @return bool True if the string is a valid float within the range, false otherwise
      */
-    public static function floatRangeHalfClosed( string $i_stFloat, float $i_fMin, float $i_fMax ) : bool {
-        if ( ! self::float( $i_stFloat ) ) {
+    public static function floatRangeHalfClosed( ?string $i_nstFloat, float $i_fMin, float $i_fMax ) : bool {
+        if ( ! self::float( $i_nstFloat ) ) {
             return false;
         }
-        $f = floatval( $i_stFloat );
+        $f = floatval( $i_nstFloat );
         return $f >= $i_fMin && $f < $i_fMax;
     }
 
 
     /**
      * Validates if a string is a float within an open range [min, max].
-     * 
-     * @param string $i_stFloat The string to validate
-     * @param float $i_fMin The minimum value (inclusive)
-     * @param float $i_fMax The maximum value (inclusive)
+     *
+     * @param ?string $i_nstFloat The string to validate
+     * @param float   $i_fMin     The minimum value (inclusive)
+     * @param float   $i_fMax     The maximum value (inclusive)
      * @return bool True if the string is a valid float within the range, false otherwise
      */
-    public static function floatRangeOpen( string $i_stFloat, float $i_fMin, float $i_fMax ) : bool {
-        if ( ! self::float( $i_stFloat ) ) {
+    public static function floatRangeOpen( ?string $i_nstFloat, float $i_fMin, float $i_fMax ) : bool {
+        if ( ! self::float( $i_nstFloat ) ) {
             return false;
         }
-        $f = floatval( $i_stFloat );
+        $f = floatval( $i_nstFloat );
         return $f >= $i_fMin && $f <= $i_fMax;
     }
 
 
     /**
      * Validates if a string is a valid hostname.
-     * 
+     *
      * Requires at least one dot and rejects hostnames ending with a dot.
-     * 
-     * @param string $i_stHost The string to validate
+     *
+     * @param ?string $i_stHost The string to validate
      * @return bool True if the string is a valid hostname, false otherwise
      */
-    public static function hostname( string $i_stHost ) : bool {
+    public static function hostname( ?string $i_stHost ) : bool {
+        if ( ! is_string( $i_stHost ) ) {
+            return false;
+        }
         if ( str_ends_with( $i_stHost, '.' ) ) {
             return false;
         }
@@ -214,115 +240,136 @@ final class Validate {
 
     /**
      * Validates if a string can be parsed as an integer.
-     * 
-     * @param string $i_stInt The string to validate
+     *
+     * @param ?string $i_nstInt The string to validate
      * @return bool True if the string is numeric, false otherwise
      */
-    public static function int( string $i_stInt ) : bool {
-        return is_numeric( $i_stInt );
+    public static function int( ?string $i_nstInt ) : bool {
+        if ( ! is_numeric( $i_nstInt ) ) {
+            return false;
+        }
+        if ( '-0' === $i_nstInt ) {
+            return true;
+        }
+        return strval( intval( $i_nstInt ) ) === $i_nstInt;
     }
 
 
     /**
      * Validates if a string is an integer within a closed range (exclusive bounds).
-     * 
-     * @param string $i_stInt The string to validate
-     * @param int $i_nuMin The minimum value (exclusive)
-     * @param int $i_nuMax The maximum value (exclusive)
+     *
+     * @param ?string $i_nstInt The string to validate
+     * @param int     $i_nuMin  The minimum value (exclusive)
+     * @param int     $i_nuMax  The maximum value (exclusive)
      * @return bool True if the string is a valid integer within the range, false otherwise
      */
-    public static function intRangeClosed( string $i_stInt, int $i_nuMin, int $i_nuMax ) : bool {
-        if ( ! self::int( $i_stInt ) ) {
+    public static function intRangeClosed( ?string $i_nstInt, int $i_nuMin, int $i_nuMax ) : bool {
+        if ( ! self::int( $i_nstInt ) ) {
             return false;
         }
-        $nu = intval( $i_stInt );
+        $nu = intval( $i_nstInt );
         return $nu > $i_nuMin && $nu < $i_nuMax;
     }
 
 
     /**
      * Validates if a string is an integer within a half-closed range [min, max).
-     * 
-     * @param string $i_stInt The string to validate
-     * @param int $i_nuMin The minimum value (inclusive)
-     * @param int $i_nuMax The maximum value (exclusive)
+     *
+     * @param ?string $i_nstInt The string to validate
+     * @param int     $i_nuMin  The minimum value (inclusive)
+     * @param int     $i_nuMax  The maximum value (exclusive)
      * @return bool True if the string is a valid integer within the range, false otherwise
      */
-    public static function intRangeHalfClosed( string $i_stInt, int $i_nuMin, int $i_nuMax ) : bool {
-        if ( ! self::int( $i_stInt ) ) {
+    public static function intRangeHalfClosed( ?string $i_nstInt, int $i_nuMin, int $i_nuMax ) : bool {
+        if ( ! self::int( $i_nstInt ) ) {
             return false;
         }
-        $nu = intval( $i_stInt );
+        $nu = intval( $i_nstInt );
         return $nu >= $i_nuMin && $nu < $i_nuMax;
     }
 
 
     /**
      * Validates if a string is an integer within an open range [min, max].
-     * 
-     * @param string $i_stInt The string to validate
-     * @param int $i_nuMin The minimum value (inclusive)
-     * @param int $i_nuMax The maximum value (inclusive)
+     *
+     * @param ?string $i_nstInt The string to validate
+     * @param int     $i_nuMin  The minimum value (inclusive)
+     * @param int     $i_nuMax  The maximum value (inclusive)
      * @return bool True if the string is a valid integer within the range, false otherwise
      */
-    public static function intRangeOpen( string $i_stInt, int $i_nuMin, int $i_nuMax ) : bool {
-        if ( ! self::int( $i_stInt ) ) {
+    public static function intRangeOpen( ?string $i_nstInt, int $i_nuMin, int $i_nuMax ) : bool {
+        if ( ! self::int( $i_nstInt ) ) {
             return false;
         }
-        $nu = intval( $i_stInt );
+        $nu = intval( $i_nstInt );
         return $nu >= $i_nuMin && $nu <= $i_nuMax;
     }
 
 
     /**
      * Validates if a string is a valid IP address (IPv4 or IPv6).
-     * 
-     * @param string $i_stIP The string to validate
+     *
+     * @param ?string $i_nstIP The string to validate
      * @return bool True if the string is a valid IP address, false otherwise
      */
-    public static function ip( string $i_stIP ) : bool {
-        return filter_var( $i_stIP, FILTER_VALIDATE_IP ) !== false;
+    public static function ip( ?string $i_nstIP ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        if ( str_starts_with( $i_nstIP, '[' ) && str_ends_with( $i_nstIP, ']' ) ) {
+            return self::ipv6( $i_nstIP );
+        }
+        return filter_var( $i_nstIP, FILTER_VALIDATE_IP ) !== false;
     }
 
 
     /**
      * Validates if a string is a valid IPv4 address.
-     * 
-     * @param string $i_stIP The string to validate
+     *
+     * @param ?string $i_nstIP The string to validate
      * @return bool True if the string is a valid IPv4 address, false otherwise
      */
-    public static function ipv4( string $i_stIP ) : bool {
-        return filter_var( $i_stIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) !== false;
+    public static function ipv4( ?string $i_nstIP ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        return filter_var( $i_nstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) !== false;
     }
 
 
     /**
      * Validates if a string is a valid IPv6 address.
-     * 
-     * @param string $i_stIP The string to validate
+     *
+     * @param ?string $i_nstIP The string to validate
      * @return bool True if the string is a valid IPv6 address, false otherwise
      */
-    public static function ipv6( string $i_stIP ) : bool {
-        return filter_var( $i_stIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) !== false;
+    public static function ipv6( ?string $i_nstIP ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        if ( str_starts_with( $i_nstIP, '[' ) && str_ends_with( $i_nstIP, ']' ) ) {
+            $i_nstIP = substr( $i_nstIP, 1, -1 );
+        }
+        return filter_var( $i_nstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) !== false;
     }
 
 
     /**
      * Validates that a filename path does not exist.
-     * 
+     *
      * Also validates that the parent directory exists if specified.
-     * 
-     * @param string $i_stFile The file path to validate
+     *
+     * @param ?string $i_nstFile The file path to validate
      * @return bool True if the file does not exist and parent directory is valid, false otherwise
      */
-    public static function nonexistentFilename( string $i_stFile ) : bool {
-        if ( '' === $i_stFile ) {
+    public static function nonexistentFilename( ?string $i_nstFile ) : bool {
+        if ( '' === $i_nstFile || ! is_string( $i_nstFile ) ) {
             return false;
         }
-        if ( file_exists( $i_stFile ) ) {
+        if ( file_exists( $i_nstFile ) ) {
             return false;
         }
-        $stDir = dirname( $i_stFile );
+        $stDir = dirname( $i_nstFile );
         if ( $stDir && ! is_dir( $stDir ) ) {
             return false;
         }
@@ -332,45 +379,45 @@ final class Validate {
 
     /**
      * Validates if a string is a positive floating-point number (> 0).
-     * 
-     * @param string $i_stFloat The string to validate
+     *
+     * @param ?string $i_nstFloat The string to validate
      * @return bool True if the string is a positive float, false otherwise
      */
-    public static function positiveFloat( string $i_stFloat ) : bool {
-        return self::floatRangeOpen( $i_stFloat, PHP_FLOAT_EPSILON, PHP_FLOAT_MAX );
+    public static function positiveFloat( ?string $i_nstFloat ) : bool {
+        return self::floatRangeOpen( $i_nstFloat, PHP_FLOAT_EPSILON, PHP_FLOAT_MAX );
     }
 
 
     /**
      * Validates if a string is a positive integer (> 0).
-     * 
-     * @param string $i_stInt The string to validate
+     *
+     * @param ?string $i_nstInt The string to validate
      * @return bool True if the string is a positive integer, false otherwise
      */
-    public static function positiveInt( string $i_stInt ) : bool {
-        return self::intRangeOpen( $i_stInt, 1, PHP_INT_MAX );
+    public static function positiveInt( ?string $i_nstInt ) : bool {
+        return self::intRangeOpen( $i_nstInt, 1, PHP_INT_MAX );
     }
 
 
     /**
      * Validates if a string is a non-negative floating-point number (>= 0).
-     * 
-     * @param string $i_stInt The string to validate
+     *
+     * @param ?string $i_nstInt The string to validate
      * @return bool True if the string is a non-negative float, false otherwise
      */
-    public static function unsignedFloat( string $i_stInt ) : bool {
-        return self::floatRangeOpen( $i_stInt, 0.0, PHP_FLOAT_MAX );
+    public static function unsignedFloat( ?string $i_nstInt ) : bool {
+        return self::floatRangeOpen( $i_nstInt, 0.0, PHP_FLOAT_MAX );
     }
 
 
     /**
      * Validates if a string is a non-negative integer (>= 0).
-     * 
-     * @param string $i_stInt The string to validate
+     *
+     * @param ?string $i_nstInt The string to validate
      * @return bool True if the string is a non-negative integer, false otherwise
      */
-    public static function unsignedInt( string $i_stInt ) : bool {
-        return self::intRangeOpen( $i_stInt, 0, PHP_INT_MAX );
+    public static function unsignedInt( ?string $i_nstInt ) : bool {
+        return self::intRangeOpen( $i_nstInt, 0, PHP_INT_MAX );
     }
 
 
