@@ -232,9 +232,32 @@ final class Validate {
 
 
     /**
+     * Loose validation of FQDNs. For stricter validation, use Validate::hostname().
+     *
+     * @param string|null $i_nstFQDN
+     * @param bool        $i_bAllowSpaces Allow spaces in FQDN? Default is false.
+     * @return bool
+     */
+    public static function fqdn( ?string $i_nstFQDN, bool $i_bAllowSpaces = false ) : bool {
+        if ( ! is_string( $i_nstFQDN ) ) {
+            return false;
+        }
+        $i_nstFQDN = strtolower( trim( $i_nstFQDN ) );
+        if ( ! $i_bAllowSpaces && str_contains( $i_nstFQDN, ' ' ) ) {
+            return false;
+        }
+        $i_nstFQDN = strtolower( trim( $i_nstFQDN ) );
+
+        return filter_var( $i_nstFQDN, FILTER_VALIDATE_DOMAIN ) !== false;
+    }
+
+
+    /**
      * Validates if a string is a valid hostname.
      *
-     * Requires at least one dot and rejects hostnames ending with a dot.
+     * Requires at least one dot and rejects hostnames ending with a dot. This
+     * is for hostnames specifically, not any FQDN. (E.g., do not use this
+     * for SRV records.)
      *
      * @param ?string $i_stHost The string to validate
      * @return bool True if the string is a valid hostname, false otherwise
@@ -242,6 +265,10 @@ final class Validate {
     public static function hostname( ?string $i_stHost ) : bool {
         if ( ! is_string( $i_stHost ) ) {
             return false;
+        }
+        $i_stHost = strtolower( trim( $i_stHost ) );
+        if ( 'localhost' === $i_stHost ) {
+            return true;
         }
         if ( str_ends_with( $i_stHost, '.' ) ) {
             return false;

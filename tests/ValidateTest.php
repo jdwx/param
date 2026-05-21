@@ -129,6 +129,14 @@ final class ValidateTest extends TestCase {
     }
 
 
+    public function testFQDN() : void {
+        self::assertTrue( Validate::fqdn( 'localhost' ) );
+        self::assertTrue( Validate::fqdn( '_acme-challenge._well-known.example.org' ) );
+        self::assertFalse( Validate::fqdn( 'not an fqdn' ) );
+        self::assertFalse( Validate::fqdn( null ) );
+    }
+
+
     public function testFloat() : void {
         self::assertTrue( Validate::float( '123.45' ) );
         self::assertTrue( Validate::float( '0.0' ) );
@@ -182,6 +190,7 @@ final class ValidateTest extends TestCase {
 
 
     public function testHostname() : void {
+        self::assertTrue( Validate::hostname( 'localhost' ) );
         self::assertTrue( Validate::hostname( 'example.com' ) );
         self::assertTrue( Validate::hostname( 'www.example.com' ) );
         self::assertTrue( Validate::hostname( 'a.very.long.and.complex.example.com' ) );
