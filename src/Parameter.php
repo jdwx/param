@@ -50,7 +50,7 @@ class Parameter implements IParameter, Stringable {
     private bool $bFrozen = false;
 
     /**
-     * The encapsulated value - can be a string, array, or null.
+     * The encapsulated value.
      * @var mixed[]|string|null
      */
     private array|string|null $xValue;
@@ -832,7 +832,9 @@ class Parameter implements IParameter, Stringable {
     /**
      * Returns the parameter value as a JSON string.
      *
-     * This is primarily intended for debugging purposes.
+     * This is primarily intended for debugging purposes. It should
+     * not be displayed as part of a web page without further
+     * escaping or sanitization.
      *
      * @return string The parameter value encoded as JSON
      * @throws JsonException If the value cannot be encoded as JSON
@@ -1263,7 +1265,7 @@ class Parameter implements IParameter, Stringable {
     /**
      * Compares this parameter's value with another value for equality.
      *
-     * This method handles type-aware comparisons including boolean validation,
+     * This method handles type-aware comparisons, including boolean validation,
      * recursive array comparison, and proper null handling.
      *
      * @param mixed[]|int|string|float|bool|IParameter|null $i_xValue The value to compare against
@@ -1634,14 +1636,15 @@ class Parameter implements IParameter, Stringable {
      * Creates a child parameter with inherited configuration.
      *
      * @param mixed[]|bool|float|int|string|IParameter|null $i_xValue The value for the child parameter
-     * @return Parameter A new Parameter instance with inherited configuration
+     * @return static A new Parameter instance with inherited configuration
      */
-    private function child( array|bool|float|int|string|IParameter|null $i_xValue ) : Parameter {
+    private function child( array|bool|float|int|string|IParameter|null $i_xValue ) : static {
         $nuNewArrayDepth = $this->nuAllowArrayDepth;
         if ( is_int( $nuNewArrayDepth ) && $nuNewArrayDepth > 0 ) {
             $nuNewArrayDepth--;
         }
-        return new Parameter( $i_xValue, $this->bAllowNull, $nuNewArrayDepth );
+        /** @phpstan-ignore-next-line */
+        return new static( $i_xValue, $this->bAllowNull, $nuNewArrayDepth );
     }
 
 
