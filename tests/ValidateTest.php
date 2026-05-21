@@ -106,8 +106,26 @@ final class ValidateTest extends TestCase {
 
 
     public function testExistingDirectory() : void {
+        self::assertFalse( Validate::existingDirectory( __FILE__ ) );
         self::assertTrue( Validate::existingDirectory( __DIR__ ) );
+        self::assertFalse( Validate::existingDirectory( '/dev/null' ) );
         self::assertFalse( Validate::existingDirectory( '/no/such/dir' ) );
+    }
+
+
+    public function testExistingFilename() : void {
+        self::assertTrue( Validate::existingFilename( __FILE__ ) );
+        self::assertFalse( Validate::existingFilename( __DIR__ ) );
+        self::assertFalse( Validate::existingFilename( '/dev/null' ) );
+        self::assertFalse( Validate::existingFilename( '/no/such/file' ) );
+    }
+
+
+    public function testExistingPath() : void {
+        self::assertTrue( Validate::existingPath( __FILE__ ) );
+        self::assertTrue( Validate::existingPath( __DIR__ ) );
+        self::assertTrue( Validate::existingPath( '/dev/null' ) );
+        self::assertFalse( Validate::existingPath( '/no/such/file' ) );
     }
 
 

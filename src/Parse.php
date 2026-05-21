@@ -185,7 +185,7 @@ class Parse {
 
 
     /**
-     * Validates that a path is an existing directory.
+     * Parses a path to an existing directory.
      *
      * @param string      $i_stDir    The directory path to validate
      * @param string|null $i_nstError Optional custom error message
@@ -201,7 +201,7 @@ class Parse {
 
 
     /**
-     * Validates that a path is an existing file.
+     * Parses a path to an existing file.
      *
      * @param string      $i_stFile   The file path to validate
      * @param string|null $i_nstError Optional custom error message
@@ -213,6 +213,22 @@ class Parse {
             return $i_stFile;
         }
         throw new ParseException( $i_nstError ?? "Filename does not exist: {$i_stFile}" );
+    }
+
+
+    /**
+     * Parses a path that exists in the filesystem. Does not require the path to point
+     * to any specific type of filesystem object.
+     *
+     * @param string      $i_stPath
+     * @param string|null $i_nstError
+     * @return string
+     */
+    public static function existingPath( string $i_stPath, ?string $i_nstError = null ) : string {
+        if ( Validate::existingPath( $i_stPath ) ) {
+            return $i_stPath;
+        }
+        throw new ParseException( $i_nstError ?? "Path does not exist: {$i_stPath}" );
     }
 
 
@@ -290,7 +306,9 @@ class Parse {
 
 
     /**
-     * Executes a glob pattern and returns matching filenames.
+     * Executes a glob pattern and returns matching filenames. This is a general-purpose function,
+     * so no sanity checking of the pathname is performed. Do that before using this method
+     * if the glob pattern originates from untrusted input.
      *
      * @param string $i_stGlob      The glob pattern to execute
      * @param int    $i_iFlags      Optional flags for the glob function
@@ -458,7 +476,8 @@ class Parse {
 
 
     /**
-     * Validates that a filename path does not exist.
+     * Validates that a filename path does not exist. Naturally, nothing
+     * stops something else from creating something a microsecond after you check.
      *
      * @param string      $i_stFile   The file path to validate
      * @param string|null $i_nstError Optional custom error message
@@ -531,10 +550,13 @@ class Parse {
      * Parses a string to a float, rounds it, then converts to integer.
      *
      * @param string      $i_stInt      The string to parse
-     * @param int         $i_iPrecision Number of decimal places before rounding
+     * @param int         $i_iPrecision Number of decimal places before rounding (only negative values matter for ints!)
      * @param string|null $i_nstError   Optional custom error message
      * @return int The parsed, rounded, and converted integer value
      * @throws ParseException If the string cannot be parsed as a float
+     *
+     * Note that positive precision values do not affect the integer conversion. Negative precision values
+     * round to the specified power of 10. For example, -2 rounds to the nearest hundred.
      */
     public static function roundedInt( string $i_stInt, int $i_iPrecision = 0, ?string $i_nstError = null ) : int {
         if ( Validate::float( $i_stInt ) ) {

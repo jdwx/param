@@ -129,25 +129,40 @@ final class Validate {
     /**
      * Validates if a path is an existing directory.
      *
-     * @param string $i_stDir The path to validate
+     * @param ?string $i_nstDir The path to validate
      * @return bool True if the path is an existing directory, false otherwise
      */
-    public static function existingDirectory( string $i_stDir ) : bool {
-        if ( ! self::existingFilename( $i_stDir ) ) {
+    public static function existingDirectory( ?string $i_nstDir ) : bool {
+        if ( ! self::existingPath( $i_nstDir ) ) {
             return false;
         }
-        return is_dir( $i_stDir );
+        return is_dir( $i_nstDir );
     }
 
 
     /**
      * Validates if a path is an existing file or directory.
      *
-     * @param string $i_stFile The path to validate
+     * @param ?string $i_nstFile The path to validate
      * @return bool True if the path exists, false otherwise
      */
-    public static function existingFilename( string $i_stFile ) : bool {
-        return file_exists( $i_stFile );
+    public static function existingFilename( ?string $i_nstFile ) : bool {
+        if ( ! self::existingPath( $i_nstFile ) ) {
+            return false;
+        }
+        return is_file( $i_nstFile );
+    }
+
+
+    /**
+     * Validates if a path exists. Does not make any statement
+     * about what is at that path (file, directory, fifo, device node...)
+     *
+     * @param ?string $i_nstPath
+     * @return bool
+     */
+    public static function existingPath( ?string $i_nstPath ) : bool {
+        return file_exists( $i_nstPath );
     }
 
 

@@ -154,6 +154,18 @@ final class ParseTest extends TestCase {
     }
 
 
+    public function testExistingPath() : void {
+        self::assertSame( __FILE__, Parse::existingPath( __FILE__ ) );
+        self::assertSame( __DIR__, Parse::existingPath( __DIR__ ) );
+    }
+
+
+    public function testExistingPathForInvalid() : void {
+        self::expectException( ParseException::class );
+        Parse::existingPath( '/no/such/path' );
+    }
+
+
     public function testFloat() : void {
         self::assertSame( 123.45, Parse::float( '123.45' ) );
         self::assertSame( -123.45, Parse::float( '-123.45' ) );
@@ -172,15 +184,15 @@ final class ParseTest extends TestCase {
     }
 
 
-    public function testFloatRangeClosedForOutOfRange() : void {
-        self::expectException( ParseException::class );
-        Parse::floatRangeClosed( '0', 0, 100 );
-    }
-
-
     public function testFloatRangeClosedForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::floatRangeClosed( 'not a float', 0, 100 );
+    }
+
+
+    public function testFloatRangeClosedForOutOfRange() : void {
+        self::expectException( ParseException::class );
+        Parse::floatRangeClosed( '0', 0, 100 );
     }
 
 
@@ -190,15 +202,15 @@ final class ParseTest extends TestCase {
     }
 
 
-    public function testFloatRangeHalfClosedForOutOfRange() : void {
-        self::expectException( ParseException::class );
-        Parse::floatRangeHalfClosed( '100', 0, 100 );
-    }
-
-
     public function testFloatRangeHalfClosedForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::floatRangeHalfClosed( 'not a float', 0, 100 );
+    }
+
+
+    public function testFloatRangeHalfClosedForOutOfRange() : void {
+        self::expectException( ParseException::class );
+        Parse::floatRangeHalfClosed( '100', 0, 100 );
     }
 
 
@@ -209,15 +221,15 @@ final class ParseTest extends TestCase {
     }
 
 
-    public function testFloatRangeOpenForOutOfRange() : void {
-        self::expectException( ParseException::class );
-        Parse::floatRangeOpen( '101', 0, 100 );
-    }
-
-
     public function testFloatRangeOpenForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::floatRangeOpen( 'not a float', 0, 100 );
+    }
+
+
+    public function testFloatRangeOpenForOutOfRange() : void {
+        self::expectException( ParseException::class );
+        Parse::floatRangeOpen( '101', 0, 100 );
     }
 
 
@@ -265,15 +277,15 @@ final class ParseTest extends TestCase {
     }
 
 
-    public function testIntRangeClosedForOutOfRange() : void {
-        self::expectException( ParseException::class );
-        Parse::intRangeClosed( '0', 0, 100 );
-    }
-
-
     public function testIntRangeClosedForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::intRangeClosed( 'not a number', 0, 100 );
+    }
+
+
+    public function testIntRangeClosedForOutOfRange() : void {
+        self::expectException( ParseException::class );
+        Parse::intRangeClosed( '0', 0, 100 );
     }
 
 
@@ -283,15 +295,15 @@ final class ParseTest extends TestCase {
     }
 
 
-    public function testIntRangeHalfClosedForOutOfRange() : void {
-        self::expectException( ParseException::class );
-        Parse::intRangeHalfClosed( '100', 0, 100 );
-    }
-
-
     public function testIntRangeHalfClosedForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::intRangeHalfClosed( 'not a number', 0, 100 );
+    }
+
+
+    public function testIntRangeHalfClosedForOutOfRange() : void {
+        self::expectException( ParseException::class );
+        Parse::intRangeHalfClosed( '100', 0, 100 );
     }
 
 
@@ -302,15 +314,15 @@ final class ParseTest extends TestCase {
     }
 
 
-    public function testIntRangeOpenForOutOfRange() : void {
-        self::expectException( ParseException::class );
-        Parse::intRangeOpen( '101', 0, 100 );
-    }
-
-
     public function testIntRangeOpenForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::intRangeOpen( 'not a number', 0, 100 );
+    }
+
+
+    public function testIntRangeOpenForOutOfRange() : void {
+        self::expectException( ParseException::class );
+        Parse::intRangeOpen( '101', 0, 100 );
     }
 
 
