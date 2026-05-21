@@ -762,7 +762,7 @@ final class ParameterTest extends TestCase {
 
     public function testAsIPv6OrNull() : void {
         $x = self::p( '::ffff:0:255.255.255.255' );
-        self::assertSame( '::ffff:0:255.255.255.255', $x->asIPv6OrNull() );
+        self::assertSame( '::ffff:0:ffff:ffff', $x->asIPv6OrNull() );
 
         $x = self::p( null );
         self::assertNull( $x->asIPv6OrNull() );

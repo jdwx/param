@@ -9,7 +9,7 @@ namespace JDWX\Param;
 
 /**
  * Static utility class for parsing and validating string values.
- * 
+ *
  * The Parse class provides methods to convert string inputs to specific types
  * with validation. Each method validates the input and throws ParseException
  * if the string cannot be converted to the expected type. This class is used
@@ -20,10 +20,10 @@ class Parse {
 
     /**
      * Maps a key to its corresponding value in an associative array.
-     * 
-     * @param string $i_stKey The key to look up
-     * @param array<string, string> $i_r The associative array to search
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string                $i_stKey    The key to look up
+     * @param array<string, string> $i_r        The associative array to search
+     * @param string|null           $i_nstError Optional custom error message
      * @return string The mapped value for the given key
      * @throws ParseException If the key is not found in the array
      */
@@ -38,10 +38,10 @@ class Parse {
 
     /**
      * Validates that a value exists in an array of allowed values.
-     * 
-     * @param string $i_stValue The value to validate
-     * @param list<string> $i_r The array of allowed values
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string       $i_stValue  The value to validate
+     * @param list<string> $i_r        The array of allowed values
+     * @param string|null  $i_nstError Optional custom error message
      * @return string The validated value
      * @throws ParseException If the value is not in the allowed array
      */
@@ -57,11 +57,11 @@ class Parse {
 
     /**
      * Parses a string to a boolean value.
-     * 
+     *
      * Accepts numeric values (0 = false, non-zero = true) and text values
      * such as 'true', 'yes', 'on', 'false', 'no', 'off' (case-insensitive).
-     * 
-     * @param string $i_stBool The string to parse
+     *
+     * @param string      $i_stBool   The string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return bool The parsed boolean value
      * @throws ParseException If the string cannot be parsed as a boolean
@@ -80,10 +80,10 @@ class Parse {
 
     /**
      * Validates that a string matches a specific constant value.
-     * 
-     * @param string $i_stString The string to validate
-     * @param string $i_stConstant The expected constant value
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string      $i_stString   The string to validate
+     * @param string      $i_stConstant The expected constant value
+     * @param string|null $i_nstError   Optional custom error message
      * @return string The validated string (same as input if valid)
      * @throws ParseException If the string does not match the constant
      */
@@ -97,11 +97,11 @@ class Parse {
 
     /**
      * Parses a currency string to cents (integer).
-     * 
+     *
      * Converts currency amounts like "$1.23" or "1.23" to cents (123).
-     * 
-     * @param string $i_stCurrency The currency string to parse
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string      $i_stCurrency The currency string to parse
+     * @param string|null $i_nstError   Optional custom error message
      * @return int The currency amount in cents
      * @throws ParseException If the string cannot be parsed as currency
      */
@@ -117,8 +117,8 @@ class Parse {
 
     /**
      * Parses and validates a date string.
-     * 
-     * @param string $i_stDate The date string to parse
+     *
+     * @param string      $i_stDate   The date string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated date string in standard format
      * @throws ParseException If the string is not a valid date
@@ -134,9 +134,9 @@ class Parse {
 
     /**
      * Parses and validates a date-time string.
-     * 
-     * @param string $i_stDateTime The date-time string to parse
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string      $i_stDateTime The date-time string to parse
+     * @param string|null $i_nstError   Optional custom error message
      * @return string The validated date-time string in standard format
      * @throws ParseException If the string is not a valid date-time
      */
@@ -151,8 +151,8 @@ class Parse {
 
     /**
      * Validates an email address.
-     * 
-     * @param string $i_stEmail The email address to validate
+     *
+     * @param string      $i_stEmail  The email address to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated email address
      * @throws ParseException If the string is not a valid email address
@@ -167,9 +167,9 @@ class Parse {
 
     /**
      * Validates an email username (local part before @).
-     * 
-     * @param string $i_stUsername The email username to validate
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string      $i_stUsername The email username to validate
+     * @param string|null $i_nstError   Optional custom error message
      * @return string The validated email username
      * @throws ParseException If the string is not a valid email username
      */
@@ -183,8 +183,8 @@ class Parse {
 
     /**
      * Validates that a path is an existing directory.
-     * 
-     * @param string $i_stDir The directory path to validate
+     *
+     * @param string      $i_stDir    The directory path to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated directory path
      * @throws ParseException If the path is not an existing directory
@@ -199,8 +199,8 @@ class Parse {
 
     /**
      * Validates that a path is an existing file.
-     * 
-     * @param string $i_stFile The file path to validate
+     *
+     * @param string      $i_stFile   The file path to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated file path
      * @throws ParseException If the path is not an existing file
@@ -215,8 +215,8 @@ class Parse {
 
     /**
      * Parses a string to a floating-point number.
-     * 
-     * @param string $i_stFloat The string to parse
+     *
+     * @param string      $i_stFloat  The string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return float The parsed float value
      * @throws ParseException If the string cannot be parsed as a float
@@ -230,11 +230,11 @@ class Parse {
 
 
     /**
-     * Parses a float and validates it's within a closed range (exclusive bounds).
-     * 
-     * @param string $i_stFloat The string to parse
-     * @param float $i_fMin The minimum allowed value (exclusive)
-     * @param float $i_fMax The maximum allowed value (exclusive)
+     * Parses a float and validates it is within a closed range (exclusive bounds).
+     *
+     * @param string      $i_stFloat  The string to parse
+     * @param float       $i_fMin     The minimum allowed value (exclusive)
+     * @param float       $i_fMax     The maximum allowed value (exclusive)
      * @param string|null $i_nstError Optional custom error message
      * @return float The parsed and validated float
      * @throws ParseException If the string is not a valid float or is outside the range
@@ -249,11 +249,11 @@ class Parse {
 
 
     /**
-     * Parses a float and validates it's within a half-closed range [min, max).
-     * 
-     * @param string $i_stFloat The string to parse
-     * @param float $i_fMin The minimum allowed value (inclusive)
-     * @param float $i_fMax The maximum allowed value (exclusive)
+     * Parses a float and validates it is within a half-closed range [min, max).
+     *
+     * @param string      $i_stFloat  The string to parse
+     * @param float       $i_fMin     The minimum allowed value (inclusive)
+     * @param float       $i_fMax     The maximum allowed value (exclusive)
      * @param string|null $i_nstError Optional custom error message
      * @return float The parsed and validated float
      * @throws ParseException If the string is not a valid float or is outside the range
@@ -268,11 +268,11 @@ class Parse {
 
 
     /**
-     * Parses a float and validates it's within an open range [min, max].
-     * 
-     * @param string $i_stFloat The string to parse
-     * @param float $i_fMin The minimum allowed value (inclusive)
-     * @param float $i_fMax The maximum allowed value (inclusive)
+     * Parses a float and validates it is within an open range [min, max].
+     *
+     * @param string      $i_stFloat  The string to parse
+     * @param float       $i_fMin     The minimum allowed value (inclusive)
+     * @param float       $i_fMax     The maximum allowed value (inclusive)
      * @param string|null $i_nstError Optional custom error message
      * @return float The parsed and validated float
      * @throws ParseException If the string is not a valid float or is outside the range
@@ -288,10 +288,10 @@ class Parse {
 
     /**
      * Executes a glob pattern and returns matching filenames.
-     * 
-     * @param string $i_stGlob The glob pattern to execute
-     * @param int $i_iFlags Optional flags for the glob function
-     * @param bool $i_bAllowEmpty Whether to allow empty results
+     *
+     * @param string $i_stGlob      The glob pattern to execute
+     * @param int    $i_iFlags      Optional flags for the glob function
+     * @param bool   $i_bAllowEmpty Whether to allow empty results
      * @return list<string> A list of filenames matching the glob pattern
      * @throws ParseException If the glob pattern is invalid or no matches found (unless allowed)
      */
@@ -306,8 +306,8 @@ class Parse {
 
     /**
      * Validates a hostname.
-     * 
-     * @param string $i_stHost The hostname to validate
+     *
+     * @param string      $i_stHost   The hostname to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated hostname
      * @throws ParseException If the string is not a valid hostname
@@ -322,8 +322,8 @@ class Parse {
 
     /**
      * Parses a string to an integer.
-     * 
-     * @param string $i_stInt The string to parse
+     *
+     * @param string      $i_stInt    The string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return int The parsed integer value
      * @throws ParseException If the string cannot be parsed as an integer
@@ -337,11 +337,11 @@ class Parse {
 
 
     /**
-     * Parses an integer and validates it's within a closed range (exclusive bounds).
-     * 
-     * @param string $i_stInt The string to parse
-     * @param int $i_iMin The minimum allowed value (exclusive)
-     * @param int $i_iMax The maximum allowed value (exclusive)
+     * Parses an integer and validates it is within a closed range (exclusive bounds).
+     *
+     * @param string      $i_stInt    The string to parse
+     * @param int         $i_iMin     The minimum allowed value (exclusive)
+     * @param int         $i_iMax     The maximum allowed value (exclusive)
      * @param string|null $i_nstError Optional custom error message
      * @return int The parsed and validated integer
      * @throws ParseException If the string is not a valid integer or is outside the range
@@ -356,11 +356,11 @@ class Parse {
 
 
     /**
-     * Parses an integer and validates it's within a half-closed range [min, max).
-     * 
-     * @param string $i_stInt The string to parse
-     * @param int $i_iMin The minimum allowed value (inclusive)
-     * @param int $i_iMax The maximum allowed value (exclusive)
+     * Parses an integer and validates it is within a half-closed range [min, max).
+     *
+     * @param string      $i_stInt    The string to parse
+     * @param int         $i_iMin     The minimum allowed value (inclusive)
+     * @param int         $i_iMax     The maximum allowed value (exclusive)
      * @param string|null $i_nstError Optional custom error message
      * @return int The parsed and validated integer
      * @throws ParseException If the string is not a valid integer or is outside the range
@@ -375,11 +375,11 @@ class Parse {
 
 
     /**
-     * Parses an integer and validates it's within an open range [min, max].
-     * 
-     * @param string $i_stInt The string to parse
-     * @param int $i_iMin The minimum allowed value (inclusive)
-     * @param int $i_iMax The maximum allowed value (inclusive)
+     * Parses an integer and validates it is within an open range [min, max].
+     *
+     * @param string      $i_stInt    The string to parse
+     * @param int         $i_iMin     The minimum allowed value (inclusive)
+     * @param int         $i_iMax     The maximum allowed value (inclusive)
      * @param string|null $i_nstError Optional custom error message
      * @return int The parsed and validated integer
      * @throws ParseException If the string is not a valid integer or is outside the range
@@ -395,24 +395,24 @@ class Parse {
 
     /**
      * Validates an IP address (IPv4 or IPv6).
-     * 
-     * @param string $i_stIP The IP address to validate
+     *
+     * @param string      $i_stIP     The IP address to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated IP address
      * @throws ParseException If the string is not a valid IP address
      */
     public static function ip( string $i_stIP, ?string $i_nstError = null ) : string {
-        if ( Validate::ip( $i_stIP ) ) {
-            return $i_stIP;
+        if ( str_contains( $i_stIP, ':' ) ) {
+            return self::ipv6( $i_stIP, $i_nstError );
         }
-        throw new ParseException( $i_nstError ?? "Invalid IP address: {$i_stIP}" );
+        return self::ipv4( $i_stIP, $i_nstError );
     }
 
 
     /**
      * Validates an IPv4 address.
-     * 
-     * @param string $i_stIP The IPv4 address to validate
+     *
+     * @param string      $i_stIP     The IPv4 address to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated IPv4 address
      * @throws ParseException If the string is not a valid IPv4 address
@@ -427,24 +427,40 @@ class Parse {
 
     /**
      * Validates an IPv6 address.
-     * 
-     * @param string $i_stIP The IPv6 address to validate
+     *
+     * @param string      $i_stIP     The IPv6 address to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated IPv6 address
      * @throws ParseException If the string is not a valid IPv6 address
+     *
+     * Unlike IPv4, we clean up IPv6 addresses by normalizing them and removing
+     * enclosing brackets if needed. The normalize step will perform zero
+     * compression and will convert special forms like :ffff:255.255.255.255
+     * to ::ffff:ffff:ffff.
      */
     public static function ipv6( string $i_stIP, ?string $i_nstError = null ) : string {
-        if ( Validate::ipv6( $i_stIP ) ) {
-            return $i_stIP;
+        if ( ! Validate::ipv6( $i_stIP ) ) {
+            throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
         }
-        throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
+        if ( str_starts_with( $i_stIP, '[' ) && str_ends_with( $i_stIP, ']' ) ) {
+            $i_stIP = substr( $i_stIP, 1, -1 );
+        }
+        $x = inet_pton( $i_stIP );
+        if ( false === $x ) {
+            throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
+        }
+        $st = inet_ntop( $x );
+        if ( false === $st ) {
+            throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
+        }
+        return $st;
     }
 
 
     /**
      * Validates that a filename path does not exist.
-     * 
-     * @param string $i_stFile The file path to validate
+     *
+     * @param string      $i_stFile   The file path to validate
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated file path
      * @throws ParseException If the file exists or the directory path is invalid
@@ -463,8 +479,8 @@ class Parse {
 
     /**
      * Parses a string to a positive floating-point number (> 0).
-     * 
-     * @param string $i_stFloat The string to parse
+     *
+     * @param string      $i_stFloat  The string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return float The parsed positive float value
      * @throws ParseException If the string is not a positive float
@@ -479,8 +495,8 @@ class Parse {
 
     /**
      * Parses a string to a positive integer (> 0).
-     * 
-     * @param string $i_stInt The string to parse
+     *
+     * @param string      $i_stInt    The string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return int The parsed positive integer value
      * @throws ParseException If the string is not a positive integer
@@ -495,10 +511,10 @@ class Parse {
 
     /**
      * Parses a string to a float and rounds it to the specified precision.
-     * 
-     * @param string $i_stFloat The string to parse
-     * @param int $i_iPrecision Number of decimal places to round to
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string      $i_stFloat    The string to parse
+     * @param int         $i_iPrecision Number of decimal places to round to
+     * @param string|null $i_nstError   Optional custom error message
      * @return float The parsed and rounded float value
      * @throws ParseException If the string cannot be parsed as a float
      */
@@ -513,10 +529,10 @@ class Parse {
 
     /**
      * Parses a string to a float, rounds it, then converts to integer.
-     * 
-     * @param string $i_stInt The string to parse
-     * @param int $i_iPrecision Number of decimal places before rounding
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string      $i_stInt      The string to parse
+     * @param int         $i_iPrecision Number of decimal places before rounding
+     * @param string|null $i_nstError   Optional custom error message
      * @return int The parsed, rounded, and converted integer value
      * @throws ParseException If the string cannot be parsed as a float
      */
@@ -530,9 +546,9 @@ class Parse {
 
     /**
      * Creates a summary string of options for error messages.
-     * 
+     *
      * Limits the display to the first 4 options plus "..." if there are more than 5 options.
-     * 
+     *
      * @param list<string> $i_rOptions The list of options to summarize
      * @return string A comma-separated summary of the options
      */
@@ -549,8 +565,8 @@ class Parse {
 
     /**
      * Parses and validates a time string.
-     * 
-     * @param string $i_stTime The time string to parse
+     *
+     * @param string      $i_stTime   The time string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return string The validated time string in standard format
      * @throws ParseException If the string is not a valid time
@@ -566,9 +582,9 @@ class Parse {
 
     /**
      * Parses a date-time string and converts it to a Unix timestamp.
-     * 
-     * @param string $i_stTimeStamp The date-time string to parse
-     * @param string|null $i_nstError Optional custom error message
+     *
+     * @param string      $i_stTimeStamp The date-time string to parse
+     * @param string|null $i_nstError    Optional custom error message
      * @return int The Unix timestamp
      * @throws ParseException If the string is not a valid date-time
      */
@@ -586,8 +602,8 @@ class Parse {
 
     /**
      * Parses a string to a non-negative floating-point number (>= 0).
-     * 
-     * @param string $i_stFloat The string to parse
+     *
+     * @param string      $i_stFloat  The string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return float The parsed non-negative float value
      * @throws ParseException If the string is not a non-negative float
@@ -602,8 +618,8 @@ class Parse {
 
     /**
      * Parses a string to a non-negative integer (>= 0).
-     * 
-     * @param string $i_stInt The string to parse
+     *
+     * @param string      $i_stInt    The string to parse
      * @param string|null $i_nstError Optional custom error message
      * @return int The parsed non-negative integer value
      * @throws ParseException If the string is not a non-negative integer
