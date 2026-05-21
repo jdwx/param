@@ -57,12 +57,12 @@ class Parameter implements IParameter, Stringable {
 
 
     /**
-     * @param mixed[]|string|IParameter|null $xValue The value to encapsulate.
-     * @param bool $bAllowNull If true, null is allowed as a value. If false, an exception is thrown when null
-     *                         is encountered.
-     * @param int|null $nuAllowArrayDepth If not null, the maximum levels of array nesting that are allowed.
-     *                                    0 means arrays are not allowed, 1 means flat arrays are allowed,
-     *                                    2 means arrays of arrays are allowed, etc.
+     * @param mixed[]|string|IParameter|null $xValue            The value to encapsulate.
+     * @param bool                           $bAllowNull        If true, null is allowed as a value. If false, an exception is thrown when null
+     *                                                          is encountered.
+     * @param int|null                       $nuAllowArrayDepth If not null, the maximum levels of array nesting that are allowed.
+     *                                                          0 means arrays are not allowed, 1 means flat arrays are allowed,
+     *                                                          2 means arrays of arrays are allowed, etc.
      */
     public function __construct( array|bool|float|int|string|IParameter|null $xValue,
                                  private readonly bool                       $bAllowNull = true,
@@ -879,7 +879,7 @@ class Parameter implements IParameter, Stringable {
 
 
     /**
-     * @param array<string, mixed> $i_rMap
+     * @param array<string, string> $i_rMap
      * @return string The mapped value for the key specified by this parameter.
      */
     public function asMap( array $i_rMap ) : string {
@@ -1230,7 +1230,7 @@ class Parameter implements IParameter, Stringable {
     /**
      * Returns a parameter for the given key, or a parameter with the default value.
      *
-     * @param int|string $key The array key to access
+     * @param int|string          $key     The array key to access
      * @param mixed[]|string|null $default The default value if the key doesn't exist
      * @return Parameter A Parameter containing either the key's value or the default
      * @throws TypeError If this parameter is not an array
@@ -1508,7 +1508,7 @@ class Parameter implements IParameter, Stringable {
      *
      * @suppress PhanTypeMismatchDeclaredParamNullable
      * @param mixed $offset The offset to set (must be int or string)
-     * @param mixed $value The value to set
+     * @param mixed $value  The value to set
      * @return void
      * @throws LogicException Always thrown since Parameter is immutable
      */
