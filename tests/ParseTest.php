@@ -166,6 +166,36 @@ final class ParseTest extends TestCase {
     }
 
 
+    public function testFQDN() : void {
+        self::assertSame( 'localhost', Parse::fqdn( 'localhost' ) );
+        self::assertSame(
+            '_acme-challenge._well-known.example.org',
+            Parse::fqdn( '_acme-challenge._well-known.example.org' )
+        );
+        self::assertSame( 'example.com', Parse::fqdn( '  EXAMPLE.COM  ' ) );
+    }
+
+
+    public function testFQDNAllowSpaces() : void {
+        self::assertSame(
+            'foo bar.example.com',
+            Parse::fqdn( 'foo bar.example.com', i_bAllowSpaces: true )
+        );
+    }
+
+
+    public function testFQDNForInvalid() : void {
+        self::expectException( ParseException::class );
+        Parse::fqdn( 'not an fqdn' );
+    }
+
+
+    public function testFQDNForSpacesRejectedByDefault() : void {
+        self::expectException( ParseException::class );
+        Parse::fqdn( 'foo bar.example.com' );
+    }
+
+
     public function testFloat() : void {
         self::assertSame( 123.45, Parse::float( '123.45' ) );
         self::assertSame( -123.45, Parse::float( '-123.45' ) );

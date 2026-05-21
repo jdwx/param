@@ -306,6 +306,26 @@ class Parse {
 
 
     /**
+     * Loosely validates an FQDN. More permissive than hostname() (e.g., allows
+     * leading-underscore labels such as _dmarc.example.com or SRV record names).
+     * For stricter validation, use hostname() instead.
+     *
+     * @param string      $i_stFQDN       The FQDN to validate
+     * @param string|null $i_nstError     Optional custom error message
+     * @param bool        $i_bAllowSpaces Whether to allow spaces in the FQDN
+     * @return string The validated FQDN, lowercased and trimmed
+     * @throws ParseException If the string is not a valid FQDN
+     */
+    public static function fqdn( string $i_stFQDN, ?string $i_nstError = null,
+                                 bool   $i_bAllowSpaces = false ) : string {
+        if ( Validate::fqdn( $i_stFQDN, $i_bAllowSpaces ) ) {
+            return strtolower( trim( $i_stFQDN ) );
+        }
+        throw new ParseException( $i_nstError ?? "Invalid FQDN: {$i_stFQDN}" );
+    }
+
+
+    /**
      * Executes a glob pattern and returns matching filenames. This is a general-purpose function,
      * so no sanity checking of the pathname is performed. Do that before using this method
      * if the glob pattern originates from untrusted input.
