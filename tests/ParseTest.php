@@ -67,6 +67,57 @@ final class ParseTest extends TestCase {
     }
 
 
+    public function testIp() : void {
+        self::assertSame( '127.0.0.1', Parse::ip( '127.0.0.1' ) );
+        self::assertSame( '::1', Parse::ip( '::1' ) );
+        self::assertSame( '::1', Parse::ip( '[0:0:0:0:0:0:0:1]' ) );
+        self::assertSame( '[0:0:0:0:0:0:0:1]', Parse::ip( '[0:0:0:0:0:0:0:1]', i_bNormalize: false ) );
+    }
+
+
+    public function testIpForInvalid() : void {
+        self::expectException( ParseException::class );
+        Parse::ip( 'foo' );
+    }
+
+
+    public function testIpv4() : void {
+        self::assertSame( '127.0.0.1', Parse::ipv4( '127.0.0.1' ) );
+        self::assertSame( '10.20.40.80', Parse::ipv4( '10.20.40.80' ) );
+    }
+
+
+    public function testIpv4ForInvalid() : void {
+        self::expectException( ParseException::class );
+        Parse::ipv4( 'foo' );
+    }
+
+
+    public function testIpv4ForIpv6() : void {
+        self::expectException( ParseException::class );
+        Parse::ipv4( '2001:db8::1234' );
+    }
+
+
+    public function testIpv6() : void {
+        self::assertSame( '2001:db8::1234', Parse::ipv6( '2001:db8::1234' ) );
+        self::assertSame( '2001:db8::1234', Parse::ipv6( '[2001:db8:0000:0::1234]' ) );
+        self::assertSame( '[2001:db8:0000:0::1234]', Parse::ipv6( '[2001:db8:0000:0::1234]', i_bNormalize: false ) );
+    }
+
+
+    public function testIpv6ForInvalid() : void {
+        self::expectException( ParseException::class );
+        Parse::ipv6( 'foo' );
+    }
+
+
+    public function testIpv6ForIpv4() : void {
+        self::expectException( ParseException::class );
+        Parse::ipv6( '192.168.1.1' );
+    }
+
+
     public function testSummarizeOptions() : void {
         $r = [ 'a', 'b', 'c', 'd', 'e' ];
         self::assertEquals( 'a, b, c, d, e', Parse::summarizeOptions( $r ) );

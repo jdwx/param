@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Param;
 
 
+use JDWX\Strict\OK;
+
+
 /**
  * Static utility class for parsing and validating string values.
  *
@@ -396,14 +399,15 @@ class Parse {
     /**
      * Validates an IP address (IPv4 or IPv6).
      *
-     * @param string      $i_stIP     The IP address to validate
-     * @param string|null $i_nstError Optional custom error message
+     * @param string      $i_stIP       The IP address to validate
+     * @param string|null $i_nstError   Optional custom error message
+     * @param bool        $i_bNormalize Whether to normalize the IP address (IPv6 only)
      * @return string The validated IP address
      * @throws ParseException If the string is not a valid IP address
      */
-    public static function ip( string $i_stIP, ?string $i_nstError = null ) : string {
+    public static function ip( string $i_stIP, ?string $i_nstError = null, bool $i_bNormalize = true ) : string {
         if ( str_contains( $i_stIP, ':' ) ) {
-            return self::ipv6( $i_stIP, $i_nstError );
+            return self::ipv6( $i_stIP, $i_nstError, $i_bNormalize );
         }
         return self::ipv4( $i_stIP, $i_nstError );
     }
@@ -428,32 +432,28 @@ class Parse {
     /**
      * Validates an IPv6 address.
      *
-     * @param string      $i_stIP     The IPv6 address to validate
-     * @param string|null $i_nstError Optional custom error message
+     * @param string      $i_stIP       The IPv6 address to validate
+     * @param string|null $i_nstError   Optional custom error message
+     * @param bool        $i_bNormalize Normalize the address before returning
      * @return string The validated IPv6 address
      * @throws ParseException If the string is not a valid IPv6 address
      *
-     * Unlike IPv4, we clean up IPv6 addresses by normalizing them and removing
-     * enclosing brackets if needed. The normalize step will perform zero
+     * Unlike IPv4, we can clean up IPv6 addresses by normalizing them and removing
+     * enclosing brackets if present. The normalize step will perform zero
      * compression and will convert special forms like :ffff:255.255.255.255
      * to ::ffff:ffff:ffff.
      */
-    public static function ipv6( string $i_stIP, ?string $i_nstError = null ) : string {
+    public static function ipv6( string $i_stIP, ?string $i_nstError = null, bool $i_bNormalize = true ) : string {
         if ( ! Validate::ipv6( $i_stIP ) ) {
             throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
+        }
+        if ( ! $i_bNormalize ) {
+            return $i_stIP;
         }
         if ( str_starts_with( $i_stIP, '[' ) && str_ends_with( $i_stIP, ']' ) ) {
             $i_stIP = substr( $i_stIP, 1, -1 );
         }
-        $x = inet_pton( $i_stIP );
-        if ( false === $x ) {
-            throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
-        }
-        $st = inet_ntop( $x );
-        if ( false === $st ) {
-            throw new ParseException( $i_nstError ?? "Invalid IPv6 address: {$i_stIP}" );
-        }
-        return $st;
+        return OK::inet_ntop( OK::inet_pton( $i_stIP ) );
     }
 
 
