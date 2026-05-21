@@ -5,10 +5,12 @@ declare( strict_types = 1 );
 
 
 use JDWX\Param\Filter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
-class FilterTest extends TestCase {
+#[CoversClass( Filter::class )]
+final class FilterTest extends TestCase {
 
 
     public function testCurrency() : void {

@@ -5,10 +5,12 @@ declare( strict_types = 1 );
 
 
 use JDWX\Param\MutableParameter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
-class MutableParameterTest extends TestCase {
+#[CoversClass( MutableParameter::class )]
+final class MutableParameterTest extends TestCase {
 
 
     public function testFreeze() : void {
@@ -23,25 +25,25 @@ class MutableParameterTest extends TestCase {
     public function testNew() : void {
         $x = new MutableParameter( 'foo' );
         $y = $x->new( 'bar' );
-        static::assertSame( 'bar', $y->asString() );
-        static::assertSame( $x::class, $y::class );
+        self::assertSame( 'bar', $y->asString() );
+        self::assertSame( $x::class, $y::class );
     }
 
 
     public function testSet() : void {
         $x = new MutableParameter();
         $x->set( 'foo' );
-        static::assertSame( 'foo', $x->asString() );
+        self::assertSame( 'foo', $x->asString() );
         $x->set( 'bar' );
-        static::assertSame( 'bar', $x->asString() );
+        self::assertSame( 'bar', $x->asString() );
         $x->set( 5 );
-        static::assertSame( 5, $x->asInt() );
+        self::assertSame( 5, $x->asInt() );
         $x->set( 5.5 );
-        static::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
+        self::assertEqualsWithDelta( 5.5, $x->asFloat(), 0.0001 );
         $x->set( true );
-        static::assertTrue( $x->asBool() );
+        self::assertTrue( $x->asBool() );
         $x->set( null );
-        static::assertTrue( $x->isNull() );
+        self::assertTrue( $x->isNull() );
     }
 
 

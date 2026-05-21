@@ -7,12 +7,14 @@ declare( strict_types = 1 );
 use JDWX\Param\IParameter;
 use JDWX\Param\Parameter;
 use JDWX\Param\ParseException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
 require_once __DIR__ . '/MyTestParameter.php';
 
 
+#[CoversClass( Parameter::class )]
 final class ParameterTest extends TestCase {
 
 

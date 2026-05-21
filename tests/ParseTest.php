@@ -6,9 +6,11 @@ declare( strict_types = 1 );
 
 use JDWX\Param\Parse;
 use JDWX\Param\ParseException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( Parse::class )]
 final class ParseTest extends TestCase {
 
 

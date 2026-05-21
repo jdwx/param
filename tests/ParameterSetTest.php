@@ -6,9 +6,11 @@ declare( strict_types = 1 );
 
 use JDWX\Param\Parameter;
 use JDWX\Param\ParameterSet;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( ParameterSet::class )]
 final class ParameterSetTest extends TestCase {
 
 

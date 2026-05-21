@@ -5,10 +5,12 @@ declare( strict_types = 1 );
 
 
 use JDWX\Param\Validate;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
-class ValidateTest extends TestCase {
+#[CoversClass( Validate::class )]
+final class ValidateTest extends TestCase {
 
 
     public function testBool() : void {

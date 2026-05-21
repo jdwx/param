@@ -14,6 +14,7 @@ class MyTestParameter extends ParameterAlias {
         $this->_freeze();
     }
 
+
     public function mutate( bool $i_bMutable ) : void {
         parent::_mutate( $i_bMutable );
     }
