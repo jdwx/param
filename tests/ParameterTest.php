@@ -778,9 +778,6 @@ final class ParameterTest extends TestCase {
         $x = self::p( '5' );
         self::assertSame( 5, $x->asInt() );
 
-        $x = self::p( '5.9' );
-        self::assertSame( 5, $x->asInt() );
-
         $this->expectException( ParseException::class );
         $x = self::p( 'foo' );
         $x->asInt();
@@ -795,6 +792,13 @@ final class ParameterTest extends TestCase {
     }
 
 
+    public function testAsIntForFloat() : void {
+        $x = self::p( '5.9' );
+        $this->expectException( ParseException::class );
+        $x->asInt();
+    }
+
+
     public function testAsIntOrEmpty() : void {
         $x = self::p( '' );
         self::assertNull( $x->asIntOrEmpty() );
@@ -802,10 +806,14 @@ final class ParameterTest extends TestCase {
         $x = self::p( '5' );
         self::assertSame( 5, $x->asIntOrEmpty() );
 
-        $x = self::p( '5.9' );
-        self::assertSame( 5, $x->asIntOrEmpty() );
-
         $x = self::p( 'foo' );
+        $this->expectException( ParseException::class );
+        $x->asIntOrEmpty();
+    }
+
+
+    public function testAsIntOrEmptyForFloat() : void {
+        $x = self::p( '5.9' );
         $this->expectException( ParseException::class );
         $x->asIntOrEmpty();
     }
