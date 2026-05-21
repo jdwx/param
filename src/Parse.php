@@ -335,7 +335,7 @@ class Parse {
      */
     public static function hostname( string $i_stHost, ?string $i_nstError = null ) : string {
         if ( Validate::hostname( $i_stHost ) ) {
-            return $i_stHost;
+            return strtolower( trim( $i_stHost ) );
         }
         throw new ParseException( $i_nstError ?? "Invalid hostname: {$i_stHost}" );
     }
