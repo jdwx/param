@@ -296,7 +296,7 @@ final class Validate {
         if ( '-0' === $i_nstInt ) {
             return true;
         }
-        return strval( intval( $i_nstInt ) ) === $i_nstInt;
+        return floatval( intval( $i_nstInt ) ) === floatval( $i_nstInt );
     }
 
 

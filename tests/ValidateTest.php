@@ -208,6 +208,8 @@ final class ValidateTest extends TestCase {
     public function testInt() : void {
         self::assertTrue( Validate::int( '123' ) );
         self::assertTrue( Validate::int( '-123' ) );
+        self::assertTrue( Validate::int( '-123.' ) );
+        self::assertTrue( Validate::int( '-123.0' ) );
         self::assertFalse( Validate::int( '-123.45' ) );
         self::assertTrue( Validate::int( '0' ) );
         self::assertTrue( Validate::int( '-0' ) );
