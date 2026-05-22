@@ -543,17 +543,17 @@ class Parse {
 
 
     /**
-     * @param string      $i_stIPBlock  The IPv6 address block to validate
-     * @param bool        $i_bAllowBare Allow bare IPv6 addresses (without a netmask)
-     * @param bool        $i_bMask      Mask the address before returning
-     * @param bool        $i_bNormalize Normalize the address before returning
-     * @param string|null $i_nstError   Optional custom error message
+     * @param string      $i_stIPBlock     The IPv6 address block to validate
+     * @param bool        $i_bAllowAddress Allow bare IPv6 addresses (without a netmask)
+     * @param bool        $i_bMask         Mask the address before returning
+     * @param bool        $i_bNormalize    Normalize the address before returning
+     * @param string|null $i_nstError      Optional custom error message
      * @return string     Validated IPv6 address block
      * @throws ParseException If the string is not a valid IPv6 address block/
      */
-    public static function ipv6Block( string $i_stIPBlock, bool $i_bAllowBare = false, bool $i_bMask = false,
+    public static function ipv6Block( string $i_stIPBlock, bool $i_bAllowAddress = false, bool $i_bMask = false,
                                       bool   $i_bNormalize = true, ?string $i_nstError = null ) : string {
-        if ( Validate::ipv6Block( $i_stIPBlock, $i_bAllowBare ) ) {
+        if ( Validate::ipv6Block( $i_stIPBlock, $i_bAllowAddress ) ) {
             $r = explode( '/', $i_stIPBlock );
             if ( 1 === count( $r ) ) {
                 $r[ 1 ] = '128';

@@ -368,14 +368,21 @@ final class Validate {
     }
 
 
-    public static function ipBlock( ?string $i_nstIP, bool $i_bAllowBare = false ) : bool {
+    /**
+     * Validates if a string is a valid IP address block (IPv4 or IPv6).
+     *
+     * @param string|null $i_nstIP         The string to validate
+     * @param bool        $i_bAllowAddress Whether to allow bare IP addresses without a prefix length
+     * @return bool True if the string is a valid IP address block, false otherwise
+     */
+    public static function ipBlock( ?string $i_nstIP, bool $i_bAllowAddress = false ) : bool {
         if ( ! is_string( $i_nstIP ) ) {
             return false;
         }
         if ( str_contains( $i_nstIP, ':' ) ) {
-            return self::ipv6Block( $i_nstIP, $i_bAllowBare );
+            return self::ipv6Block( $i_nstIP, $i_bAllowAddress );
         }
-        return self::ipv4Block( $i_nstIP, $i_bAllowBare );
+        return self::ipv4Block( $i_nstIP, $i_bAllowAddress );
     }
 
 
@@ -393,7 +400,14 @@ final class Validate {
     }
 
 
-    public static function ipv4Block( ?string $i_nstIP, bool $i_bAllowBare = false ) : bool {
+    /**
+     * Validates if a string is a valid IPv4 address block, e.g., `192.168.0.0/24`.
+     *
+     * @param string|null $i_nstIP         The string to validate
+     * @param bool        $i_bAllowAddress Whether to allow bare IPv4 addresses without a prefix length
+     * @return bool True if the string is a valid IPv4 address block, false otherwise
+     */
+    public static function ipv4Block( ?string $i_nstIP, bool $i_bAllowAddress = false ) : bool {
         if ( ! is_string( $i_nstIP ) ) {
             return false;
         }
@@ -402,7 +416,7 @@ final class Validate {
             return false;
         }
         if ( count( $r ) < 2 ) {
-            if ( $i_bAllowBare ) {
+            if ( $i_bAllowAddress ) {
                 return self::ipv4( $i_nstIP );
             }
             return false;
@@ -436,7 +450,14 @@ final class Validate {
     }
 
 
-    public static function ipv6Block( ?string $i_nstIP, bool $i_bAllowBare = false ) : bool {
+    /**
+     * Validates if a string is a valid IPv6 address block, e.g., `2601:db8::/64`.
+     *
+     * @param string|null $i_nstIP         The string to validate
+     * @param bool        $i_bAllowAddress Whether to allow bare IPv6 addresses without a prefix length
+     * @return bool True if the string is a valid IPv6 address block, false otherwise
+     */
+    public static function ipv6Block( ?string $i_nstIP, bool $i_bAllowAddress = false ) : bool {
         if ( ! is_string( $i_nstIP ) ) {
             return false;
         }
@@ -445,7 +466,7 @@ final class Validate {
             return false;
         }
         if ( count( $r ) < 2 ) {
-            if ( $i_bAllowBare ) {
+            if ( $i_bAllowAddress ) {
                 return self::ipv6( $i_nstIP );
             }
             return false;
