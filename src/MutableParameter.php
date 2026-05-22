@@ -44,6 +44,22 @@ class MutableParameter extends Parameter {
     }
 
 
+    public function offsetSet( mixed $offset, mixed $value ) : void {
+        if ( ! is_int( $offset ) && ! is_string( $offset ) ) {
+            throw new InvalidArgumentException( 'Parameter key is not an integer or string.' );
+        }
+        $this->_setKey( $offset, $value );
+    }
+
+
+    public function offsetUnset( mixed $offset ) : void {
+        if ( ! is_int( $offset ) && ! is_string( $offset ) ) {
+            throw new InvalidArgumentException( 'Parameter key is not an integer or string.' );
+        }
+        $this->_unsetKey( $offset );
+    }
+
+
     /**
      * Sets the value of this mutable parameter.
      *
