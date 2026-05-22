@@ -145,7 +145,7 @@ final class Validate {
      * Validates if a path is an existing file or directory.
      *
      * @param ?string $i_nstFile The path to validate
-     * @return bool True if the path exists, false otherwise
+     * @return bool True if the path exists and is a file, false otherwise
      */
     public static function existingFilename( ?string $i_nstFile ) : bool {
         if ( ! self::existingPath( $i_nstFile ) ) {
