@@ -70,10 +70,11 @@ class Parse {
      * @throws ParseException If the string cannot be parsed as a boolean
      */
     public static function bool( string $i_stBool, ?string $i_nstError = null ) : bool {
+        $i_stBool = strtolower( trim( $i_stBool ) );
         if ( is_numeric( $i_stBool ) ) {
             return intval( $i_stBool ) !== 0;
         }
-        return match ( strtolower( $i_stBool ) ) {
+        return match ( $i_stBool ) {
             'true', 'yes', 'yeah', 'y', 'on' => true,
             'false', 'no', 'nope', 'n', 'off' => false,
             default => throw new ParseException( $i_nstError ?? "Invalid boolean value: {$i_stBool}" ),
