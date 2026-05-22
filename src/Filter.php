@@ -79,7 +79,7 @@ class Filter {
      * Filters and normalizes a date string to YYYY-MM-DD format.
      *
      * Accepts various date formats and converts them to the standard
-     * ISO 8601 date format (YYYY-MM-DD).
+     * ISO 8601 date format (YYYY-MM-DD) in the local timezone.
      *
      * @param string $i_st The date string to filter
      * @return string|null The normalized date string in YYYY-MM-DD format, or null if invalid
@@ -97,7 +97,7 @@ class Filter {
      * Filters and normalizes a date-time string to YYYY-MM-DD HH:MM:SS format.
      *
      * Accepts various date-time formats and converts them to the standard
-     * format (YYYY-MM-DD HH:MM:SS) in a GMT timezone.
+     * format (YYYY-MM-DD HH:MM:SS) in a the local timezone.
      *
      * @param string $i_st The date-time string to filter
      * @return string|null The normalized date-time string, or null if invalid
@@ -115,7 +115,7 @@ class Filter {
      * Filters and normalizes a time string to HH:MM:SS format.
      *
      * Accepts various time formats and converts them to the standard
-     * 24-hour format (HH:MM:SS).
+     * 24-hour format (HH:MM:SS) in the local timezone.
      *
      * @param string $i_st The time string to filter
      * @return string|null The normalized time string in HH:MM:SS format, or null if invalid
