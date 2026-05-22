@@ -97,7 +97,7 @@ class Filter {
      * Filters and normalizes a date-time string to YYYY-MM-DD HH:MM:SS format.
      *
      * Accepts various date-time formats and converts them to the standard
-     * format (YYYY-MM-DD HH:MM:SS) in a the local timezone.
+     * format (YYYY-MM-DD HH:MM:SS) in the local timezone.
      *
      * @param string $i_st The date-time string to filter
      * @return string|null The normalized date-time string, or null if invalid
