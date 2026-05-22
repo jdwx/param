@@ -1639,10 +1639,6 @@ class Parameter implements IParameter, Stringable {
         if ( ! $this->isMutable() ) {
             throw new LogicException( 'Cannot modify immutable parameter' );
         }
-        $x = $this->indexOrNull( $i_key );
-        if ( $x instanceof self ) {
-            $x->_set( $i_xValue );
-        }
         $this->xValue[ $i_key ] = $this->child( $i_xValue );
         $this->rKeys = array_keys( $this->xValue );
     }
