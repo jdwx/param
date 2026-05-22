@@ -406,8 +406,8 @@ class ParameterSet implements IParameterSet, Countable {
             $this->setIgnoredKeys->add( $i_stKey );
             return;
         }
-        if ( $this->mapDefaults->hasKey( $i_stKey ) && ! $this->bMutable ) {
-            throw new LogicException( "Cannot reset default in immutable set: {$i_stKey}" );
+        if ( ! $this->bMutable ) {
+            throw new LogicException( "Cannot set default in immutable set: {$i_stKey}" );
         }
         if ( ! $i_xValue instanceof Parameter ) {
             $i_xValue = new Parameter( $i_xValue );

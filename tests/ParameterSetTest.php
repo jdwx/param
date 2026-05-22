@@ -27,6 +27,7 @@ final class ParameterSetTest extends TestCase {
 
     public function testAddDefaultForDuplicate() : void {
         $set = new ParameterSet();
+        $set->setMutable( true );
         $set->setDefault( 'foo', 'bar' );
         self::expectException( InvalidArgumentException::class );
         $set->addDefault( 'foo', 'baz' );
@@ -35,6 +36,7 @@ final class ParameterSetTest extends TestCase {
 
     public function testAddDefaults() : void {
         $set = new ParameterSet();
+        $set->setMutable( true );
         $set->addDefaults( [ 'foo' => 'bar', 1 => 'baz' ] );
         self::assertSame( 'bar', $set->get( 'foo' )->asString() );
         self::assertSame( 'baz', $set->get( '1' )->asString() );
@@ -315,6 +317,7 @@ final class ParameterSetTest extends TestCase {
 
     public function testSetDefault() : void {
         $set = new ParameterSet( i_itAllowedKeys: [ 'foo' ] );
+        $set->setMutable( true );
         $set->setDefault( 'foo', 'bar' );
         self::assertSame( 'bar', $set->get( 'foo' )->asString() );
 
