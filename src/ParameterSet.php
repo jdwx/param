@@ -52,8 +52,9 @@ class ParameterSet implements IParameterSet, Countable {
     /**
      * Whether this parameter set can be modified after creation.
      * @var bool
+     * @noinspection PhpUnusedFieldDefaultValueInspection It bloody isn't.
      */
-    private bool $bMutable = false;
+    private bool $bMutable = true;
 
 
     /**
@@ -73,6 +74,7 @@ class ParameterSet implements IParameterSet, Countable {
         $this->addParameters( $i_itParameters );
         $this->mapDefaults = new Map();
         $this->addDefaults( $i_itDefaults );
+        $this->bMutable = false;
     }
 
 
@@ -438,8 +440,8 @@ class ParameterSet implements IParameterSet, Countable {
             $this->setIgnoredKeys->add( $i_stKey );
             return;
         }
-        if ( $this->mapParameters->hasKey( $i_stKey ) && ! $this->bMutable ) {
-            throw new InvalidArgumentException( "Key already present in immutable set: {$i_stKey}" );
+        if ( ! $this->bMutable ) {
+            throw new InvalidArgumentException( "Cannot set parameter in immutable set: {$i_stKey}" );
         }
         if ( ! $i_xValue instanceof IParameter ) {
             $i_xValue = new Parameter( $i_xValue );
@@ -468,6 +470,7 @@ class ParameterSet implements IParameterSet, Countable {
     public function subsetByKeys( callable $i_fnFilter ) : static {
         /** @phpstan-ignore new.static */
         $set = new static( i_itAllowedKeys: $this->setAllowedKeys->filter( $i_fnFilter ) );
+        $set->setMutable( true );
         foreach ( $this->mapParameters as $stKey => $rParameter ) {
             if ( $i_fnFilter( $stKey ) ) {
                 $set->setParameter( $stKey, $rParameter );
