@@ -156,7 +156,8 @@ class Parameter implements IParameter, Stringable {
 
 
     /**
-     * Returns the parameter as either an array or string.
+     * Returns the parameter as either an array or string. If it is an array,
+     * this *does not* unwrap nested IParameter objects. (See asArrayRecursive).
      *
      * @return mixed[]|string The parameter value as an array if it's an array, otherwise as a string
      * @throws TypeError If the parameter is neither an array nor convertible to string
@@ -1616,6 +1617,57 @@ class Parameter implements IParameter, Stringable {
         }
         $this->xValue = $i_xValue;
         $this->bSet = true;
+    }
+
+
+    /**
+     *
+     * Sets the value of an array key under this parameter (parameter must
+     * be an array)
+     *
+     * @param int|string                                    $i_key
+     * @param mixed[]|bool|float|int|string|IParameter|null $i_xValue
+     * @return void
+     */
+    protected function _setKey( int|string $i_key, array|bool|float|int|string|IParameter|null $i_xValue ) : void {
+        if ( ! $this->isArray() ) {
+            throw new LogicException( 'Cannot modify non-array parameter with square brackets.' );
+        }
+        if ( $this->isFrozen() ) {
+            throw new LogicException( 'Cannot modify frozen parameter' );
+        }
+        if ( ! $this->isMutable() ) {
+            throw new LogicException( 'Cannot modify immutable parameter' );
+        }
+        $x = $this->indexOrNull( $i_key );
+        if ( $x instanceof self ) {
+            $x->_set( $i_xValue );
+        }
+        $this->xValue[ $i_key ] = $this->child( $i_xValue );
+        $this->rKeys = array_keys( $this->xValue );
+    }
+
+
+    /**
+     * Clears the value of an array key under this parameter (parameter must
+     * be an array)
+     *
+     * @param int|string $i_key The key to unset
+     * @return void
+     * @throws LogicException If the parameter is frozen or not an array
+     */
+    protected function _unsetKey( int|string $i_key ) : void {
+        if ( ! $this->isArray() ) {
+            throw new LogicException( 'Cannot unset key in non-array' );
+        }
+        if ( $this->isFrozen() ) {
+            throw new LogicException( 'Cannot unset key in frozen parameter' );
+        }
+        if ( ! $this->isMutable() ) {
+            throw new LogicException( 'Cannot unset key in immutable parameter' );
+        }
+        unset( $this->xValue[ $i_key ] );
+        $this->rKeys = array_keys( $this->xValue );
     }
 
 
