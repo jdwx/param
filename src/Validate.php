@@ -251,8 +251,6 @@ final class Validate {
         if ( ! $i_bAllowSpaces && str_contains( $i_nstFQDN, ' ' ) ) {
             return false;
         }
-        $i_nstFQDN = strtolower( trim( $i_nstFQDN ) );
-
         return filter_var( $i_nstFQDN, FILTER_VALIDATE_DOMAIN ) !== false;
     }
 
