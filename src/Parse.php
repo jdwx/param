@@ -663,7 +663,7 @@ class Parse {
      *
      * Limits the display to the first 4 options plus "..." if there are more than 5 options.
      *
-     * @param list<string> $i_rOptions The list of options to summarize
+     * @param list<int|string> $i_rOptions The list of options to summarize
      * @return string A comma-separated summary of the options
      */
     public static function summarizeOptions( array $i_rOptions ) : string {
