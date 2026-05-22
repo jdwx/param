@@ -136,6 +136,7 @@ final class Validate {
         if ( ! self::existingPath( $i_nstDir ) ) {
             return false;
         }
+        assert( is_string( $i_nstDir ) );
         return is_dir( $i_nstDir );
     }
 
@@ -150,6 +151,7 @@ final class Validate {
         if ( ! self::existingPath( $i_nstFile ) ) {
             return false;
         }
+        assert( is_string( $i_nstFile ) );
         return is_file( $i_nstFile );
     }
 
@@ -162,6 +164,9 @@ final class Validate {
      * @return bool
      */
     public static function existingPath( ?string $i_nstPath ) : bool {
+        if ( ! is_string( $i_nstPath ) ) {
+            return false;
+        }
         return file_exists( $i_nstPath );
     }
 
