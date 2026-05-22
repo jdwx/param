@@ -368,6 +368,17 @@ final class Validate {
     }
 
 
+    public static function ipBlock( ?string $i_nstIP, bool $i_bAllowBare = false ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        if ( str_contains( $i_nstIP, ':' ) ) {
+            return self::ipv6Block( $i_nstIP, $i_bAllowBare );
+        }
+        return self::ipv4Block( $i_nstIP, $i_bAllowBare );
+    }
+
+
     /**
      * Validates if a string is a valid IPv4 address.
      *
@@ -379,6 +390,32 @@ final class Validate {
             return false;
         }
         return filter_var( $i_nstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) !== false;
+    }
+
+
+    public static function ipv4Block( ?string $i_nstIP, bool $i_bAllowBare = false ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        $r = explode( '/', $i_nstIP, 3 );
+        if ( count( $r ) > 2 ) {
+            return false;
+        }
+        if ( count( $r ) < 2 ) {
+            if ( $i_bAllowBare ) {
+                return self::ipv4( $i_nstIP );
+            }
+            return false;
+        }
+        if ( ! self::ipv4( $r[ 0 ] ) ) {
+            return false;
+        }
+
+        if ( ! self::intRangeOpen( $r[ 1 ], 0, 32 ) ) {
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -396,6 +433,31 @@ final class Validate {
             $i_nstIP = substr( $i_nstIP, 1, -1 );
         }
         return filter_var( $i_nstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) !== false;
+    }
+
+
+    public static function ipv6Block( ?string $i_nstIP, bool $i_bAllowBare = false ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        $r = explode( '/', $i_nstIP );
+        if ( count( $r ) > 2 ) {
+            return false;
+        }
+        if ( count( $r ) < 2 ) {
+            if ( $i_bAllowBare ) {
+                return self::ipv6( $i_nstIP );
+            }
+            return false;
+        }
+        if ( ! self::ipv6( $r[ 0 ] ) ) {
+            return false;
+        }
+
+        if ( ! self::intRangeOpen( $r[ 1 ], 0, 128 ) ) {
+            return false;
+        }
+        return true;
     }
 
 

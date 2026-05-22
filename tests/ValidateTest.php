@@ -272,6 +272,23 @@ final class ValidateTest extends TestCase {
     }
 
 
+    public function testIpBlock() : void {
+
+        self::assertTrue( Validate::ipBlock( '127.0.0.1', true ) );
+        self::assertTrue( Validate::ipBlock( '::1', true ) );
+        self::assertTrue( Validate::ipBlock( '10.0.0.0/8' ) );
+        self::assertTrue( Validate::ipBlock( '[2601:db8::]/64' ) );
+
+        self::assertFalse( Validate::ipBlock( '127.0.0.1' ) );
+        self::assertFalse( Validate::ipBlock( '::1' ) );
+        self::assertFalse( Validate::ipBlock( '10.0.256.0/24' ) );
+        self::assertFalse( Validate::ipBlock( '1:2:3:4:5:6:7:8:9/64' ) );
+
+        self::assertFalse( Validate::ipBlock( null ) );
+
+    }
+
+
     public function testIpv4() : void {
         self::assertTrue( Validate::ipv4( '127.0.0.1' ) );
         self::assertFalse( Validate::ipv4( '256.0.0.1' ) );
@@ -287,6 +304,24 @@ final class ValidateTest extends TestCase {
     }
 
 
+    public function testIpv4Block() : void {
+        self::assertTrue( Validate::ipv4Block( '127.0.0.1', true ) );
+        self::assertFalse( Validate::ipv4Block( '127.0.0.1' ) );
+        self::assertTrue( Validate::ipv4Block( '127.0.0.1/0' ) );
+        self::assertTrue( Validate::ipv4Block( '127.0.0.1/3' ) );
+        self::assertTrue( Validate::ipv4Block( '127.0.0.1/9' ) );
+        self::assertTrue( Validate::ipv4Block( '127.0.0.1/23' ) );
+        self::assertTrue( Validate::ipv4Block( '127.0.0.1/32' ) );
+        self::assertFalse( Validate::ipv4Block( '127.0.0.1/33' ) );
+        self::assertFalse( Validate::ipv4Block( '10.0.0.0/8/16' ) );
+
+        self::assertFalse( Validate::ipv4Block( '::1' ) );
+        self::assertFalse( Validate::ipv4Block( '::1/64' ) );
+        self::assertFalse( Validate::ipv4Block( 'Not even close.' ) );
+        self::assertFalse( Validate::ipv4Block( null ) );
+    }
+
+
     public function testIpv6() : void {
         self::assertFalse( Validate::ipv6( '127.0.0.1' ) );
         self::assertFalse( Validate::ipv6( '256.0.0.1' ) );
@@ -299,6 +334,31 @@ final class ValidateTest extends TestCase {
         self::assertFalse( Validate::ipv6( 'not an IP' ) );
         self::assertFalse( Validate::ipv6( '' ) );
         self::assertFalse( Validate::ipv6( null ) );
+    }
+
+
+    public function testIpv6Block() : void {
+        self::assertTrue( Validate::ipv6Block( '::1', true ) );
+        self::assertFalse( Validate::ipv6Block( '::1' ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/64', true ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/64' ) );
+        self::assertTrue( Validate::ipv6Block( '[2001:db8::]/64' ) );
+        self::assertFalse( Validate::ipv6Block( '[2001:db8::/64]' ) );
+        self::assertFalse( Validate::ipv6Block( '[2001:]db8::/64' ) );
+        self::assertFalse( Validate::ipv6Block( '2001:db8::/64/48' ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/0' ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/13' ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/53' ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/71' ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/113' ) );
+        self::assertTrue( Validate::ipv6Block( '2001:db8::/128' ) );
+        self::assertFalse( Validate::ipv6Block( '2001:db8::/129' ) );
+
+        self::assertFalse( Validate::ipv6Block( '10.0.0.0' ) );
+        self::assertFalse( Validate::ipv6Block( '10.0.0.0/8' ) );
+        self::assertFalse( Validate::ipv6Block( 'Not even close.' ) );
+        self::assertFalse( Validate::ipv6Block( null ) );
+
     }
 
 

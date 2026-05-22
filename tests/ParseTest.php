@@ -6,6 +6,7 @@ declare( strict_types = 1 );
 
 use JDWX\Param\Parse;
 use JDWX\Param\ParseException;
+use JDWX\Param\Validate;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -60,7 +61,7 @@ final class ParseTest extends TestCase {
 
 
     public function testBoolAgreesWithValidateOnWhitespace() : void {
-        self::assertTrue( \JDWX\Param\Validate::bool( ' true ' ) );
+        self::assertTrue( Validate::bool( ' true ' ) );
         self::assertTrue( Parse::bool( ' true ' ) );
     }
 
@@ -370,6 +371,26 @@ final class ParseTest extends TestCase {
     }
 
 
+    public function testIpBlock() : void {
+        self::assertSame( '10.0.0.0/8', Parse::ipBlock( '10.0.0.0/8' ) );
+        self::assertSame( '10.0.0.0/32', Parse::ipBlock( '10.0.0.0', true ) );
+        self::assertSame( '2601:db8::/64', Parse::ipBlock( '[2601:db8::]/64' ) );
+        self::assertSame( '2601:db8::/128', Parse::ipBlock( '2601:db8::', true ) );
+    }
+
+
+    public function testIpBlockForBadIPv4() : void {
+        self::expectException( ParseException::class );
+        Parse::ipBlock( '10.0.0.0/33' );
+    }
+
+
+    public function testIpBlockForBadIPv6() : void {
+        self::expectException( ParseException::class );
+        Parse::ipBlock( '[2601:db8]::/64' );
+    }
+
+
     public function testIpForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::ip( 'foo' );
@@ -379,6 +400,56 @@ final class ParseTest extends TestCase {
     public function testIpv4() : void {
         self::assertSame( '127.0.0.1', Parse::ipv4( '127.0.0.1' ) );
         self::assertSame( '10.20.40.80', Parse::ipv4( '10.20.40.80' ) );
+    }
+
+
+    public function testIpv4Block() : void {
+        self::assertSame( '127.0.0.1/32', Parse::ipv4Block( '127.0.0.1', true ) );
+        self::assertSame( '10.0.0.0/8', Parse::ipv4Block( '10.0.0.0/8', true ) );
+        self::assertSame( '10.0.0.0/8', Parse::ipv4Block( '10.0.0.0/8' ) );
+        self::assertSame( '10.20.30.40/16', Parse::ipv4Block( '10.20.30.40/16' ) );
+        self::assertSame( '10.20.0.0/16', Parse::ipv4Block( '10.20.30.40/16', i_bMask: true ) );
+
+        self::assertSame( '0.0.0.0/0', Parse::ipv4Block( '255.255.255.255/0', i_bMask: true ) );
+        self::assertSame( '128.0.0.0/1', Parse::ipv4Block( '255.255.255.255/1', i_bMask: true ) );
+        self::assertSame( '192.0.0.0/2', Parse::ipv4Block( '255.255.255.255/2', i_bMask: true ) );
+        self::assertSame( '224.0.0.0/3', Parse::ipv4Block( '255.255.255.255/3', i_bMask: true ) );
+        self::assertSame( '240.0.0.0/4', Parse::ipv4Block( '255.255.255.255/4', i_bMask: true ) );
+        self::assertSame( '248.0.0.0/5', Parse::ipv4Block( '255.255.255.255/5', i_bMask: true ) );
+        self::assertSame( '252.0.0.0/6', Parse::ipv4Block( '255.255.255.255/6', i_bMask: true ) );
+        self::assertSame( '254.0.0.0/7', Parse::ipv4Block( '255.255.255.255/7', i_bMask: true ) );
+        self::assertSame( '255.0.0.0/8', Parse::ipv4Block( '255.255.255.255/8', i_bMask: true ) );
+
+        self::assertSame( '255.128.0.0/9', Parse::ipv4Block( '255.255.255.255/9', i_bMask: true ) );
+        self::assertSame( '255.192.0.0/10', Parse::ipv4Block( '255.255.255.255/10', i_bMask: true ) );
+        self::assertSame( '255.224.0.0/11', Parse::ipv4Block( '255.255.255.255/11', i_bMask: true ) );
+        self::assertSame( '255.240.0.0/12', Parse::ipv4Block( '255.255.255.255/12', i_bMask: true ) );
+        self::assertSame( '255.248.0.0/13', Parse::ipv4Block( '255.255.255.255/13', i_bMask: true ) );
+        self::assertSame( '255.252.0.0/14', Parse::ipv4Block( '255.255.255.255/14', i_bMask: true ) );
+        self::assertSame( '255.254.0.0/15', Parse::ipv4Block( '255.255.255.255/15', i_bMask: true ) );
+        self::assertSame( '255.255.0.0/16', Parse::ipv4Block( '255.255.255.255/16', i_bMask: true ) );
+        self::assertSame( '255.255.128.0/17', Parse::ipv4Block( '255.255.255.255/17', i_bMask: true ) );
+        self::assertSame( '255.255.192.0/18', Parse::ipv4Block( '255.255.255.255/18', i_bMask: true ) );
+        self::assertSame( '255.255.224.0/19', Parse::ipv4Block( '255.255.255.255/19', i_bMask: true ) );
+        self::assertSame( '255.255.240.0/20', Parse::ipv4Block( '255.255.255.255/20', i_bMask: true ) );
+        self::assertSame( '255.255.248.0/21', Parse::ipv4Block( '255.255.255.255/21', i_bMask: true ) );
+        self::assertSame( '255.255.252.0/22', Parse::ipv4Block( '255.255.255.255/22', i_bMask: true ) );
+        self::assertSame( '255.255.254.0/23', Parse::ipv4Block( '255.255.255.255/23', i_bMask: true ) );
+        self::assertSame( '255.255.255.0/24', Parse::ipv4Block( '255.255.255.255/24', i_bMask: true ) );
+        self::assertSame( '255.255.255.128/25', Parse::ipv4Block( '255.255.255.255/25', i_bMask: true ) );
+        self::assertSame( '255.255.255.192/26', Parse::ipv4Block( '255.255.255.255/26', i_bMask: true ) );
+        self::assertSame( '255.255.255.224/27', Parse::ipv4Block( '255.255.255.255/27', i_bMask: true ) );
+        self::assertSame( '255.255.255.240/28', Parse::ipv4Block( '255.255.255.255/28', i_bMask: true ) );
+        self::assertSame( '255.255.255.248/29', Parse::ipv4Block( '255.255.255.255/29', i_bMask: true ) );
+        self::assertSame( '255.255.255.252/30', Parse::ipv4Block( '255.255.255.255/30', i_bMask: true ) );
+        self::assertSame( '255.255.255.254/31', Parse::ipv4Block( '255.255.255.255/31', i_bMask: true ) );
+        self::assertSame( '255.255.255.255/32', Parse::ipv4Block( '255.255.255.255/32', i_bMask: true ) );
+    }
+
+
+    public function testIpv4BlockForInvalid() : void {
+        self::expectException( ParseException::class );
+        Parse::ipv4Block( 'foo' );
     }
 
 
@@ -398,6 +469,49 @@ final class ParseTest extends TestCase {
         self::assertSame( '2001:db8::1234', Parse::ipv6( '2001:db8::1234' ) );
         self::assertSame( '2001:db8::1234', Parse::ipv6( '[2001:db8:0000:0::1234]' ) );
         self::assertSame( '[2001:db8:0000:0::1234]', Parse::ipv6( '[2001:db8:0000:0::1234]', i_bNormalize: false ) );
+    }
+
+
+    public function testIpv6Block() : void {
+        self::assertSame( '2001:db8::/128', Parse::ipv6Block( '2001:db8::', true ) );
+        self::assertSame( '2001:db8::/128', Parse::ipv6Block( '2001:db8::/128', true ) );
+        self::assertSame( '2001:db8::/128', Parse::ipv6Block( '2001:db8::/128' ) );
+        self::assertSame( '2001:db8::1234/64', Parse::ipv6Block( '2001:db8::1234/64' ) );
+        self::assertSame( '2001:db8::/64', Parse::ipv6Block( '2001:db8::1234/64', i_bMask: true ) );
+
+        $all = 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff';
+        self::assertSame( '::/0', Parse::ipv6Block( "{$all}/0", i_bMask: true ) );
+        self::assertSame( '8000::/1', Parse::ipv6Block( "{$all}/1", i_bMask: true ) );
+        self::assertSame( 'e000::/3', Parse::ipv6Block( "{$all}/3", i_bMask: true ) );
+        self::assertSame( 'fe00::/7', Parse::ipv6Block( "{$all}/7", i_bMask: true ) );
+        self::assertSame( 'ff00::/8', Parse::ipv6Block( "{$all}/8", i_bMask: true ) );
+        self::assertSame( 'ff80::/9', Parse::ipv6Block( "{$all}/9", i_bMask: true ) );
+        self::assertSame( 'ffff::/16', Parse::ipv6Block( "{$all}/16", i_bMask: true ) );
+        self::assertSame( 'ffff:8000::/17', Parse::ipv6Block( "{$all}/17", i_bMask: true ) );
+        self::assertSame( 'ffff:ffff::/32', Parse::ipv6Block( "{$all}/32", i_bMask: true ) );
+        self::assertSame( 'ffff:ffff:ffff::/48', Parse::ipv6Block( "{$all}/48", i_bMask: true ) );
+        self::assertSame( 'ffff:ffff:ffff:ffff::/64', Parse::ipv6Block( "{$all}/64", i_bMask: true ) );
+        self::assertSame(
+            'ffff:ffff:ffff:ffff:8000::/65',
+            Parse::ipv6Block( "{$all}/65", i_bMask: true )
+        );
+        self::assertSame(
+            'ffff:ffff:ffff:ffff:ffff:ffff::/96',
+            Parse::ipv6Block( "{$all}/96", i_bMask: true )
+        );
+        self::assertSame(
+            'ffff:ffff:ffff:ffff:ffff:ffff:ffff:0/112',
+            Parse::ipv6Block( "{$all}/112", i_bMask: true )
+        );
+        self::assertSame(
+            'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ff00/120',
+            Parse::ipv6Block( "{$all}/120", i_bMask: true )
+        );
+        self::assertSame(
+            'ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe/127',
+            Parse::ipv6Block( "{$all}/127", i_bMask: true )
+        );
+        self::assertSame( "{$all}/128", Parse::ipv6Block( "{$all}/128", i_bMask: true ) );
     }
 
 

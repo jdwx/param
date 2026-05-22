@@ -453,6 +453,26 @@ class Parse {
 
 
     /**
+     * Validates an IP address block.
+     *
+     * @param string      $i_stIPBlock     The IP address block to validate
+     * @param bool        $i_bAllowAddress Accept IP addresses without a netmask
+     * @param bool        $i_bMask         Mask the address before returning
+     * @param bool        $i_bNormalize    Normalize the address before returning (IPv6 only)
+     * @param string|null $i_nstError      Optional custom error message
+     * @return string Validated IP address block
+     * @throws ParseException If the string is not a valid IP address block
+     */
+    public static function ipBlock( string $i_stIPBlock, bool $i_bAllowAddress = false, bool $i_bMask = false,
+                                    bool   $i_bNormalize = true, ?string $i_nstError = null ) : string {
+        if ( str_contains( $i_stIPBlock, ':' ) ) {
+            return self::ipv6Block( $i_stIPBlock, $i_bAllowAddress, $i_bMask, $i_bNormalize, $i_nstError );
+        }
+        return self::ipv4Block( $i_stIPBlock, $i_bAllowAddress, $i_bMask, $i_nstError );
+    }
+
+
+    /**
      * Validates an IPv4 address.
      *
      * @param string      $i_stIP     The IPv4 address to validate
@@ -465,6 +485,32 @@ class Parse {
             return $i_stIP;
         }
         throw new ParseException( $i_nstError ?? "Invalid IPv4 address: {$i_stIP}" );
+    }
+
+
+    /**
+     * Validates an IPv4 address block.
+     *
+     * @param string      $i_stIPBlock     The IPv4 address block to validate
+     * @param bool        $i_bAllowAddress Accept IPv4 addresses without a netmask
+     * @param bool        $i_bMask         Mask the address before returning
+     * @param string|null $i_nstError      Optional custom error message
+     * @return string Validated IPv4 address block
+     * @throws ParseException If the string is not a valid IPv4 address block
+     */
+    public static function ipv4Block( string $i_stIPBlock, bool $i_bAllowAddress = false,
+                                      bool   $i_bMask = false, ?string $i_nstError = null ) : string {
+        if ( Validate::ipv4Block( $i_stIPBlock, $i_bAllowAddress ) ) {
+            $r = explode( '/', $i_stIPBlock );
+            if ( 1 === count( $r ) ) {
+                $r[ 1 ] = '32';
+            }
+            if ( $i_bMask ) {
+                $r[ 0 ] = self::ipv4Mask( $r[ 0 ], intval( $r[ 1 ] ) );
+            }
+            return self::ipv4( $r[ 0 ], $i_nstError ) . '/' . $r[ 1 ];
+        }
+        throw new ParseException( $i_nstError ?? "Invalid IPv4 block: {$i_stIPBlock}" );
     }
 
 
@@ -493,6 +539,31 @@ class Parse {
             $i_stIP = substr( $i_stIP, 1, -1 );
         }
         return OK::inet_ntop( OK::inet_pton( $i_stIP ) );
+    }
+
+
+    /**
+     * @param string      $i_stIPBlock  The IPv6 address block to validate
+     * @param bool        $i_bAllowBare Allow bare IPv6 addresses (without a netmask)
+     * @param bool        $i_bMask      Mask the address before returning
+     * @param bool        $i_bNormalize Normalize the address before returning
+     * @param string|null $i_nstError   Optional custom error message
+     * @return string     Validated IPv6 address block
+     * @throws ParseException If the string is not a valid IPv6 address block/
+     */
+    public static function ipv6Block( string $i_stIPBlock, bool $i_bAllowBare = false, bool $i_bMask = false,
+                                      bool   $i_bNormalize = true, ?string $i_nstError = null ) : string {
+        if ( Validate::ipv6Block( $i_stIPBlock, $i_bAllowBare ) ) {
+            $r = explode( '/', $i_stIPBlock );
+            if ( 1 === count( $r ) ) {
+                $r[ 1 ] = '128';
+            }
+            if ( $i_bMask ) {
+                $r[ 0 ] = self::ipv6Mask( $r[ 0 ], intval( $r[ 1 ] ) );
+            }
+            return self::ipv6( $r[ 0 ], $i_nstError, $i_bNormalize ) . '/' . $r[ 1 ];
+        }
+        throw new ParseException( $i_nstError ?? "Invalid IPv6 block: {$i_stIPBlock}" );
     }
 
 
@@ -672,6 +743,32 @@ class Parse {
             return intval( $i_stInt );
         }
         throw new ParseException( $i_nstError ?? "Invalid unsigned integer: {$i_stInt}" );
+    }
+
+
+    private static function ipv4Mask( string $i_stIP, int $i_uMask ) : string {
+        $bitMask = ( ( 1 << $i_uMask ) - 1 ) << ( 32 - $i_uMask );
+        $y = unpack( 'N', OK::inet_pton( $i_stIP ) );
+        $y = array_shift( $y );
+        return OK::inet_ntop( pack( 'N', $y & $bitMask ) );
+    }
+
+
+    private static function ipv6Mask( string $i_stIP, int $i_uMask ) : string {
+        $stAddressBytes = OK::inet_pton( $i_stIP );
+        $uFullBytesOfMask = intdiv( $i_uMask, 8 );
+        $uExtraBitsOfMask = $i_uMask % 8;
+        $stOutputAddress = substr( $stAddressBytes, 0, $uFullBytesOfMask );
+        if ( $uFullBytesOfMask < 16 ) {
+            if ( $uExtraBitsOfMask > 0 ) {
+                $uPartialByte = ord( $stAddressBytes[ $uFullBytesOfMask ] );
+                $uPartialMask = ( 0xFF << ( 8 - $uExtraBitsOfMask ) ) & 0xFF;
+                $stOutputAddress .= chr( $uPartialByte & $uPartialMask );
+                $uFullBytesOfMask++;
+            }
+            $stOutputAddress .= str_repeat( "\0", 16 - $uFullBytesOfMask );
+        }
+        return OK::inet_ntop( $stOutputAddress );
     }
 
 
