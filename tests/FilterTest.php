@@ -32,6 +32,12 @@ final class FilterTest extends TestCase {
     }
 
 
+    public function testCurrencyTrimsWhitespace() : void {
+        self::assertSame( '1234.56', Filter::currency( ' 1234.56 ' ) );
+        self::assertSame( '1234.56', Filter::currency( ' $1,234.56 ' ) );
+    }
+
+
     public function testDate() : void {
         self::assertSame( '2024-01-25', Filter::date( '2024-01-25 12:34:56' ) );
         self::assertSame( '2025-03-02', Filter::date( 'March 2, 2025 3:53 PM' ) );
@@ -47,6 +53,20 @@ final class FilterTest extends TestCase {
         self::assertSame( '2024-01-28 00:00:00', Filter::dateTime( '2024-01-26 + 2 days' ) );
         self::assertSame( '2018-06-12 19:30:00', Filter::dateTime( '2018-06-12T19:30' ) );
         self::assertNull( Filter::dateTime( 'foo' ) );
+    }
+
+
+    public function testDateTimePreservesLocalCalendarDate() : void {
+        $stOriginal = date_default_timezone_get();
+        date_default_timezone_set( 'Pacific/Kiritimati' );
+        try {
+            $input = '2024-01-25 06:00:00';
+            self::assertSame( '2024-01-25', Filter::date( $input ) );
+            self::assertSame( '2024-01-25 06:00:00', Filter::dateTime( $input ) );
+            self::assertSame( '06:00:00', Filter::time( $input ) );
+        } finally {
+            date_default_timezone_set( $stOriginal );
+        }
     }
 
 

@@ -1804,6 +1804,52 @@ final class ParameterTest extends TestCase {
     }
 
 
+    public function testSetKeyForFrozen() : void {
+        $x = new class( [ 'foo' => 'bar' ] ) extends Parameter {
+
+
+            public function setKey( string $key, string $value ) : void {
+                $this->_freeze();
+                $this->_setKey( $key, $value );
+            }
+
+
+        };
+        $this->expectException( LogicException::class );
+        $x->setKey( 'foo', 'baz' );
+    }
+
+
+    public function testSetKeyForImmutable() : void {
+        $x = new class( [ 'foo' => 'bar' ] ) extends Parameter {
+
+
+            public function setKey( string $key, string $value ) : void {
+                $this->_setKey( $key, $value );
+            }
+
+
+        };
+        $this->expectException( LogicException::class );
+        $x->setKey( 'foo', 'baz' );
+    }
+
+
+    public function testSetKeyForNotArray() : void {
+        $x = new class( 'foo' ) extends Parameter {
+
+
+            public function setKey( string $key, string $value ) : void {
+                $this->_setKey( $key, $value );
+            }
+
+
+        };
+        $this->expectException( LogicException::class );
+        $x->setKey( 'foo', 'baz' );
+    }
+
+
     public function testToString() : void {
         $x = self::p( 'foo' );
         self::assertSame( 'foo', (string) $x );
@@ -1813,6 +1859,52 @@ final class ParameterTest extends TestCase {
         $x = self::p( [ 'foo', 'bar' ] );
         self::assertSame( '["foo","bar"]', (string) $x );
 
+    }
+
+
+    public function testUnsetKeyForFrozen() : void {
+        $x = new class( [ 'foo' => 'bar' ] ) extends Parameter {
+
+
+            public function unsetKey( string $key ) : void {
+                $this->_freeze();
+                $this->_unsetKey( $key );
+            }
+
+
+        };
+        $this->expectException( LogicException::class );
+        $x->unsetKey( 'foo' );
+    }
+
+
+    public function testUnsetKeyForImmutable() : void {
+        $x = new class( [ 'foo' => 'bar' ] ) extends Parameter {
+
+
+            public function unsetKey( string $key ) : void {
+                $this->_unsetKey( $key );
+            }
+
+
+        };
+        $this->expectException( LogicException::class );
+        $x->unsetKey( 'foo' );
+    }
+
+
+    public function testUnsetKeyForNotArray() : void {
+        $x = new class( 'foo' ) extends Parameter {
+
+
+            public function unsetKey( string $key ) : void {
+                $this->_unsetKey( $key );
+            }
+
+
+        };
+        $this->expectException( LogicException::class );
+        $x->unsetKey( 'foo' );
     }
 
 

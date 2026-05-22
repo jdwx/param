@@ -59,6 +59,12 @@ final class ParseTest extends TestCase {
     }
 
 
+    public function testBoolAgreesWithValidateOnWhitespace() : void {
+        self::assertTrue( \JDWX\Param\Validate::bool( ' true ' ) );
+        self::assertTrue( Parse::bool( ' true ' ) );
+    }
+
+
     public function testBoolForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::bool( 'foo' );
@@ -512,6 +518,18 @@ final class ParseTest extends TestCase {
     public function testTimeStampForInvalid() : void {
         self::expectException( ParseException::class );
         Parse::timeStamp( 'foo' );
+    }
+
+
+    public function testTimeStampPreservesInstantAcrossTimezone() : void {
+        $stOriginal = date_default_timezone_get();
+        date_default_timezone_set( 'America/Los_Angeles' );
+        try {
+            $input = '2024-01-25 12:34:56';
+            self::assertSame( strtotime( $input ), Parse::timeStamp( $input ) );
+        } finally {
+            date_default_timezone_set( $stOriginal );
+        }
     }
 
 

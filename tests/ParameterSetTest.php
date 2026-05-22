@@ -43,6 +43,7 @@ final class ParameterSetTest extends TestCase {
 
     public function testAddParameterForDuplicate() : void {
         $set = new ParameterSet();
+        $set->setMutable( true );
         $set->setParameter( 'foo', 'bar' );
         self::expectException( InvalidArgumentException::class );
         $set->addParameter( 'foo', 'baz' );
@@ -51,6 +52,7 @@ final class ParameterSetTest extends TestCase {
 
     public function testAddParametersForIntegerKey() : void {
         $set = new ParameterSet();
+        $set->setMutable( true );
         $set->addParameters( [ 'foo' => 'bar', 1 => 'baz' ] );
         self::assertSame( 'bar', $set->get( 'foo' )->asString() );
         self::assertSame( 'baz', $set->get( '1' )->asString() );
@@ -86,6 +88,7 @@ final class ParameterSetTest extends TestCase {
 
     public function testEmpty() : void {
         $set = new ParameterSet();
+        $set->setMutable( true );
         self::assertTrue( $set->empty() );
 
         $set->addParameter( 'foo', 'bar' );
@@ -132,6 +135,7 @@ final class ParameterSetTest extends TestCase {
 
     public function testGetIgnoredKeys() : void {
         $set = new ParameterSet( i_itAllowedKeys: [ 'foo', 'baz' ] );
+        $set->setMutable( true );
         $set->setParameter( 'foo', 'bar' );
         $set->setParameter( 'baz', 'qux' );
         $set->setParameter( 'quux', 'corge' );
@@ -266,9 +270,10 @@ final class ParameterSetTest extends TestCase {
 
     public function testOffsetSet() : void {
         $set = new ParameterSet();
+        $set->setMutable( true );
         $set[ 'foo' ] = 'bar';
-        /** @noinspection PhpConditionAlreadyCheckedInspection */
         self::assertInstanceOf( Parameter::class, $set[ 'foo' ] );
+        $set->setMutable( false );
         self::expectException( InvalidArgumentException::class );
         $set[ 'foo' ] = 'baz';
     }
@@ -276,9 +281,17 @@ final class ParameterSetTest extends TestCase {
 
     public function testOffsetSetForNullKey() : void {
         $set = new ParameterSet();
+        $set->setMutable( true );
         $set[ 'foo' ] = 'bar';
         self::expectException( LogicException::class );
         $set[] = 'baz';
+    }
+
+
+    public function testOffsetSetRejectsNewKeyOnImmutable() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar' ] );
+        self::expectException( InvalidArgumentException::class );
+        $set[ 'baz' ] = 'qux';
     }
 
 
@@ -316,6 +329,13 @@ final class ParameterSetTest extends TestCase {
         self::expectException( LogicException::class );
         $set->setDefault( 'foo', 'corge' );
 
+    }
+
+
+    public function testSetParameterRejectsNewKeyOnImmutable() : void {
+        $set = new ParameterSet( [ 'foo' => 'bar' ] );
+        self::expectException( InvalidArgumentException::class );
+        $set->setParameter( 'baz', 'qux' );
     }
 
 

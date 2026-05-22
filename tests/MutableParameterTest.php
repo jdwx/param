@@ -4,6 +4,7 @@
 declare( strict_types = 1 );
 
 
+use JDWX\Param\IParameter;
 use JDWX\Param\MutableParameter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -27,6 +28,37 @@ final class MutableParameterTest extends TestCase {
         $y = $x->new( 'bar' );
         self::assertSame( 'bar', $y->asString() );
         self::assertSame( $x::class, $y::class );
+    }
+
+
+    public function testOffsetSet() : void {
+        $x = new MutableParameter( [ 'a', 'b', 'c' ] );
+        $x[ 0 ] = 'X';
+        /** @phpstan-ignore-next-line */
+        assert( $x[ 0 ] instanceof IParameter );
+        self::assertSame( 'X', $x[ 0 ]->asString() );
+    }
+
+
+    public function testOffsetSetForInvalidKey() : void {
+        $x = new MutableParameter( [ 'a', 'b', 'c' ] );
+        $this->expectException( LogicException::class );
+        $x[ $this ] = 'X';
+    }
+
+
+    public function testOffsetUnset() : void {
+        $x = new MutableParameter( [ 'a' => '1', 'b' => '2' ] );
+        unset( $x[ 'a' ] );
+        self::assertFalse( $x->has( 'a' ) );
+        self::assertTrue( $x->has( 'b' ) );
+    }
+
+
+    public function testOffsetUnsetForInvalidKey() : void {
+        $x = new MutableParameter( [ 'a' => '1', 'b' => '2' ] );
+        $this->expectException( LogicException::class );
+        unset( $x[ 0.5 ] );
     }
 
 
