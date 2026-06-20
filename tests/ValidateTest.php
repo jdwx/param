@@ -372,36 +372,6 @@ final class ValidateTest extends TestCase {
     }
 
 
-    /**
-     * Guards the bogon/private range constants: every entry must be a valid CIDR
-     * block of the expected family (and not the other). This catches typos like
-     * a malformed address or a v4 range mistakenly placed in a v6 list.
-     */
-    public function testIpRangeConstantsAreValidBlocks() : void {
-        $rV4 = [
-            'IPV4_BOGON_RANGES' => Validate::IPV4_BOGON_RANGES,
-            'IPV4_PRIVATE_RANGES' => Validate::IPV4_PRIVATE_RANGES,
-        ];
-        foreach ( $rV4 as $stName => $rRanges ) {
-            foreach ( $rRanges as $stRange ) {
-                self::assertTrue( Validate::ipv4Block( $stRange ), "{$stName}: not a valid IPv4 block: {$stRange}" );
-                self::assertFalse( Validate::ipv6Block( $stRange ), "{$stName}: unexpectedly an IPv6 block: {$stRange}" );
-            }
-        }
-
-        $rV6 = [
-            'IPV6_BOGON_RANGES' => Validate::IPV6_BOGON_RANGES,
-            'IPV6_PRIVATE_RANGES' => Validate::IPV6_PRIVATE_RANGES,
-        ];
-        foreach ( $rV6 as $stName => $rRanges ) {
-            foreach ( $rRanges as $stRange ) {
-                self::assertTrue( Validate::ipv6Block( $stRange ), "{$stName}: not a valid IPv6 block: {$stRange}" );
-                self::assertFalse( Validate::ipv4Block( $stRange ), "{$stName}: unexpectedly an IPv4 block: {$stRange}" );
-            }
-        }
-    }
-
-
     public function testIpv4() : void {
         self::assertTrue( Validate::ipv4( '127.0.0.1' ) );
         self::assertFalse( Validate::ipv4( '256.0.0.1' ) );
@@ -623,6 +593,18 @@ final class ValidateTest extends TestCase {
 
 
     /**
+     * Bracketed IPv6 addresses (e.g. "[2001:db8::1]") are accepted by
+     * Validate::ipv6() and Validate::ipv6Block(), so for consistency they are
+     * accepted here too -- on both the address and the CIDR block address.
+     */
+    public function testIpv6InCIDRWithBracketedInput() : void {
+        self::assertTrue( Validate::ipv6InCIDR( '[2001:db8::1]', '2001:db8::/32' ) );
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', '[2001:db8::]/32' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '[2001:dead::1]', '2001:db8::/32' ) );
+    }
+
+
+    /**
      * As with IPv4: matches if the address is in at least one listed block,
      * while an empty list and a null block are not matches.
      */
@@ -632,18 +614,6 @@ final class ValidateTest extends TestCase {
         self::assertFalse( Validate::ipv6InCIDR( '2001:dead::1', [ '2001:db8::/32', 'fd00::/8' ] ) );
         self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', [] ) );
         self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', null ) );
-    }
-
-
-    /**
-     * Bracketed IPv6 addresses (e.g. "[2001:db8::1]") are accepted by
-     * Validate::ipv6() and Validate::ipv6Block(), so for consistency they are
-     * accepted here too -- on both the address and the CIDR block address.
-     */
-    public function testIpv6InCIDRWithBracketedInput() : void {
-        self::assertTrue( Validate::ipv6InCIDR( '[2001:db8::1]', '2001:db8::/32' ) );
-        self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', '[2001:db8::]/32' ) );
-        self::assertFalse( Validate::ipv6InCIDR( '[2001:dead::1]', '2001:db8::/32' ) );
     }
 
 
@@ -688,6 +658,21 @@ final class ValidateTest extends TestCase {
         self::assertFalse( Validate::ipv6NotBogon( '2001:db8::1' ) );
         self::assertFalse( Validate::ipv6NotBogon( '2001:db8:abcd::1' ) );
         self::assertFalse( Validate::ipNotBogon( '2001:db8::1' ) );
+    }
+
+
+    /**
+     * A bracketed IPv6 address passes Validate::ipv6(), so the bogon/private
+     * wrappers debracket it before delegating to Common (which assumes a clean
+     * address), just as ipv6InCIDR() does. This covers both the family-specific
+     * wrappers and the ipNotBogon()/ipPrivate() dispatchers.
+     */
+    public function testIpv6NotBogonWithBracketedInput() : void {
+        self::assertTrue( Validate::ipv6NotBogon( '[2606:4700::1111]' ) );
+        self::assertFalse( Validate::ipv6NotBogon( '[2001:db8::1]' ) );
+        self::assertTrue( Validate::ipv6Private( '[fd00::1]' ) );
+        self::assertTrue( Validate::ipNotBogon( '[2606:4700::1111]' ) );
+        self::assertTrue( Validate::ipPrivate( '[fd00::1]' ) );
     }
 
 

@@ -19,72 +19,6 @@ final class Validate {
 
 
     /**
-     * These are IPv4 ranges that are not routable on the public Internet. It is *not*
-     * a list of invalid ranges or ranges that you might not observe, especially
-     * because the loopback range is on this list. Based on RFC 5735.
-     *
-     * @var list<string>
-     */
-    public const array IPV4_BOGON_RANGES = [
-        '0.0.0.0/8', # RFC 1122 "This network"
-        '10.0.0.0/8', # RFC 1918 Private address
-        '100.64.0.0/10', # RFC 6598 Shared address space (Carrier-grade NAT)
-        '127.0.0.0/8', # RFC 1122 Loopback
-        '169.254.0.0/16', # RFC 3927 Link-local address
-        '172.16.0.0/12', # RFC 1918 Private address
-        '192.0.0.0/24', # RFC 5736 IETF protocol assignments
-        '192.0.2.0/24', # RFC 5737 TEST-NET-1
-        '192.168.0.0/16', # RFC 1918 Private address
-        '198.18.0.0/15', # RFC 2544 Network interconnection benchmark testing
-        '198.51.100.0/24', # RFC 5737 TEST-NET-2
-        '203.0.113.0/24', # RFC 5737 TEST-NET-3
-        '224.0.0.0/4', # RFC 3171 Multicast
-        '240.0.0.0/4', # RFC 1112 Reserved ("Class E")
-        '255.255.255.255/32', # RFC 919/922 Limited broadcast destination address
-    ];
-
-
-    /** @var list<string> */
-    public const array IPV4_PRIVATE_RANGES = [
-        '10.0.0.0/8',
-        '172.16.0.0/12',
-        '192.168.0.0/16',
-    ];
-
-
-    /**
-     * These are IPv6 address ranges that are deemed "not globally
-     * reachable" by IANA.
-     *
-     * @var list<string>
-     */
-    public const array IPV6_BOGON_RANGES = [
-        '::/128', # RFC 4291 unicast "unspecified" address
-        '::1/128', # RFC 4291 unicast "loopback" address
-        '::ffff:0:0/96', # RFC 4291 IPv4-mapped IPv6 address
-        '64:ff9b:1::/48', # RFC 8215 IPv4-IPv6 translation
-        '100::/64', # RFC 6666 "discard-only" prefix
-        '100:0:0:1::/64', # RFC 9780 dummy prefix
-        '2001::/23', # RFC 2928 IETF Protocol assignments
-        '2001:2::/48', # RFC 5180 Benchmarking
-        '2001:10::/28', # Deprecated (previously "ORCHID")
-        '2001:db8::/32', # RFC 3849 documentation
-        '2002::/16', # RFC 3056 IPv6 transition (6to4)
-        '3fff::/20', # RFC 9637 Documentation
-        '5f00::/16', # RFC 9602 Segment Routing (SRv6) SIDs
-        'fc00::/7', # RFC 4193/8190 Unique Local Addresses
-        'fe80::/10', # RFC 4291 IPv6 link-local unicast
-    ];
-
-
-    /** @var list<string> */
-    public const array IPV6_PRIVATE_RANGES = [
-        'fc00::/7',
-        'fe80::/10',
-    ];
-
-
-    /**
      * Validates that a key exists in an associative array.
      *
      * @param ?string              $i_nstKey The key to check for
@@ -563,21 +497,7 @@ final class Validate {
         if ( is_null( $i_cidr ) ) {
             return false;
         }
-        if ( is_array( $i_cidr ) ) {
-            foreach ( $i_cidr as $cidr ) {
-                if ( self::ipv4InCIDR( $i_nstIP, $cidr ) ) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if ( ! self::ipv4Block( $i_cidr ) ) {
-            return false;
-        }
-        $r = explode( '/', $i_cidr, 2 );
-        $stCidrAddress = $r[ 0 ];
-        $uBits = intval( $r[ 1 ] );
-        return Common::ipv4Mask( $i_nstIP, $uBits ) === Common::ipv4Mask( $stCidrAddress, $uBits );
+        return Common::ipv4InCIDR( $i_nstIP, $i_cidr );
     }
 
 
@@ -598,13 +518,8 @@ final class Validate {
         if ( ! self::ipv4( $i_nstIP ) ) {
             return false;
         }
-        if ( $i_bAllowLocalhost && '127.0.0.1' === $i_nstIP ) {
-            return true;
-        }
-        if ( $i_bAllowPrivate && self::ipv4InCIDR( $i_nstIP, self::IPV4_PRIVATE_RANGES ) ) {
-            return true;
-        }
-        return ! self::ipv4InCIDR( $i_nstIP, self::IPV4_BOGON_RANGES );
+        assert( is_string( $i_nstIP ) );
+        return Common::ipv4NotBogon( $i_nstIP, $i_bAllowLocalhost, $i_bAllowPrivate );
     }
 
 
@@ -622,10 +537,8 @@ final class Validate {
         if ( ! self::ipv4( $i_nstIP ) ) {
             return false;
         }
-        if ( $i_bIncludeLocalhost && '127.0.0.1' === $i_nstIP ) {
-            return true;
-        }
-        return self::ipv4InCIDR( $i_nstIP, self::IPV4_PRIVATE_RANGES );
+        assert( is_string( $i_nstIP ) );
+        return Common::ipv4Private( $i_nstIP, $i_bIncludeLocalhost );
     }
 
 
@@ -695,21 +608,7 @@ final class Validate {
         if ( is_null( $i_cidr ) ) {
             return false;
         }
-        if ( is_array( $i_cidr ) ) {
-            foreach ( $i_cidr as $cidr ) {
-                if ( self::ipv6InCIDR( $i_nstIP, $cidr ) ) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if ( ! self::ipv6Block( $i_cidr ) ) {
-            return false;
-        }
-        $r = explode( '/', $i_cidr, 2 );
-        $stCidrAddress = Common::debracket( $r[ 0 ] );
-        $uBits = intval( $r[ 1 ] );
-        return Common::ipv6Mask( $i_nstIP, $uBits ) === Common::ipv6Mask( $stCidrAddress, $uBits );
+        return Common::ipv6InCIDR( $i_nstIP, $i_cidr );
     }
 
 
@@ -730,13 +629,9 @@ final class Validate {
         if ( ! self::ipv6( $i_nstIP ) ) {
             return false;
         }
-        if ( $i_bAllowLocalhost && self::ipv6InCIDR( $i_nstIP, '::1/128' ) ) {
-            return true;
-        }
-        if ( $i_bAllowPrivate && self::ipv6InCIDR( $i_nstIP, self::IPV6_PRIVATE_RANGES ) ) {
-            return true;
-        }
-        return ! self::ipv6InCIDR( $i_nstIP, self::IPV6_BOGON_RANGES );
+        assert( is_string( $i_nstIP ) );
+        $i_nstIP = Common::debracket( $i_nstIP );
+        return Common::ipv6NotBogon( $i_nstIP, $i_bAllowLocalhost, $i_bAllowPrivate );
     }
 
 
@@ -754,10 +649,9 @@ final class Validate {
         if ( ! self::ipv6( $i_nstIP ) ) {
             return false;
         }
-        if ( $i_bIncludeLocalhost && self::ipv6InCIDR( $i_nstIP, '::1/128' ) ) {
-            return true;
-        }
-        return self::ipv6InCIDR( $i_nstIP, self::IPV6_PRIVATE_RANGES );
+        assert( is_string( $i_nstIP ) );
+        $i_nstIP = Common::debracket( $i_nstIP );
+        return Common::ipv6Private( $i_nstIP, $i_bIncludeLocalhost );
     }
 
 
