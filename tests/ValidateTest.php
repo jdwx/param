@@ -289,6 +289,44 @@ final class ValidateTest extends TestCase {
     }
 
 
+    public function testIpInCIDR() : void {
+        // Dispatches to the IPv4 or IPv6 implementation based on the address family.
+        self::assertTrue( Validate::ipInCIDR( '10.0.0.5', '10.0.0.0/8' ) );
+        self::assertFalse( Validate::ipInCIDR( '11.0.0.5', '10.0.0.0/8' ) );
+        self::assertTrue( Validate::ipInCIDR( '2001:db8::1', '2001:db8::/32' ) );
+        self::assertFalse( Validate::ipInCIDR( '2001:dead::1', '2001:db8::/32' ) );
+
+        // A bracketed IPv6 address still routes to the IPv6 implementation.
+        self::assertTrue( Validate::ipInCIDR( '[2001:db8::1]', '2001:db8::/32' ) );
+
+        // A single block may also be supplied as a one-element list.
+        self::assertTrue( Validate::ipInCIDR( '10.0.0.5', [ '10.0.0.0/8' ] ) );
+
+        // An IPv4 address is never inside an IPv6 block and vice versa.
+        self::assertFalse( Validate::ipInCIDR( '10.0.0.5', '2001:db8::/32' ) );
+        self::assertFalse( Validate::ipInCIDR( '2001:db8::1', '10.0.0.0/8' ) );
+
+        // Invalid or missing inputs are rejected rather than throwing.
+        self::assertFalse( Validate::ipInCIDR( null, '10.0.0.0/8' ) );
+        self::assertFalse( Validate::ipInCIDR( 'not an IP', '10.0.0.0/8' ) );
+        self::assertFalse( Validate::ipInCIDR( '10.0.0.5', 'garbage' ) );
+        self::assertFalse( Validate::ipInCIDR( '10.0.0.5', '10.0.0.0/8/16' ) );
+    }
+
+
+    /**
+     * The documented headline feature: a single list may mix IPv4 and IPv6
+     * CIDR blocks, and an address matches if it falls in any one of them.
+     */
+    public function testIpInCIDRWithMixedList() : void {
+        $r = [ '2001:db8::/32', '10.0.0.0/8' ];
+        self::assertTrue( Validate::ipInCIDR( '10.0.0.5', $r ) );
+        self::assertTrue( Validate::ipInCIDR( '2001:db8::1', $r ) );
+        self::assertFalse( Validate::ipInCIDR( '11.0.0.5', $r ) );
+        self::assertFalse( Validate::ipInCIDR( '2001:dead::1', $r ) );
+    }
+
+
     public function testIpv4() : void {
         self::assertTrue( Validate::ipv4( '127.0.0.1' ) );
         self::assertFalse( Validate::ipv4( '256.0.0.1' ) );
@@ -319,6 +357,59 @@ final class ValidateTest extends TestCase {
         self::assertFalse( Validate::ipv4Block( '::1/64' ) );
         self::assertFalse( Validate::ipv4Block( 'Not even close.' ) );
         self::assertFalse( Validate::ipv4Block( null ) );
+    }
+
+
+    public function testIpv4InCIDR() : void {
+        // Basic membership.
+        self::assertTrue( Validate::ipv4InCIDR( '192.168.1.50', '192.168.1.0/24' ) );
+        self::assertFalse( Validate::ipv4InCIDR( '192.168.2.50', '192.168.1.0/24' ) );
+
+        // The whole space and a single host.
+        self::assertTrue( Validate::ipv4InCIDR( '203.0.113.9', '0.0.0.0/0' ) );
+        self::assertTrue( Validate::ipv4InCIDR( '192.168.1.5', '192.168.1.5/32' ) );
+        self::assertFalse( Validate::ipv4InCIDR( '192.168.1.6', '192.168.1.5/32' ) );
+
+        // A /31 (two-address) block.
+        self::assertTrue( Validate::ipv4InCIDR( '192.168.1.1', '192.168.1.0/31' ) );
+        self::assertFalse( Validate::ipv4InCIDR( '192.168.1.2', '192.168.1.0/31' ) );
+
+        // Host bits set in the CIDR address are ignored (the block is masked too).
+        self::assertTrue( Validate::ipv4InCIDR( '10.1.2.3', '10.255.255.255/8' ) );
+
+        // A one-element list behaves like the bare block.
+        self::assertTrue( Validate::ipv4InCIDR( '10.1.2.3', [ '10.0.0.0/8' ] ) );
+        self::assertFalse( Validate::ipv4InCIDR( '11.1.2.3', [ '10.0.0.0/8' ] ) );
+
+        // Non-IPv4 addresses are rejected.
+        self::assertFalse( Validate::ipv4InCIDR( '2001:db8::1', '2001:db8::/32' ) );
+        self::assertFalse( Validate::ipv4InCIDR( null, '10.0.0.0/8' ) );
+        self::assertFalse( Validate::ipv4InCIDR( 'not an IP', '10.0.0.0/8' ) );
+
+        // Invalid, IPv6, or bare-address blocks are rejected.
+        self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', 'garbage' ) );
+        self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', '2001:db8::/32' ) );
+        self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', '10.0.0.0' ) );
+        self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', '10.0.0.0/33' ) );
+    }
+
+
+    /**
+     * A list of blocks matches if the address is in at least one of them. An
+     * empty list matches nothing, and a null block (allowed by the type) is
+     * simply not a match.
+     */
+    public function testIpv4InCIDRWithList() : void {
+        // In the first block but not the second: should match (at least one).
+        self::assertTrue( Validate::ipv4InCIDR( '10.0.0.5', [ '10.0.0.0/8', '192.168.0.0/16' ] ) );
+        // In the second block but not the first: should match.
+        self::assertTrue( Validate::ipv4InCIDR( '192.168.0.5', [ '10.0.0.0/8', '192.168.0.0/16' ] ) );
+        // In neither: should not match.
+        self::assertFalse( Validate::ipv4InCIDR( '172.16.0.5', [ '10.0.0.0/8', '192.168.0.0/16' ] ) );
+        // An empty list matches nothing.
+        self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', [] ) );
+        // A null block (allowed by the parameter type) is simply not a match.
+        self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', null ) );
     }
 
 
@@ -359,6 +450,65 @@ final class ValidateTest extends TestCase {
         self::assertFalse( Validate::ipv6Block( 'Not even close.' ) );
         self::assertFalse( Validate::ipv6Block( null ) );
 
+    }
+
+
+    public function testIpv6InCIDR() : void {
+        // Basic membership.
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', '2001:db8::/32' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:dead::1', '2001:db8::/32' ) );
+
+        // The whole space and a single host.
+        self::assertTrue( Validate::ipv6InCIDR( '::1', '::/0' ) );
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', '2001:db8::1/128' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8::2', '2001:db8::1/128' ) );
+
+        // A non-byte-aligned prefix length.
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8:a000::1', '2001:db8:abcd::/36' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8:b000::1', '2001:db8:abcd::/36' ) );
+
+        // Host bits set in the CIDR address are ignored (the block is masked too).
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8:abcd::1', '2001:db8:ffff::ffff/32' ) );
+
+        // A one-element list behaves like the bare block.
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', [ '2001:db8::/32' ] ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:dead::1', [ '2001:db8::/32' ] ) );
+
+        // Non-IPv6 addresses are rejected.
+        self::assertFalse( Validate::ipv6InCIDR( '10.0.0.5', '10.0.0.0/8' ) );
+        self::assertFalse( Validate::ipv6InCIDR( null, '2001:db8::/32' ) );
+        self::assertFalse( Validate::ipv6InCIDR( 'not an IP', '2001:db8::/32' ) );
+
+        // Invalid, IPv4, or bare-address blocks are rejected.
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', 'garbage' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', '10.0.0.0/8' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', '2001:db8::' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', '2001:db8::/129' ) );
+    }
+
+
+    /**
+     * As with IPv4: matches if the address is in at least one listed block,
+     * while an empty list and a null block are not matches.
+     */
+    public function testIpv6InCIDRWithList() : void {
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', [ '2001:db8::/32', 'fd00::/8' ] ) );
+        self::assertTrue( Validate::ipv6InCIDR( 'fd12::1', [ '2001:db8::/32', 'fd00::/8' ] ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:dead::1', [ '2001:db8::/32', 'fd00::/8' ] ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', [] ) );
+        self::assertFalse( Validate::ipv6InCIDR( '2001:db8::1', null ) );
+    }
+
+
+    /**
+     * Bracketed IPv6 addresses (e.g. "[2001:db8::1]") are accepted by
+     * Validate::ipv6() and Validate::ipv6Block(), so for consistency they are
+     * accepted here too -- on both the address and the CIDR block address.
+     */
+    public function testIpv6InCIDRWithBracketedInput() : void {
+        self::assertTrue( Validate::ipv6InCIDR( '[2001:db8::1]', '2001:db8::/32' ) );
+        self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', '[2001:db8::]/32' ) );
+        self::assertFalse( Validate::ipv6InCIDR( '[2001:dead::1]', '2001:db8::/32' ) );
     }
 
 

@@ -387,6 +387,22 @@ final class Validate {
 
 
     /**
+     * @param string|null                   $i_nstIP The IPv4 address to check.
+     * @param list<string|null>|string|null $i_cidr  The CIDRv6 block(s) to check against.
+     * @return bool True if the address is valid and present in at least one of the specified CIDR blocks, otherwise false.
+     *
+     * It is allowable to include both IPv4 and IPv6 CIDR blocks in the list so you don't have to
+     * manage two lists if you don't have another reason to do so.
+     */
+    public static function ipInCIDR( ?string $i_nstIP, array|string|null $i_cidr ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        return str_contains( $i_nstIP, ':' ) ? self::ipv6InCIDR( $i_nstIP, $i_cidr ) : self::ipv4InCIDR( $i_nstIP, $i_cidr );
+    }
+
+
+    /**
      * Validates if a string is a valid IPv4 address.
      *
      * @param ?string $i_nstIP The string to validate
@@ -434,6 +450,42 @@ final class Validate {
 
 
     /**
+     * @param string|null                   $i_nstIP The IPv4 address to check.
+     * @param list<string|null>|string|null $i_cidr  The CIDRv4 block(s) to check against.
+     * @return bool True if the address is valid and present in at least one of the specified CIDR blocks, otherwise false.
+     *
+     * It is allowable to include both IPv4 and IPv6 CIDR blocks in the list so you don't have to
+     * manage two lists if you don't have another reason to do so.
+     */
+    public static function ipv4InCIDR( ?string $i_nstIP, array|string|null $i_cidr ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        if ( ! self::ipv4( $i_nstIP ) ) {
+            return false;
+        }
+        if ( is_null( $i_cidr ) ) {
+            return false;
+        }
+        if ( is_array( $i_cidr ) ) {
+            foreach ( $i_cidr as $cidr ) {
+                if ( self::ipv4InCIDR( $i_nstIP, $cidr ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if ( ! self::ipv4Block( $i_cidr ) ) {
+            return false;
+        }
+        $r = explode( '/', $i_cidr, 2 );
+        $stCidrAddress = $r[ 0 ];
+        $uBits = intval( $r[ 1 ] );
+        return Common::ipv4Mask( $i_nstIP, $uBits ) === Common::ipv4Mask( $stCidrAddress, $uBits );
+    }
+
+
+    /**
      * Validates if a string is a valid IPv6 address.
      *
      * @param ?string $i_nstIP The string to validate
@@ -443,9 +495,7 @@ final class Validate {
         if ( ! is_string( $i_nstIP ) ) {
             return false;
         }
-        if ( str_starts_with( $i_nstIP, '[' ) && str_ends_with( $i_nstIP, ']' ) ) {
-            $i_nstIP = substr( $i_nstIP, 1, -1 );
-        }
+        $i_nstIP = Common::debracket( $i_nstIP );
         return filter_var( $i_nstIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) !== false;
     }
 
@@ -479,6 +529,43 @@ final class Validate {
             return false;
         }
         return true;
+    }
+
+
+    /**
+     * @param string|null                   $i_nstIP The IPv4 address to check.
+     * @param list<string|null>|string|null $i_cidr  The CIDRv6 block(s) to check against.
+     * @return bool True if the address is valid and present in at least one of the specified CIDR blocks, otherwise false.
+     *
+     * It is allowable to include both IPv4 and IPv6 CIDR blocks in the list so you don't have to
+     * manage two lists if you don't have another reason to do so.
+     */
+    public static function ipv6InCIDR( ?string $i_nstIP, array|string|null $i_cidr ) : bool {
+        if ( ! is_string( $i_nstIP ) ) {
+            return false;
+        }
+        $i_nstIP = Common::debracket( $i_nstIP );
+        if ( ! self::ipv6( $i_nstIP ) ) {
+            return false;
+        }
+        if ( is_null( $i_cidr ) ) {
+            return false;
+        }
+        if ( is_array( $i_cidr ) ) {
+            foreach ( $i_cidr as $cidr ) {
+                if ( self::ipv6InCIDR( $i_nstIP, $cidr ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if ( ! self::ipv6Block( $i_cidr ) ) {
+            return false;
+        }
+        $r = explode( '/', $i_cidr, 2 );
+        $stCidrAddress = Common::debracket( $r[ 0 ] );
+        $uBits = intval( $r[ 1 ] );
+        return Common::ipv6Mask( $i_nstIP, $uBits ) === Common::ipv6Mask( $stCidrAddress, $uBits );
     }
 
 

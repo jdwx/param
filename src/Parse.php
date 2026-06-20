@@ -506,7 +506,7 @@ class Parse {
                 $r[ 1 ] = '32';
             }
             if ( $i_bMask ) {
-                $r[ 0 ] = self::ipv4Mask( $r[ 0 ], intval( $r[ 1 ] ) );
+                $r[ 0 ] = Common::ipv4Mask( $r[ 0 ], intval( $r[ 1 ] ) );
             }
             return self::ipv4( $r[ 0 ], $i_nstError ) . '/' . $r[ 1 ];
         }
@@ -535,9 +535,7 @@ class Parse {
         if ( ! $i_bNormalize ) {
             return $i_stIP;
         }
-        if ( str_starts_with( $i_stIP, '[' ) && str_ends_with( $i_stIP, ']' ) ) {
-            $i_stIP = substr( $i_stIP, 1, -1 );
-        }
+        $i_stIP = Common::debracket( $i_stIP );
         return OK::inet_ntop( OK::inet_pton( $i_stIP ) );
     }
 
@@ -559,7 +557,7 @@ class Parse {
                 $r[ 1 ] = '128';
             }
             if ( $i_bMask ) {
-                $r[ 0 ] = self::ipv6Mask( $r[ 0 ], intval( $r[ 1 ] ) );
+                $r[ 0 ] = Common::ipv6Mask( $r[ 0 ], intval( $r[ 1 ] ) );
             }
             return self::ipv6( $r[ 0 ], $i_nstError, $i_bNormalize ) . '/' . $r[ 1 ];
         }
@@ -743,32 +741,6 @@ class Parse {
             return intval( $i_stInt );
         }
         throw new ParseException( $i_nstError ?? "Invalid unsigned integer: {$i_stInt}" );
-    }
-
-
-    private static function ipv4Mask( string $i_stIP, int $i_uMask ) : string {
-        $bitMask = ( ( 1 << $i_uMask ) - 1 ) << ( 32 - $i_uMask );
-        $y = unpack( 'N', OK::inet_pton( $i_stIP ) );
-        $y = array_shift( $y );
-        return OK::inet_ntop( pack( 'N', $y & $bitMask ) );
-    }
-
-
-    private static function ipv6Mask( string $i_stIP, int $i_uMask ) : string {
-        $stAddressBytes = OK::inet_pton( $i_stIP );
-        $uFullBytesOfMask = intdiv( $i_uMask, 8 );
-        $uExtraBitsOfMask = $i_uMask % 8;
-        $stOutputAddress = substr( $stAddressBytes, 0, $uFullBytesOfMask );
-        if ( $uFullBytesOfMask < 16 ) {
-            if ( $uExtraBitsOfMask > 0 ) {
-                $uPartialByte = ord( $stAddressBytes[ $uFullBytesOfMask ] );
-                $uPartialMask = ( 0xFF << ( 8 - $uExtraBitsOfMask ) ) & 0xFF;
-                $stOutputAddress .= chr( $uPartialByte & $uPartialMask );
-                $uFullBytesOfMask++;
-            }
-            $stOutputAddress .= str_repeat( "\0", 16 - $uFullBytesOfMask );
-        }
-        return OK::inet_ntop( $stOutputAddress );
     }
 
 
