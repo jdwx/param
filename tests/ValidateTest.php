@@ -327,6 +327,81 @@ final class ValidateTest extends TestCase {
     }
 
 
+    public function testIpNotBogon() : void {
+        // Globally routable addresses of either family are not bogons.
+        self::assertTrue( Validate::ipNotBogon( '8.8.8.8' ) );
+        self::assertTrue( Validate::ipNotBogon( '2606:4700::1111' ) );
+
+        // Bogons of either family.
+        self::assertFalse( Validate::ipNotBogon( '10.0.0.1' ) );
+        self::assertFalse( Validate::ipNotBogon( '127.0.0.1' ) );
+        self::assertFalse( Validate::ipNotBogon( 'fe80::1' ) );
+        self::assertFalse( Validate::ipNotBogon( '::1' ) );
+
+        // The localhost and private opt-ins pass through to the family handler.
+        self::assertTrue( Validate::ipNotBogon( '127.0.0.1', i_bAllowLocalhost: true ) );
+        self::assertTrue( Validate::ipNotBogon( '::1', i_bAllowLocalhost: true ) );
+        self::assertTrue( Validate::ipNotBogon( '192.168.1.1', i_bAllowPrivate: true ) );
+        self::assertTrue( Validate::ipNotBogon( 'fd00::1', i_bAllowPrivate: true ) );
+
+        // Invalid or missing input is not "not a bogon".
+        self::assertFalse( Validate::ipNotBogon( 'not an IP' ) );
+        self::assertFalse( Validate::ipNotBogon( null ) );
+    }
+
+
+    public function testIpPrivate() : void {
+        // Private addresses of either family.
+        self::assertTrue( Validate::ipPrivate( '192.168.1.1' ) );
+        self::assertTrue( Validate::ipPrivate( '10.0.0.1' ) );
+        self::assertTrue( Validate::ipPrivate( 'fd00::1' ) );
+        self::assertTrue( Validate::ipPrivate( 'fe80::1' ) );
+
+        // Public addresses and loopback (without the opt-in) are not private.
+        self::assertFalse( Validate::ipPrivate( '8.8.8.8' ) );
+        self::assertFalse( Validate::ipPrivate( '2606:4700::1111' ) );
+        self::assertFalse( Validate::ipPrivate( '127.0.0.1' ) );
+        self::assertFalse( Validate::ipPrivate( '::1' ) );
+
+        // Loopback counts as private only when explicitly included.
+        self::assertTrue( Validate::ipPrivate( '127.0.0.1', i_bIncludeLocalhost: true ) );
+        self::assertTrue( Validate::ipPrivate( '::1', i_bIncludeLocalhost: true ) );
+
+        self::assertFalse( Validate::ipPrivate( 'not an IP' ) );
+        self::assertFalse( Validate::ipPrivate( null ) );
+    }
+
+
+    /**
+     * Guards the bogon/private range constants: every entry must be a valid CIDR
+     * block of the expected family (and not the other). This catches typos like
+     * a malformed address or a v4 range mistakenly placed in a v6 list.
+     */
+    public function testIpRangeConstantsAreValidBlocks() : void {
+        $rV4 = [
+            'IPV4_BOGON_RANGES' => Validate::IPV4_BOGON_RANGES,
+            'IPV4_PRIVATE_RANGES' => Validate::IPV4_PRIVATE_RANGES,
+        ];
+        foreach ( $rV4 as $stName => $rRanges ) {
+            foreach ( $rRanges as $stRange ) {
+                self::assertTrue( Validate::ipv4Block( $stRange ), "{$stName}: not a valid IPv4 block: {$stRange}" );
+                self::assertFalse( Validate::ipv6Block( $stRange ), "{$stName}: unexpectedly an IPv6 block: {$stRange}" );
+            }
+        }
+
+        $rV6 = [
+            'IPV6_BOGON_RANGES' => Validate::IPV6_BOGON_RANGES,
+            'IPV6_PRIVATE_RANGES' => Validate::IPV6_PRIVATE_RANGES,
+        ];
+        foreach ( $rV6 as $stName => $rRanges ) {
+            foreach ( $rRanges as $stRange ) {
+                self::assertTrue( Validate::ipv6Block( $stRange ), "{$stName}: not a valid IPv6 block: {$stRange}" );
+                self::assertFalse( Validate::ipv4Block( $stRange ), "{$stName}: unexpectedly an IPv4 block: {$stRange}" );
+            }
+        }
+    }
+
+
     public function testIpv4() : void {
         self::assertTrue( Validate::ipv4( '127.0.0.1' ) );
         self::assertFalse( Validate::ipv4( '256.0.0.1' ) );
@@ -410,6 +485,66 @@ final class ValidateTest extends TestCase {
         self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', [] ) );
         // A null block (allowed by the parameter type) is simply not a match.
         self::assertFalse( Validate::ipv4InCIDR( '10.0.0.5', null ) );
+    }
+
+
+    public function testIpv4NotBogon() : void {
+        // Globally routable addresses are not bogons.
+        self::assertTrue( Validate::ipv4NotBogon( '8.8.8.8' ) );
+        self::assertTrue( Validate::ipv4NotBogon( '1.1.1.1' ) );
+
+        // A representative address from each bogon range is rejected.
+        self::assertFalse( Validate::ipv4NotBogon( '0.0.0.0' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '10.1.2.3' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '100.64.0.1' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '127.0.0.1' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '169.254.1.1' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '172.16.5.5' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '192.168.1.1' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '198.51.100.7' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '203.0.113.7' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '224.0.0.1' ) );
+        self::assertFalse( Validate::ipv4NotBogon( '255.255.255.255' ) );
+
+        // Localhost: only the exact 127.0.0.1 is allowed by the opt-in.
+        self::assertTrue( Validate::ipv4NotBogon( '127.0.0.1', i_bAllowLocalhost: true ) );
+        self::assertFalse( Validate::ipv4NotBogon( '127.0.0.2', i_bAllowLocalhost: true ) );
+
+        // Private addresses are allowed only with the opt-in...
+        self::assertTrue( Validate::ipv4NotBogon( '10.1.2.3', i_bAllowPrivate: true ) );
+        self::assertTrue( Validate::ipv4NotBogon( '192.168.1.1', i_bAllowPrivate: true ) );
+        // ...and the opt-in does not rescue non-private bogons.
+        self::assertFalse( Validate::ipv4NotBogon( '203.0.113.7', i_bAllowPrivate: true ) );
+
+        // Non-IPv4 and invalid input.
+        self::assertFalse( Validate::ipv4NotBogon( '2606:4700::1111' ) );
+        self::assertFalse( Validate::ipv4NotBogon( 'not an IP' ) );
+        self::assertFalse( Validate::ipv4NotBogon( null ) );
+    }
+
+
+    public function testIpv4Private() : void {
+        // Each RFC 1918 range.
+        self::assertTrue( Validate::ipv4Private( '10.1.2.3' ) );
+        self::assertTrue( Validate::ipv4Private( '172.16.5.5' ) );
+        self::assertTrue( Validate::ipv4Private( '192.168.1.1' ) );
+
+        // Boundary addresses just outside 172.16.0.0/12.
+        self::assertTrue( Validate::ipv4Private( '172.31.255.255' ) );
+        self::assertFalse( Validate::ipv4Private( '172.32.0.0' ) );
+        self::assertFalse( Validate::ipv4Private( '172.15.255.255' ) );
+
+        // Public, loopback, and CGNAT are not private.
+        self::assertFalse( Validate::ipv4Private( '8.8.8.8' ) );
+        self::assertFalse( Validate::ipv4Private( '127.0.0.1' ) );
+        self::assertFalse( Validate::ipv4Private( '100.64.0.1' ) );
+
+        // Loopback only when explicitly included.
+        self::assertTrue( Validate::ipv4Private( '127.0.0.1', i_bIncludeLocalhost: true ) );
+        self::assertFalse( Validate::ipv4Private( '127.0.0.2', i_bIncludeLocalhost: true ) );
+
+        self::assertFalse( Validate::ipv4Private( '2606:4700::1111' ) );
+        self::assertFalse( Validate::ipv4Private( null ) );
     }
 
 
@@ -509,6 +644,71 @@ final class ValidateTest extends TestCase {
         self::assertTrue( Validate::ipv6InCIDR( '[2001:db8::1]', '2001:db8::/32' ) );
         self::assertTrue( Validate::ipv6InCIDR( '2001:db8::1', '[2001:db8::]/32' ) );
         self::assertFalse( Validate::ipv6InCIDR( '[2001:dead::1]', '2001:db8::/32' ) );
+    }
+
+
+    public function testIpv6NotBogon() : void {
+        // Globally routable addresses are not bogons.
+        self::assertTrue( Validate::ipv6NotBogon( '2606:4700::1111' ) );
+        self::assertTrue( Validate::ipv6NotBogon( '2620:fe::fe' ) );
+
+        // A representative address from each bogon range is rejected.
+        self::assertFalse( Validate::ipv6NotBogon( '::' ) );
+        self::assertFalse( Validate::ipv6NotBogon( '::1' ) );
+        self::assertFalse( Validate::ipv6NotBogon( '::ffff:192.168.1.1' ) );
+        self::assertFalse( Validate::ipv6NotBogon( '2001:2::1' ) );
+        self::assertFalse( Validate::ipv6NotBogon( '2002::1' ) );
+        self::assertFalse( Validate::ipv6NotBogon( 'fc00::1' ) );
+        self::assertFalse( Validate::ipv6NotBogon( 'fe80::1' ) );
+
+        // Localhost (::1) only with the opt-in. The check is CIDR-based, so a
+        // non-normalized but equivalent form of ::1 is still recognized.
+        self::assertTrue( Validate::ipv6NotBogon( '::1', i_bAllowLocalhost: true ) );
+        self::assertTrue( Validate::ipv6NotBogon( '0:0:0:0:0:0:0:1', i_bAllowLocalhost: true ) );
+
+        // Private (ULA / link-local) addresses only with the opt-in...
+        self::assertTrue( Validate::ipv6NotBogon( 'fc00::1', i_bAllowPrivate: true ) );
+        self::assertTrue( Validate::ipv6NotBogon( 'fe80::1', i_bAllowPrivate: true ) );
+        // ...and the opt-in does not rescue non-private bogons.
+        self::assertFalse( Validate::ipv6NotBogon( '2002::1', i_bAllowPrivate: true ) );
+
+        // Non-IPv6 and invalid input.
+        self::assertFalse( Validate::ipv6NotBogon( '8.8.8.8' ) );
+        self::assertFalse( Validate::ipv6NotBogon( 'not an IP' ) );
+        self::assertFalse( Validate::ipv6NotBogon( null ) );
+    }
+
+
+    /**
+     * The RFC 3849 documentation prefix 2001:db8::/32 -- used as the example
+     * address throughout these tests -- is classified as a bogon, both directly
+     * and through the family-dispatching ipNotBogon().
+     */
+    public function testIpv6NotBogonDocumentationRange() : void {
+        self::assertFalse( Validate::ipv6NotBogon( '2001:db8::1' ) );
+        self::assertFalse( Validate::ipv6NotBogon( '2001:db8:abcd::1' ) );
+        self::assertFalse( Validate::ipNotBogon( '2001:db8::1' ) );
+    }
+
+
+    public function testIpv6Private() : void {
+        // Unique local addresses (fc00::/7) and link-local (fe80::/10).
+        self::assertTrue( Validate::ipv6Private( 'fc00::1' ) );
+        self::assertTrue( Validate::ipv6Private( 'fd12:3456::1' ) );
+        self::assertTrue( Validate::ipv6Private( 'fe80::1' ) );
+
+        // Public and loopback (without the opt-in) are not private.
+        self::assertFalse( Validate::ipv6Private( '2606:4700::1111' ) );
+        self::assertFalse( Validate::ipv6Private( '::1' ) );
+
+        // Loopback only when explicitly included, in any equivalent form.
+        self::assertTrue( Validate::ipv6Private( '::1', i_bIncludeLocalhost: true ) );
+        self::assertTrue( Validate::ipv6Private( '0:0:0:0:0:0:0:1', i_bIncludeLocalhost: true ) );
+
+        // Non-IPv6 and invalid input.
+        self::assertFalse( Validate::ipv6Private( '192.168.1.1' ) );
+        self::assertFalse( Validate::ipv6Private( 'not an IP' ) );
+        self::assertFalse( Validate::ipv6Private( null ) );
     }
 
 
