@@ -33,6 +33,77 @@ final class CommonTest extends TestCase {
     }
 
 
+    public function testIpInCIDR() : void {
+        self::assertTrue( Common::ipInCIDR( '10.1.0.1', '10.0.0.0/8' ) );
+        self::assertFalse( Common::ipInCIDR( '10.1.0.1', '10.0.0.0/24' ) );
+
+        self::assertTrue( Common::ipInCIDR( '2001:db8:0:1::1', '2001:db8::/32' ) );
+        self::assertFalse( Common::ipInCIDR( '2001:db8:0:1::1', '2001:db8::/64' ) );
+    }
+
+
+    public function testIpNotBogon() : void {
+        self::assertFalse( Common::ipNotBogon( '127.0.0.1' ) );
+        self::assertFalse( Common::ipNotBogon( '127.0.0.1', false, true ) );
+        self::assertTrue( Common::ipNotBogon( '127.0.0.1', true ) );
+        self::assertTrue( Common::ipNotBogon( '127.0.0.1', true, true ) );
+
+        self::assertFalse( Common::ipNotBogon( '10.0.0.1' ) );
+        self::assertTrue( Common::ipNotBogon( '10.0.0.1', false, true ) );
+        self::assertFalse( Common::ipNotBogon( '10.0.0.1', true ) );
+        self::assertTrue( Common::ipNotBogon( '10.0.0.1', true, true ) );
+
+        self::assertTrue( Common::ipNotBogon( '8.8.8.8' ) );
+        self::assertTrue( Common::ipNotBogon( '8.8.8.8', false, true ) );
+        self::assertTrue( Common::ipNotBogon( '8.8.8.8', true ) );
+        self::assertTrue( Common::ipNotBogon( '8.8.8.8', true, true ) );
+
+        self::assertFalse( Common::ipNotBogon( '192.0.2.1' ) );
+        self::assertFalse( Common::ipNotBogon( '192.0.2.1', true ) );
+        self::assertFalse( Common::ipNotBogon( '192.0.2.1', false, true ) );
+        self::assertFalse( Common::ipNotBogon( '192.0.2.1', true, true ) );
+
+        self::assertFalse( Common::ipNotBogon( '::1' ) );
+        self::assertFalse( Common::ipNotBogon( '::1', false, true ) );
+        self::assertTrue( Common::ipNotBogon( '::1', true ) );
+        self::assertTrue( Common::ipNotBogon( '::1', true, true ) );
+
+        self::assertFalse( Common::ipNotBogon( 'fc00::1' ) );
+        self::assertTrue( Common::ipNotBogon( 'fc00::1', false, true ) );
+        self::assertFalse( Common::ipNotBogon( 'fc00::1', true ) );
+        self::assertTrue( Common::ipNotBogon( 'fc00::1', false, true ) );
+
+        # 2606:4700:4700::1111 is the IPv6 address of one.one.one.one.
+        self::assertTrue( Common::ipNotBogon( '2606:4700:4700::1111' ) );
+        self::assertTrue( Common::ipNotBogon( '2606:4700:4700::1111', true ) );
+        self::assertTrue( Common::ipNotBogon( '2606:4700:4700::1111', false, true ) );
+        self::assertTrue( Common::ipNotBogon( '2606:4700:4700::1111', true, true ) );
+
+        self::assertFalse( Common::ipNotBogon( '2001:db8::1' ) );
+        self::assertFalse( Common::ipNotBogon( '2001:db8::1', true ) );
+        self::assertFalse( Common::ipNotBogon( '2001:db8::1', false, true ) );
+        self::assertFalse( Common::ipNotBogon( '2001:db8::1', true, true ) );
+
+    }
+
+
+    public function testIpPrivate() : void {
+        self::assertFalse( Common::ipPrivate( '127.0.0.1' ) );
+        self::assertTrue( Common::ipPrivate( '127.0.0.1', true ) );
+        self::assertFalse( Common::ipPrivate( '192.0.2.5' ) );
+        self::assertFalse( Common::ipPrivate( '192.0.2.5', true ) );
+        self::assertTrue( Common::ipPrivate( '10.0.0.1' ) );
+        self::assertTrue( Common::ipPrivate( '10.0.0.1', true ) );
+
+        self::assertFalse( Common::ipPrivate( '::1' ) );
+        self::assertTrue( Common::ipPrivate( '::1', true ) );
+        self::assertTrue( Common::ipPrivate( 'fe80::1' ) );
+        self::assertTrue( Common::ipPrivate( 'fe80::1', true ) );
+        self::assertFalse( Common::ipPrivate( '2001:db8::1' ) );
+        self::assertFalse( Common::ipPrivate( '2001:db8::1', true ) );
+    }
+
+
     /**
      * Guards the bogon/private range constants: every entry must be a valid CIDR
      * block of the expected family (and not the other). This catches typos like

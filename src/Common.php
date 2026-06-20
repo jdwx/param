@@ -97,6 +97,43 @@ class Common {
 
 
     /**
+     * @param string                   $i_stIP The valid IP address to check.
+     * @param list<string|null>|string $i_cidr The CIDR notation(s) to check against.
+     * @return bool
+     */
+    public static function ipInCIDR( string $i_stIP, array|string $i_cidr ) : bool {
+        return str_contains( $i_stIP, ':' )
+            ? self::ipv6InCIDR( $i_stIP, $i_cidr )
+            : self::ipv4InCIDR( $i_stIP, $i_cidr );
+    }
+
+
+    /**
+     * @param string $i_stIP            The valid IP address to check.
+     * @param bool   $i_bAllowLocalhost Whether to allow localhost IPs.
+     * @param bool   $i_bAllowPrivate   Whether to allow private IPs.
+     * @return bool True if the IP is not bogon, otherwise false.
+     */
+    public static function ipNotBogon( string $i_stIP, bool $i_bAllowLocalhost = false,
+                                       bool   $i_bAllowPrivate = false ) : bool {
+        return str_contains( $i_stIP, ':' )
+            ? self::ipv6NotBogon( $i_stIP, $i_bAllowLocalhost, $i_bAllowPrivate )
+            : self::ipv4NotBogon( $i_stIP, $i_bAllowLocalhost, $i_bAllowPrivate );
+    }
+
+
+    /**
+     * @param string $i_stIP The valid IP address to check.
+     * @return bool True if the IP is private, otherwise false.
+     */
+    public static function ipPrivate( string $i_stIP, bool $i_bAllowLocalhost = false ) : bool {
+        return str_contains( $i_stIP, ':' )
+            ? self::ipv6Private( $i_stIP, $i_bAllowLocalhost )
+            : self::ipv4Private( $i_stIP, $i_bAllowLocalhost );
+    }
+
+
+    /**
      * This method assumes that the input IPv4 address has already been validated. It does *not*
      * require that the input CIDR block(s) all be validated. but only valid CIDR blocks are checked.
      *
